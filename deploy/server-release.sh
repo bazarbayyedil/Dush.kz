@@ -6,7 +6,7 @@ archive="$2"
 root=/var/www/dush.kz
 release_dir="$root/releases/$release"
 
-mkdir -p "$release_dir" "$root/shared"
+mkdir -p "$release_dir" "$root/shared/media/products"
 tar --warning=no-unknown-keyword -xzf "$archive" -C "$release_dir"
 
 python3 -m venv "$root/shared/venv"

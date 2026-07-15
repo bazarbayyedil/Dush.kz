@@ -38,13 +38,12 @@ class Product(Base):
     old_price: Mapped[Decimal | None] = mapped_column(Numeric(14, 2), nullable=True)
     in_stock: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
     on_sale: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    # Public URLs only. Image bytes live in persistent media storage or an object store.
     images: Mapped[list[str]] = mapped_column(json_type, default=list)
     attrs: Mapped[dict[str, str]] = mapped_column(json_type, default=dict)
     description: Mapped[str] = mapped_column(Text, default="")
     active: Mapped[bool] = mapped_column(Boolean, default=True, index=True)
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), default=utc_now, onupdate=utc_now
-    )
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now, onupdate=utc_now)
 
     __table_args__ = (Index("ix_products_catalog", "active", "category", "brand"),)
 

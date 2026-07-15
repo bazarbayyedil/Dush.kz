@@ -44,6 +44,10 @@ python3 build_web_data.py
 - Do not hand-edit generated web JSON for broad changes.
 - Do not commit `parser/images/` or `web/public/products/`; both are intentionally
   ignored. Use object storage or a documented deployment media step for production.
+- Never insert image bytes/base64 into PostgreSQL. Import only public URL strings.
+  The production mapping is source `/products/<slug>/<file>` to database URL
+  `/media/products/<slug>/<file>`, backed by persistent server files under
+  `/var/www/dush.kz/shared/media/products/`.
 - A non-empty `/products/...` value does not prove that a local image exists. Missing
   media is a warning in a fresh clone and an error only when the workflow promises a
   complete media package.
@@ -62,3 +66,17 @@ Use `--require-images` only when the media package should be complete. Compare p
 and category counts before and after. Investigate unexpected drops, duplicate slugs,
 index/full mismatches, or new empty fields before accepting the generated diff. Inspect
 representative product, catalog, search, and category routes when web artifacts change.
+
+## Import a complete photo package
+
+Read `docs/media-import.md`, then run from the repository root:
+
+```bash
+python3 parser/build_web_data.py
+python3 .agents/skills/dush-catalog-pipeline/scripts/check_catalog.py --require-images
+deploy/sync-catalog-media.sh <ssh-user@host>
+```
+
+The sync script uploads files first and imports catalog links second, so the API never
+publishes links to a package that has not reached persistent media storage. It does not
+delete old remote files; clean them only after comparing active database URLs.

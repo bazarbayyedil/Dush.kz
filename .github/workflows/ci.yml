@@ -47,3 +47,4 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 .agents/skills/dush-catalog-pipeline/scripts/check_catalog.py
+      - run: bash -n deploy/server-release.sh deploy/sync-catalog-media.sh

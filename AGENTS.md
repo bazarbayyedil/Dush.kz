@@ -59,6 +59,11 @@ python -m pytest
 - Product photos are intentionally ignored in Git under `parser/images/` and
   `web/public/products/`. A fresh clone can therefore contain valid-looking
   `/products/...` paths with no corresponding file.
+- Never store image bytes, base64, blobs, or local filesystem paths in PostgreSQL.
+  `products.images` contains public URL strings only. Production files live under
+  `/var/www/dush.kz/shared/media/products/` and are served as `/media/products/...`.
+- For a complete catalog + photo import, follow `docs/media-import.md` or run
+  `deploy/sync-catalog-media.sh <ssh-user@host>` after rebuilding web data.
 - Never assume a non-empty image URL means the asset exists. New UI must render a
   stable fallback for missing or failed images without producing an unbounded 404
   storm.

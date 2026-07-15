@@ -10,3 +10,4 @@ Base path: `/api/v1`.
 - `GET /admin/orders`: requires `Authorization: Bearer <ADMIN_TOKEN>`.
 
 Money is serialized as decimal strings. Product slugs are stable public identifiers. Order IDs are UUIDs.
+`image` and `images` contain public URL strings only; they never contain binary or base64 data.
