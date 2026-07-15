@@ -16,11 +16,17 @@ export function OrderModal() {
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [orderId, setOrderId] = useState("");
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
       setSent(false);
+      setSending(false);
+      setSubmitError("");
+      setOrderId("");
       setErrors({});
     } else {
       document.body.style.overflow = "";
@@ -42,11 +48,29 @@ export function OrderModal() {
     return Object.keys(e).length === 0;
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!validate()) return;
+    setSending(true);
+    setSubmitError("");
+    try {
+      const response = await fetch("/api/v1/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer_name: name,
+          phone,
+          city,
+          comment,
+          items: items.map((item) => ({ slug: item.slug, quantity: item.qty })),
+        }),
+      });
+      if (!response.ok) throw new Error("order request failed");
+      const order: { id: string } = await response.json();
+      setOrderId(order.id);
+
     const lines = items.map((i) => `• ${i.title} — ${i.qty} шт × ${formatPrice(i.price)} = ${formatPrice(i.price * i.qty)}`);
     const text =
-      `Новый заказ — dush.kz\n\n` +
+      `Новый заказ ${order.id} — dush.kz\n\n` +
       `Имя: ${name.trim()}\n` +
       `Телефон: ${phone.trim()}\n` +
       (city.trim() ? `Город: ${city.trim()}\n` : "") +
@@ -56,6 +80,11 @@ export function OrderModal() {
     window.open(url, "_blank", "noopener");
     if (fromCart) clearCart();
     setSent(true);
+    } catch {
+      setSubmitError("Не удалось сохранить заказ. Проверьте соединение и попробуйте ещё раз.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -79,6 +108,7 @@ export function OrderModal() {
               </svg>
             </div>
             <p className="font-medium">Заявка сформирована</p>
+            {orderId && <p className="text-xs text-muted-foreground">Номер: {orderId}</p>}
             <p className="text-sm text-muted-foreground">
               Открылся WhatsApp с деталями заказа — отправьте сообщение, менеджер свяжется с вами.
               Если чат не открылся, позвоните нам.
@@ -152,10 +182,12 @@ export function OrderModal() {
 
             <button
               onClick={submit}
+              disabled={sending}
               className="w-full py-3 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent-hover transition-colors"
             >
-              Отправить заказ
+              {sending ? "Сохраняем заказ…" : "Отправить заказ"}
             </button>
+            {submitError && <p role="alert" className="text-sm text-danger text-center">{submitError}</p>}
             <p className="text-xs text-muted-foreground text-center">
               Нажимая «Отправить», вы соглашаетесь, что менеджер свяжется с вами для подтверждения.
             </p>

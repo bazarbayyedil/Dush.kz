@@ -25,6 +25,12 @@ full_scrape*.log
 # ── Секреты ─────────────────────────────────────
 .env
 .env.*
+!.env.example
+backend/.venv/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/*.db
+backend/*.egg-info/
 session_cookies.json
 state.json
 *cookies*.json

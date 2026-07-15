@@ -82,7 +82,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
           <div className="mt-6 flex flex-wrap gap-3">
             <AddToCartButton product={product} />
-            <BuyOneClickButton title={product.title} price={product.price ?? 0} />
+            <BuyOneClickButton slug={product.slug} title={product.title} price={product.price ?? 0} />
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-3 text-xs text-muted-foreground">

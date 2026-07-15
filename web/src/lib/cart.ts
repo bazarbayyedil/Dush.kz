@@ -101,7 +101,7 @@ export const useFavorites = create<FavState>()(
 );
 
 // Модалка оформления заказа. items = позиции заказа (вся корзина или один товар).
-export type OrderItem = { title: string; price: number; qty: number };
+export type OrderItem = { slug: string; title: string; price: number; qty: number };
 
 type OrderState = {
   isOpen: boolean;

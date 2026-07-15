@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { catalogTree } from "@/lib/catalogTree";
 import { getCategoryMap, sampleByCategories } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
+import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
 
 export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [active, setActive] = useState(0);
@@ -100,8 +101,18 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                           onClick={onClose}
                           className="group flex items-center gap-3 rounded-xl p-2 hover:bg-surface transition-colors"
                         >
-                          <div className="w-14 h-14 shrink-0 rounded-lg bg-surface overflow-hidden">
-                            {p.image && <img src={p.image} alt="" className="w-full h-full object-contain" />}
+                          <div className="relative w-14 h-14 shrink-0 rounded-lg bg-surface overflow-hidden">
+                            <span className="absolute inset-0 flex items-center justify-center text-[9px] text-muted-foreground">
+                              Нет фото
+                            </span>
+                            {PRODUCT_IMAGES_AVAILABLE && p.image && (
+                              <img
+                                src={p.image}
+                                alt=""
+                                className="relative w-full h-full object-contain bg-surface"
+                                onError={(event) => event.currentTarget.remove()}
+                              />
+                            )}
                           </div>
                           <div className="min-w-0">
                             <div className="text-xs line-clamp-2 group-hover:text-accent">{p.title}</div>

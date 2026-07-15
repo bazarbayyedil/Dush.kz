@@ -1,0 +1,21 @@
+[Unit]
+Description=Dush.kz FastAPI
+After=network.target postgresql.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=www-data
+WorkingDirectory=/var/www/dush.kz/current/backend
+EnvironmentFile=/etc/dush.kz/backend.env
+ExecStart=/var/www/dush.kz/shared/venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000 --workers 2 --proxy-headers
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/dush.kz/shared
+
+[Install]
+WantedBy=multi-user.target

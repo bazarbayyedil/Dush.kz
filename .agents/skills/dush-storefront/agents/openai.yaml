@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dush Storefront"
+  short_description: "Develop and verify the Dush.kz storefront"
+  default_prompt: "Use $dush-storefront to implement and verify a storefront change in this repository."

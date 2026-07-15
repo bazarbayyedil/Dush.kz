@@ -1,11 +1,13 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
 
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const [current, setCurrent] = useState(0);
   const [zoom, setZoom] = useState(false);
-  const total = images.length;
-  const main = images[current] || images[0];
+  const availableImages = PRODUCT_IMAGES_AVAILABLE ? images : [];
+  const total = availableImages.length;
+  const main = availableImages[current] || availableImages[0];
 
   const go = useCallback(
     (dir: number) => {
@@ -80,7 +82,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
       {/* Превью */}
       {total > 1 && (
         <div className="grid grid-cols-6 gap-2">
-          {images.slice(0, 12).map((src, i) => (
+          {availableImages.slice(0, 12).map((src, i) => (
             <button
               key={src + i}
               onClick={() => setCurrent(i)}
