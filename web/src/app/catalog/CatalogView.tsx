@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal, X, Check } from "lucide-react";
 import {
   catalogItems,
@@ -14,11 +14,14 @@ import {
 import { formatPrice } from "@/lib/format";
 import { ProductCard } from "@/components/ProductCard";
 
+const PAGE_SIZE = 48;
+
 export function CatalogView() {
   const sp = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
   const [mobileFilters, setMobileFilters] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const brands = useMemo(() => getAllBrands(), []);
   const cats = useMemo(() => getAllCategories(), []);
@@ -38,6 +41,11 @@ export function CatalogView() {
   }, [sp]);
 
   const filtered = useMemo(() => filterCatalog(catalogItems, filters), [filters]);
+  const visibleProducts = filtered.slice(0, visibleCount);
+
+  useEffect(() => {
+    setVisibleCount(PAGE_SIZE);
+  }, [sp]);
 
   const update = (patch: Record<string, string | string[] | null | boolean | number | undefined>) => {
     const params = new URLSearchParams(sp.toString());
@@ -209,11 +217,23 @@ export function CatalogView() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
-              {filtered.map((p) => (
-                <ProductCard key={p.slug} product={p} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                {visibleProducts.map((p) => (
+                  <ProductCard key={p.slug} product={p} />
+                ))}
+              </div>
+              {visibleCount < filtered.length && (
+                <div className="mt-8 flex justify-center">
+                  <button
+                    onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+                    className="h-11 px-6 rounded-xl border border-border bg-white text-sm font-medium hover:bg-muted"
+                  >
+                    Показать ещё
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dush Catalog Pipeline"
+  short_description: "Maintain catalog data and product image builds"
+  default_prompt: "Use $dush-catalog-pipeline to validate or rebuild the Dush.kz catalog data safely."

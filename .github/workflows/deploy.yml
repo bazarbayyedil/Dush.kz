@@ -1,0 +1,50 @@
+name: Deploy production
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci && npm run build
+        working-directory: web
+      - name: Package release
+        run: |
+          mkdir -p release/catalog
+          cp -R web/out release/web-out
+          mkdir -p release/backend
+          cp -R backend/app backend/scripts backend/pyproject.toml release/backend/
+          cp web/src/data/products.json release/catalog/products.json
+          tar -czf dush-release.tgz -C release .
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts
+      - name: Upload and activate
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          RELEASE: ${{ github.sha }}
+        run: |
+          scp dush-release.tgz deploy/server-release.sh "$VPS_USER@$VPS_HOST:/tmp/"
+          ssh "$VPS_USER@$VPS_HOST" "bash /tmp/server-release.sh '$RELEASE' /tmp/dush-release.tgz"

@@ -1,0 +1,2 @@
+export const PRODUCT_IMAGES_AVAILABLE =
+  process.env.NEXT_PUBLIC_PRODUCT_IMAGES_AVAILABLE === "true";

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dush Backend"
+  short_description: "Build and operate the Dush.kz backend"
+  default_prompt: "Use $dush-backend to implement and verify a backend or deployment change for Dush.kz."

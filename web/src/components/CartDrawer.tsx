@@ -12,7 +12,7 @@ export function CartDrawer() {
   const checkout = () => {
     close();
     openOrder(
-      items.map((i) => ({ title: i.title, price: i.price, qty: i.qty })),
+      items.map((i) => ({ slug: i.slug, title: i.title, price: i.price, qty: i.qty })),
       true,
     );
   };

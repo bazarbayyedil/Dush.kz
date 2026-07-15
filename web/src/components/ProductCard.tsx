@@ -1,28 +1,12 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Star, ShoppingCart, Check } from "lucide-react";
+import { Heart, ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
 import { CatalogItem } from "@/lib/catalog";
-import { formatPrice, pseudoRating, discountPercent } from "@/lib/format";
+import { formatPrice, discountPercent } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
-
-function Stars({ rating }: { rating: number }) {
-  const full = Math.round(rating);
-  return (
-    <div className="flex items-center gap-0.5">
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Star
-          key={i}
-          size={13}
-          className={i <= full ? "text-star" : "text-border"}
-          fill={i <= full ? "currentColor" : "none"}
-          strokeWidth={i <= full ? 0 : 1.5}
-        />
-      ))}
-    </div>
-  );
-}
+import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
 
 export function ProductCard({ product }: { product: CatalogItem }) {
   const add = useCart((s) => s.add);
@@ -32,7 +16,6 @@ export function ProductCard({ product }: { product: CatalogItem }) {
   const [added, setAdded] = useState(false);
 
   const img = product.image;
-  const { rating, reviews } = pseudoRating(product.slug);
   const discount = discountPercent(product.price, product.old_price);
   const isFav = hydrated && favSlugs.includes(product.slug);
 
@@ -82,24 +65,21 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       </button>
 
       <Link href={`/product/${product.slug}`} className="relative aspect-square bg-surface overflow-hidden">
-        {img ? (
+        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs">
+          Нет фото
+        </div>
+        {PRODUCT_IMAGES_AVAILABLE && img && (
           <img
             src={img}
             alt={product.title}
-            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+            className="relative w-full h-full object-contain p-2 bg-surface group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
+            onError={(event) => event.currentTarget.remove()}
           />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">Нет фото</div>
         )}
       </Link>
 
       <div className="p-3.5 flex flex-col flex-1 gap-1.5">
-        <div className="flex items-center gap-1.5">
-          <Stars rating={rating} />
-          <span className="text-[11px] text-muted-foreground">{reviews}</span>
-        </div>
-
         <div className="text-[11px] text-muted-foreground uppercase tracking-wide">{product.brand}</div>
         <Link
           href={`/product/${product.slug}`}
