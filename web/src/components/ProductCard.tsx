@@ -1,0 +1,132 @@
+"use client";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Heart, Star, ShoppingCart, Check } from "lucide-react";
+import { useState } from "react";
+import { CatalogItem } from "@/lib/catalog";
+import { formatPrice, pseudoRating, discountPercent } from "@/lib/format";
+import { useCart, useFavorites, useHydrated } from "@/lib/cart";
+
+function Stars({ rating }: { rating: number }) {
+  const full = Math.round(rating);
+  return (
+    <div className="flex items-center gap-0.5">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <Star
+          key={i}
+          size={13}
+          className={i <= full ? "text-star" : "text-border"}
+          fill={i <= full ? "currentColor" : "none"}
+          strokeWidth={i <= full ? 0 : 1.5}
+        />
+      ))}
+    </div>
+  );
+}
+
+export function ProductCard({ product }: { product: CatalogItem }) {
+  const add = useCart((s) => s.add);
+  const favToggle = useFavorites((s) => s.toggle);
+  const favSlugs = useFavorites((s) => s.slugs);
+  const hydrated = useHydrated();
+  const [added, setAdded] = useState(false);
+
+  const img = product.image;
+  const { rating, reviews } = pseudoRating(product.slug);
+  const discount = discountPercent(product.price, product.old_price);
+  const isFav = hydrated && favSlugs.includes(product.slug);
+
+  const handleAdd = () => {
+    add({
+      slug: product.slug,
+      sku: product.sku,
+      title: product.title,
+      price: product.price ?? 0,
+      image: img ?? "",
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1400);
+  };
+
+  return (
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 22 }}
+      className="group relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.18)] hover:border-border transition-shadow"
+    >
+      {/* Бейджи */}
+      <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
+        {discount > 0 && (
+          <span className="px-2 py-0.5 text-[11px] bg-sale text-sale-foreground rounded-md font-semibold">
+            −{discount}%
+          </span>
+        )}
+        {product.in_stock && discount === 0 && (
+          <span className="px-2 py-0.5 text-[11px] bg-success/10 text-success rounded-md font-medium">
+            В наличии
+          </span>
+        )}
+      </div>
+
+      {/* Избранное */}
+      <button
+        onClick={() => favToggle(product.slug)}
+        className="absolute top-2.5 right-2.5 z-10 w-8 h-8 rounded-full bg-white/90 border border-border flex items-center justify-center hover:bg-white transition-colors"
+        aria-label="В избранное"
+      >
+        <Heart
+          size={16}
+          className={isFav ? "text-sale" : "text-muted-foreground"}
+          fill={isFav ? "currentColor" : "none"}
+        />
+      </button>
+
+      <Link href={`/product/${product.slug}`} className="relative aspect-square bg-surface overflow-hidden">
+        {img ? (
+          <img
+            src={img}
+            alt={product.title}
+            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted-foreground text-xs">Нет фото</div>
+        )}
+      </Link>
+
+      <div className="p-3.5 flex flex-col flex-1 gap-1.5">
+        <div className="flex items-center gap-1.5">
+          <Stars rating={rating} />
+          <span className="text-[11px] text-muted-foreground">{reviews}</span>
+        </div>
+
+        <div className="text-[11px] text-muted-foreground uppercase tracking-wide">{product.brand}</div>
+        <Link
+          href={`/product/${product.slug}`}
+          className="text-sm leading-snug line-clamp-2 hover:text-accent min-h-[2.5rem]"
+        >
+          {product.title}
+        </Link>
+
+        <div className="flex items-baseline gap-2 mt-auto pt-1">
+          <span className="text-lg font-bold">{formatPrice(product.price)}</span>
+          {discount > 0 && (
+            <span className="text-xs text-muted-foreground line-through">{formatPrice(product.old_price)}</span>
+          )}
+        </div>
+
+        <button
+          onClick={handleAdd}
+          className={`mt-1.5 w-full h-10 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
+            added
+              ? "bg-success text-white"
+              : "bg-accent text-accent-foreground hover:bg-accent-hover"
+          }`}
+        >
+          {added ? <Check size={17} /> : <ShoppingCart size={17} />}
+          {added ? "В корзине" : "В корзину"}
+        </button>
+      </div>
+    </motion.div>
+  );
+}

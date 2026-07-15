@@ -1,0 +1,59 @@
+[
+  {
+    "slug": "montaznaa-rama-dla-pissuara-creavit-gpm600-01-rossia",
+    "url": "https://fontanero.kz/products/montaznaa-rama-dla-pissuara-creavit-gpm600-01-rossia",
+    "sku": "GPM600.01",
+    "title": "Монтажная рама для писсуара Creavit GPM600.01 (Россия)",
+    "brand": "Creavit",
+    "price": 56700,
+    "old_price": null,
+    "in_stock": true,
+    "on_sale": false,
+    "images": [
+      "https://fontanero.kz/img/products/5488.jpg",
+      "https://fontanero.kz/img/photos/5490-montazhnaya-rama-dlya-pissuara-creavit-gpm60001-rossiya.jpg",
+      "https://fontanero.kz/img/photos/5489-montazhnaya-rama-dlya-pissuara-creavit-gpm60001-rossiya.jpg",
+      "https://fontanero.kz/img/photos/5488-montazhnaya-rama-dlya-pissuara-creavit-gpm60001-rossiya.jpg"
+    ],
+    "attrs": {
+      "Артикул": "GPM600.01",
+      "Состояние": "Новый товар",
+      "Производитель": "Creavit"
+    },
+    "description_text": "Характеристика\nОписание\nВысота\n1040 мм\nПроизводство\nТурция\nШирина\n500 мм\nДоставка\nБесплатно\nТип монтажа\nСкрытый\nВес\n9,73 кг\nдля писсуара",
+    "description_html": "<section class=\"description\">\n<div class=\"container\">\n<div class=\"description__container\">\n<div class=\"description__tabs\">\n<a class=\"description__tab active\" href=\"#\">Характеристика</a>\n<a class=\"description__tab\" href=\"#\">Описание</a>\n</div>\n<div class=\"description__content\">\n<div class=\"description__content-item active\">\n<ul class=\"description__list\">\n<li class=\"description__list-item\">\n<span class=\"name\">Высота</span>\n<span class=\"desc\">1040 мм</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Производство </span>\n<span class=\"desc\">Турция</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Ширина</span>\n<span class=\"desc\">500 мм</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Доставка</span>\n<span class=\"desc\">Бесплатно</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Тип монтажа</span>\n<span class=\"desc\">Скрытый</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Вес</span>\n<span class=\"desc\">9,73 кг</span>\n</li>\n</ul>\n</div>\n<div class=\"description__content-item\">\n<div class=\"description__info\"> для писсуара </div>\n</div>\n</div>\n</div>\n</div>\n</section>",
+    "img_folder": "gpm600-01",
+    "local_images": [
+      "images/gpm600-01/1.jpg",
+      "images/gpm600-01/2.jpg",
+      "images/gpm600-01/3.jpg",
+      "images/gpm600-01/4.jpg"
+    ]
+  },
+  {
+    "slug": "kran-nazimnoj-dla-pissuara-haiba-hb-33001",
+    "url": "https://fontanero.kz/products/kran-nazimnoj-dla-pissuara-haiba-hb-33001",
+    "sku": "HB 33001",
+    "title": "Кран нажимной для писсуара HAIBA HB 33001",
+    "brand": "HAIBA",
+    "price": 10200,
+    "old_price": null,
+    "in_stock": true,
+    "on_sale": false,
+    "images": [
+      "https://fontanero.kz/img/products/9c59eccaf9353a5607cb6a189bde6a04.jpeg",
+      "https://fontanero.kz/img/photos/e69aa94bff892b08a8aa7bb7401aa860.jpeg"
+    ],
+    "attrs": {
+      "Артикул": "HB 33001",
+      "Производитель": "HAIBA"
+    },
+    "description_text": "Характеристика\nОписание\nЦвет\nХром\nМатериал изготовления\nЛатунь",
+    "description_html": "<section class=\"description\">\n<div class=\"container\">\n<div class=\"description__container\">\n<div class=\"description__tabs\">\n<a class=\"description__tab active\" href=\"#\">Характеристика</a>\n<a class=\"description__tab\" href=\"#\">Описание</a>\n</div>\n<div class=\"description__content\">\n<div class=\"description__content-item active\">\n<ul class=\"description__list\">\n<li class=\"description__list-item\">\n<span class=\"name\">Цвет</span>\n<span class=\"desc\">Хром</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Материал изготовления</span>\n<span class=\"desc\">Латунь</span>\n</li>\n</ul>\n</div>\n<div class=\"description__content-item\">\n<div class=\"description__info\">\n</div>\n</div>\n</div>\n</div>\n</div>\n</section>",
+    "img_folder": "hb-33001",
+    "local_images": [
+      "images/hb-33001/1.jpeg",
+      "images/hb-33001/2.jpeg"
+    ]
+  }
+]

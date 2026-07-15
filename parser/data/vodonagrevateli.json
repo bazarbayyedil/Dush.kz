@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "dusevoj-trap-70h500-mm-tap-t-6015-99-oruzejnaa-stal",
+    "url": "https://fontanero.kz/products/dusevoj-trap-70h500-mm-tap-t-6015-99-oruzejnaa-stal",
+    "sku": "TAP T-6015-99",
+    "title": "Душевой трап 70х500 мм TAP T-6015-99 Оружейная сталь",
+    "brand": "TAP",
+    "price": 28800,
+    "old_price": null,
+    "in_stock": true,
+    "on_sale": false,
+    "images": [
+      "https://fontanero.kz/img/products/721bb24f97fe52deb6218842860fe3f9.jpeg"
+    ],
+    "attrs": {
+      "Артикул": "TAP T-6015-99",
+      "Производитель": "TAP"
+    },
+    "description_text": "Характеристика\nОписание\nМатериал\nНержавеющая сталь\nЦвет\nоружейная сталь",
+    "description_html": "<section class=\"description\">\n<div class=\"container\">\n<div class=\"description__container\">\n<div class=\"description__tabs\">\n<a class=\"description__tab active\" href=\"#\">Характеристика</a>\n<a class=\"description__tab\" href=\"#\">Описание</a>\n</div>\n<div class=\"description__content\">\n<div class=\"description__content-item active\">\n<ul class=\"description__list\">\n<li class=\"description__list-item\">\n<span class=\"name\">Материал </span>\n<span class=\"desc\">Нержавеющая сталь</span>\n</li>\n<li class=\"description__list-item\">\n<span class=\"name\">Цвет</span>\n<span class=\"desc\">оружейная сталь</span>\n</li>\n</ul>\n</div>\n<div class=\"description__content-item\">\n<div class=\"description__info\">\n</div>\n</div>\n</div>\n</div>\n</div>\n</section>",
+    "img_folder": "tap-t-6015-99",
+    "local_images": [
+      "images/tap-t-6015-99/1.jpeg"
+    ]
+  }
+]

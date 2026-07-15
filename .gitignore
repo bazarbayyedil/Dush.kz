@@ -1,0 +1,36 @@
+# ── Node / Next.js ──────────────────────────────
+web/node_modules/
+web/.next/
+web/out/
+web/.turbo/
+npm-debug.log*
+yarn-error.log*
+
+# ── Фото (813 МБ + 1.5 ГБ исходников) — заливаются отдельно на хостинг/CDN ──
+parser/images/
+web/public/products/
+
+# ── Python ──────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# ── Логи и артефакты парсинга ───────────────────
+*.log
+parser/*.html
+parser/remediation.done
+full_scrape*.log
+
+# ── Секреты ─────────────────────────────────────
+.env
+.env.*
+session_cookies.json
+state.json
+*cookies*.json
+
+# ── ОС / редакторы ──────────────────────────────
+.DS_Store
+Thumbs.db
+.idea/
+*.swp

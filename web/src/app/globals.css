@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --surface: #f6f8f9;
+  --foreground: #0f172a;
+  --muted: #f1f5f7;
+  --muted-foreground: #64748b;
+  --border: #e8edf0;
+  /* #007e95 — контраст 4.75:1 с белым (WCAG AA для текста/кнопок) */
+  --accent: #007e95;
+  --accent-hover: #00697d;
+  --accent-foreground: #ffffff;
+  /* Яркая бренд-бирюза — для декоративных элементов (иконки, хайлайты) */
+  --brand: #0097b1;
+  --card: #ffffff;
+  --success: #16a34a;
+  --danger: #dc2626;
+  /* Акцент скидок/акций */
+  --sale: #f5484b;
+  --sale-hover: #e02e31;
+  --sale-foreground: #ffffff;
+  --star: #fbbf24;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-brand: var(--brand);
+  --color-card: var(--card);
+  --color-success: var(--success);
+  --color-danger: var(--danger);
+  --color-sale: var(--sale);
+  --color-sale-hover: var(--sale-hover);
+  --color-sale-foreground: var(--sale-foreground);
+  --color-star: var(--star);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+input[type="range"] {
+  accent-color: var(--accent);
+}
+
+/* Прячем скроллбар у горизонтальных каруселей */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Скелетон-мерцание */
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--muted);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s infinite;
+}
