@@ -3,6 +3,7 @@ import { useCart, useOrder } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 import { useEffect } from "react";
+import { productImageUrl } from "@/lib/media";
 
 export function CartDrawer() {
   const { items, isOpen, close, remove, setQty } = useCart();
@@ -72,7 +73,12 @@ export function CartDrawer() {
                 <div key={item.slug} className="flex gap-3 p-3 rounded-lg border border-border">
                   <div className="w-20 h-20 shrink-0 bg-muted rounded overflow-hidden">
                     {item.image && (
-                      <img src={item.image} alt={item.title} className="w-full h-full object-contain" />
+                      <img
+                        src={productImageUrl(item.image)}
+                        alt={item.title}
+                        className="w-full h-full object-contain"
+                        onError={(event) => event.currentTarget.remove()}
+                      />
                     )}
                   </div>
                   <div className="flex-1 min-w-0">

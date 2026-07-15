@@ -62,6 +62,8 @@ python -m pytest
 - Never store image bytes, base64, blobs, or local filesystem paths in PostgreSQL.
   `products.images` contains public URL strings only. Production files live under
   `/var/www/dush.kz/shared/media/products/` and are served as `/media/products/...`.
+- Storefront data may still contain generated `/products/...` paths. Render them
+  through `productImageUrl()` so production resolves them under `/media/products/...`.
 - For a complete catalog + photo import, follow `docs/media-import.md` or run
   `deploy/sync-catalog-media.sh <ssh-user@host>` after rebuilding web data.
 - Never assume a non-empty image URL means the asset exists. New UI must render a

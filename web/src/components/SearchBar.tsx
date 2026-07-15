@@ -5,6 +5,7 @@ import { catalogItems } from "@/lib/catalog";
 import { searchProducts } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
+import { productImageUrl } from "@/lib/media";
 
 export function SearchBar({ className = "" }: { className?: string }) {
   const router = useRouter();
@@ -106,7 +107,12 @@ export function SearchBar({ className = "" }: { className?: string }) {
             >
               <div className="w-10 h-10 shrink-0 bg-muted rounded overflow-hidden">
                 {p.image && (
-                  <img src={p.image} alt="" className="w-full h-full object-contain" />
+                  <img
+                    src={productImageUrl(p.image)}
+                    alt=""
+                    className="w-full h-full object-contain"
+                    onError={(event) => event.currentTarget.remove()}
+                  />
                 )}
               </div>
               <div className="min-w-0 flex-1">

@@ -6,7 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { catalogTree } from "@/lib/catalogTree";
 import { getCategoryMap, sampleByCategories } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
-import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
+import { productImageUrl } from "@/lib/media";
 
 export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [active, setActive] = useState(0);
@@ -105,9 +105,9 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                             <span className="absolute inset-0 flex items-center justify-center text-[9px] text-muted-foreground">
                               Нет фото
                             </span>
-                            {PRODUCT_IMAGES_AVAILABLE && p.image && (
+                            {p.image && (
                               <img
-                                src={p.image}
+                                src={productImageUrl(p.image)}
                                 alt=""
                                 className="relative w-full h-full object-contain bg-surface"
                                 onError={(event) => event.currentTarget.remove()}
