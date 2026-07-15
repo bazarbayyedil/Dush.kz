@@ -20,6 +20,8 @@ description: Develop, diagnose, and verify the Dush.kz Next.js storefront. Use f
 - Expect a fresh clone to have no `web/public/products/` directory even when every
   catalog item has an image path. Treat failed loads as missing media and render a
   deliberate fallback.
+- Route product image values through `@/lib/media` so generated `/products/...`
+  values resolve to the production `/media/products/...` storage path.
 - Avoid multiplying missing-media requests. Bound the number of rendered cards and
   avoid eager image loading outside the viewport.
 - Do not invent ratings, reviews, guarantees, delivery promises, or availability.

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
-import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
+import { productImageUrl } from "@/lib/media";
 
 export function ProductCard({ product }: { product: CatalogItem }) {
   const add = useCart((s) => s.add);
@@ -68,9 +68,9 @@ export function ProductCard({ product }: { product: CatalogItem }) {
         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs">
           Нет фото
         </div>
-        {PRODUCT_IMAGES_AVAILABLE && img && (
+        {img && (
           <img
-            src={img}
+            src={productImageUrl(img)}
             alt={product.title}
             className="relative w-full h-full object-contain p-2 bg-surface group-hover:scale-105 transition-transform duration-500"
             loading="lazy"

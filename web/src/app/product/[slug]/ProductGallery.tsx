@@ -1,11 +1,11 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
+import { productImageUrl } from "@/lib/media";
 
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const [current, setCurrent] = useState(0);
   const [zoom, setZoom] = useState(false);
-  const availableImages = PRODUCT_IMAGES_AVAILABLE ? images : [];
+  const availableImages = images.map(productImageUrl).filter(Boolean);
   const total = availableImages.length;
   const main = availableImages[current] || availableImages[0];
 

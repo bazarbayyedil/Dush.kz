@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import { PRODUCT_IMAGES_AVAILABLE } from "@/lib/media";
+import { productImageUrl } from "@/lib/media";
 
 type Slide = {
   eyebrow: string;
@@ -68,12 +68,12 @@ export function HeroSlider({ slides }: { slides: Slide[] }) {
             <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
               Фото скоро
             </div>
-            {PRODUCT_IMAGES_AVAILABLE && s.image && (
+            {s.image && (
               <motion.img
                 initial={{ scale: 1.05, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ duration: 0.6 }}
-                src={s.image}
+                src={productImageUrl(s.image)}
                 alt=""
                 className="absolute inset-0 w-full h-full object-contain p-8 bg-transparent"
                 onError={(event) => event.currentTarget.remove()}
