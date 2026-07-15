@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
@@ -87,3 +88,59 @@ class OrderView(OrderCreated):
     phone: str
     city: str
     comment: str
+    created_at: datetime
+    items: list["AdminOrderItem"]
+
+
+class AdminOrderItem(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    slug: str
+    sku: str
+    title: str
+    unit_price: Decimal
+    quantity: int
+    line_total: Decimal
+
+
+class AdminLogin(BaseModel):
+    password: str = Field(min_length=1, max_length=512)
+
+
+class AdminSession(BaseModel):
+    authenticated: bool
+
+
+class AdminSummary(BaseModel):
+    products_total: int
+    products_active: int
+    products_in_stock: int
+    orders_total: int
+    orders_new: int
+    orders_revenue: Decimal
+
+
+class OrderStatusUpdate(BaseModel):
+    status: OrderStatus
+
+
+class AdminProduct(ProductSummary):
+    active: bool
+
+
+class AdminProductList(BaseModel):
+    items: list[AdminProduct]
+    total: int
+    page: int
+    page_size: int
+
+
+class AdminProductUpdate(BaseModel):
+    price: Decimal | None = Field(default=None, ge=0)
+    old_price: Decimal | None = Field(default=None, ge=0)
+    in_stock: bool | None = None
+    on_sale: bool | None = None
+    active: bool | None = None
+
+
+OrderView.model_rebuild()
