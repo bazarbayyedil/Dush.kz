@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useEffect, useState } from "react";
+import { ymGoal } from "./metrika";
 
 export type CartItem = {
   slug: string;
@@ -41,6 +42,7 @@ export const useCart = create<CartState>()(
           }
           return { items: [...s.items, { ...item, qty }] };
         });
+        ymGoal("add_to_cart", { slug: item.slug });
       },
       remove: (slug) =>
         set((s) => ({ items: s.items.filter((i) => i.slug !== slug) })),

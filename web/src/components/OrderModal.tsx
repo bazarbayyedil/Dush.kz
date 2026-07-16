@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useOrder, useCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
+import { ymGoal } from "@/lib/metrika";
 
 // Корпоративный номер для приёма заявок (WhatsApp), междунар. формат без +
 const WHATSAPP_NUMBER = "77022525438";
@@ -78,6 +79,7 @@ export function OrderModal() {
       `\nТовары:\n${lines.join("\n")}\n\nИтого: ${formatPrice(total)}`;
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank", "noopener");
+    ymGoal("order_whatsapp", { order_id: order.id, total });
     if (fromCart) clearCart();
     setSent(true);
     } catch {
