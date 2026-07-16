@@ -8,11 +8,9 @@ const BRANDS: { display: string; brand: string; style?: string }[] = [
   { display: "hansgrohe", brand: "Hansgrohe", style: "font-semibold tracking-tight" },
   { display: "JACOB DELAFON", brand: "Jacob Delafon", style: "font-medium tracking-[0.15em] text-[15px]" },
   { display: "LEMARK", brand: "LE MARK", style: "font-bold tracking-[0.2em]" },
+  { display: "FRAP", brand: "Frap", style: "font-semibold tracking-[0.3em]" },
   { display: "BRAVAT", brand: "BRAVAT", style: "font-semibold tracking-[0.3em]" },
-  { display: "BLANCO", brand: "BLANCO", style: "font-bold tracking-[0.2em]" },
   { display: "CERSANIT", brand: "CERSANIT", style: "font-semibold tracking-[0.2em]" },
-  { display: "PAFFONI", brand: "Paffoni", style: "font-medium tracking-[0.25em]" },
-  { display: "ABBER", brand: "ABBER", style: "font-bold tracking-[0.35em]" },
   { display: "GAPPO", brand: "Gappo", style: "font-semibold tracking-[0.25em]" },
 ];
 
