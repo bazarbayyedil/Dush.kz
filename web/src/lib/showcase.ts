@@ -77,48 +77,21 @@ export const topPicks = (() => {
   return out;
 })();
 
-// Слайды хиро на главной: популярные бренды, красивое фото, со скидкой,
-// не самое дорогое. Разнобрендовая подборка (по кругу), лучшие фото вперёд.
-const HERO_BRANDS = new Set(["Grohe", "Hansgrohe", "Frap", "Gappo", "LE MARK"]);
-export const heroPicks = (() => {
-  const pool = catalogItems.filter(
-    (p) =>
-      p.in_stock &&
-      p.image &&
-      (p.img_kb ?? 0) >= 120 &&
-      HERO_BRANDS.has(p.brand) &&
-      p.on_sale &&
-      !!p.old_price &&
-      !!p.price &&
-      (p.old_price ?? 0) > (p.price ?? 0) &&
-      (p.price ?? 0) >= 15000 &&
-      (p.price ?? 0) <= 250000,
-  );
-  pool.sort((a, b) => (b.img_kb ?? 0) - (a.img_kb ?? 0));
-  const seen = new Set<string>();
-  const uniq: CatalogItem[] = [];
-  for (const p of pool) {
-    const k = dedupeKey(p);
-    if (seen.has(k)) continue;
-    seen.add(k);
-    uniq.push(p);
-  }
-  const brands = [...new Set(uniq.map((p) => p.brand))];
-  const buckets = brands.map((b) => uniq.filter((p) => p.brand === b));
-  const out: CatalogItem[] = [];
-  for (let i = 0; out.length < 6; i++) {
-    let any = false;
-    for (const bk of buckets) {
-      if (bk[i]) {
-        out.push(bk[i]);
-        any = true;
-        if (out.length >= 6) break;
-      }
-    }
-    if (!any) break;
-  }
-  return out;
-})();
+// Слайды хиро — вручную отобранные чистые студийные фото. Автоматике на этом
+// каталоге доверия нет: среди «крупных» файлов попадаются размерные чертежи и
+// рекламные композиты с вотермарками. Порядок = порядок показа; скидка (если
+// есть у товара) отрисовывается сама. Товар не в наличии выпадает из слайдера.
+const HERO_SLUGS = [
+  "gigieniceskij-smesitel-komplekt-bauflow-23755000-27513001",
+  "smesitel-dla-rakoviny-grohe-bauloop-s-ogranicitelem-temperatury-i-rycaznym-donnym-klapanom-razmer-s-hrom-23335001",
+  "smesitel-dla-umyval-nika-bauloop-grohe-23762001",
+  "smesitel-dla-bide-bauedge-grohe-23331001",
+  "smesitel-dla-dusa-bauedge-grohe-23635001",
+  "sistema-installacii-dla-unitaza-grohe-rapid-1000046-5-v-1",
+];
+export const heroPicks: CatalogItem[] = HERO_SLUGS.map((slug) =>
+  catalogItems.find((p) => p.slug === slug),
+).filter((p): p is CatalogItem => !!p && p.in_stock);
 
 // Инсталляции и готовые комплекты (с унитазом) — без «ванн в комплекте с ножками»
 export const installations = dedupe(

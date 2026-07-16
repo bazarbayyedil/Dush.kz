@@ -59,16 +59,16 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
           </Link>
         </div>
 
-        {/* Фото товара */}
+        {/* Фото товара — высота ограничена, чтобы все слайды были одного размера */}
         <Link
           href={`/product/${s.slug}`}
-          className="relative order-1 md:order-2 h-56 md:h-auto flex items-center justify-center p-6"
+          className="order-1 md:order-2 flex items-center justify-center p-4 md:p-8"
         >
           {s.image && (
             <img
               src={productImageUrl(s.image)}
               alt={s.title}
-              className="max-h-full max-w-full object-contain"
+              className="h-44 md:h-[300px] w-auto max-w-full object-contain"
               onError={(event) => event.currentTarget.remove()}
             />
           )}
