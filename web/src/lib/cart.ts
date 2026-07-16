@@ -37,10 +37,9 @@ export const useCart = create<CartState>()(
           if (existing) {
             return {
               items: s.items.map((i) => (i.slug === item.slug ? { ...i, qty: i.qty + qty } : i)),
-              isOpen: true,
             };
           }
-          return { items: [...s.items, { ...item, qty }], isOpen: true };
+          return { items: [...s.items, { ...item, qty }] };
         });
       },
       remove: (slug) =>

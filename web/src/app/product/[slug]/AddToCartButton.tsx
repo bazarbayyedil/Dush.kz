@@ -3,11 +3,28 @@ import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart";
 import { useState } from "react";
+import { Check, ShoppingCart } from "lucide-react";
 
 export function AddToCartButton({ product }: { product: Product }) {
   const add = useCart((s) => s.add);
   const [qty, setQty] = useState(1);
+  const [added, setAdded] = useState(false);
   const unit = product.price ?? 0;
+
+  const handleAdd = () => {
+    add(
+      {
+        slug: product.slug,
+        sku: product.sku,
+        title: product.title,
+        price: unit,
+        image: product.images[0] ?? "",
+      },
+      qty,
+    );
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1600);
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -26,21 +43,15 @@ export function AddToCartButton({ product }: { product: Product }) {
           >+</button>
         </div>
         <button
-          onClick={() =>
-            add(
-              {
-                slug: product.slug,
-                sku: product.sku,
-                title: product.title,
-                price: unit,
-                image: product.images[0] ?? "",
-              },
-              qty,
-            )
-          }
-          className="px-6 h-11 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent-hover transition-colors"
+          onClick={handleAdd}
+          className={`px-6 h-11 rounded-lg font-medium transition-colors inline-flex items-center gap-2 ${
+            added
+              ? "bg-success text-white"
+              : "bg-accent text-accent-foreground hover:bg-accent-hover"
+          }`}
         >
-          В корзину · {formatPrice(unit * qty)}
+          {added ? <Check size={18} /> : <ShoppingCart size={18} />}
+          {added ? "Добавлено" : `В корзину · ${formatPrice(unit * qty)}`}
         </button>
       </div>
       {qty > 1 && (
