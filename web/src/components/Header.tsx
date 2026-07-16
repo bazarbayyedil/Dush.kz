@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, Heart, ShoppingCart, X, MapPin, Phone } from "lucide-react";
+import { Menu, Heart, ShoppingCart, X, MapPin, MessageCircle } from "lucide-react";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { ymGoal } from "@/lib/metrika";
+import { WHATSAPP_URL } from "@/lib/contacts";
 import { SearchBar } from "./SearchBar";
 import { MegaMenu } from "./MegaMenu";
 import { MobileCatalog } from "./MobileCatalog";
@@ -57,7 +58,13 @@ export function Header() {
           <div className="flex-1 md:flex-none" />
 
           <div className="hidden lg:flex flex-col items-end leading-tight shrink-0">
-            <a href="tel:+77022525438" onClick={() => ymGoal("call")} className="text-sm font-medium hover:text-accent">
+            <a
+              href={WHATSAPP_URL}
+              target="_blank"
+              rel="noopener"
+              onClick={() => ymGoal("call")}
+              className="text-sm font-medium hover:text-accent"
+            >
               +7 702 252 54 38
             </a>
             <a
@@ -70,14 +77,16 @@ export function Header() {
             </a>
           </div>
 
-          {/* Звонок (mobile) */}
+          {/* WhatsApp (mobile) */}
           <a
-            href="tel:+77022525438"
+            href={WHATSAPP_URL}
+            target="_blank"
+            rel="noopener"
             onClick={() => ymGoal("call")}
             className="md:hidden p-2 rounded-lg hover:bg-muted"
-            aria-label="Позвонить"
+            aria-label="Написать в WhatsApp"
           >
-            <Phone size={22} />
+            <MessageCircle size={22} />
           </a>
 
           {/* Избранное */}

@@ -1,4 +1,5 @@
 import { InfoPage } from "@/components/InfoPage";
+import { WHATSAPP_URL } from "@/lib/contacts";
 
 export const metadata = { title: "Контакты — dush.kz" };
 
@@ -8,7 +9,7 @@ export default function ContactsPage() {
       <p>Свяжитесь с нами удобным способом — ответим на вопросы, поможем с подбором и оформлением заказа.</p>
       <h2>Связь</h2>
       <p>
-        Телефон / WhatsApp: <a href="tel:+77022525438">+7 702 252 54 38</a><br />
+        Телефон / WhatsApp: <a href={WHATSAPP_URL} target="_blank" rel="noopener">+7 702 252 54 38</a><br />
         Instagram: <a href="https://instagram.com/dush_market" target="_blank" rel="noopener">@dush_market</a>
       </p>
       <h2>Адрес</h2>

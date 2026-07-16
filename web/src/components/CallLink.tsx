@@ -1,11 +1,18 @@
 "use client";
 import { ymGoal } from "@/lib/metrika";
+import { WHATSAPP_URL } from "@/lib/contacts";
 
-// Телефонная ссылка с целью «звонок» для Метрики. Для использования в
-// серверных компонентах (напр. Footer), где нельзя навесить onClick напрямую.
+// Клик по номеру → переход в WhatsApp. Для серверных компонентов (напр. Footer),
+// где нельзя навесить onClick напрямую. Цель Метрики — 'call' (клик по контакту).
 export function CallLink({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <a href="tel:+77022525438" onClick={() => ymGoal("call")} className={className}>
+    <a
+      href={WHATSAPP_URL}
+      target="_blank"
+      rel="noopener"
+      onClick={() => ymGoal("call")}
+      className={className}
+    >
       {children}
     </a>
   );
