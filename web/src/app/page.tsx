@@ -1,50 +1,12 @@
 import { Truck, ShieldCheck, BadgeCheck, Headset } from "lucide-react";
-import { catalogItems } from "@/lib/catalog";
-import { topPicks, installations, premiumBaths, topFaucets, bestDeals } from "@/lib/showcase";
+import { heroPicks, topPicks, installations, premiumBaths, topFaucets, bestDeals } from "@/lib/showcase";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryChips } from "@/components/CategoryChips";
 import { CategoryTiles } from "@/components/CategoryTiles";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { BrandStrip } from "@/components/BrandStrip";
 
-function pick(cat: string) {
-  return catalogItems.find((p) => p.category === cat && p.image)?.image;
-}
-
 export default function HomePage() {
-  const slides = [
-    {
-      eyebrow: "Душевые кабины",
-      title: "Душевые кабины с доставкой по Казахстану",
-      subtitle: "Готовые решения под ключ — от компактных до кабин с гидромассажем.",
-      href: "/catalog?category=dushevye-kabiny",
-      cta: "Смотреть кабины",
-      image: pick("dushevye-kabiny"),
-      from: "#E4F5F7",
-      to: "#ffffff",
-    },
-    {
-      eyebrow: "Скидки и акции",
-      title: "Смесители топовых брендов",
-      subtitle: "Grohe, Lemark, Hansgrohe и другие — оригинал с гарантией и честной ценой.",
-      href: "/catalog?category=dlya-umyvalnikov",
-      cta: "Выбрать смеситель",
-      image: pick("dlya-umyvalnikov"),
-      from: "#FFF0EC",
-      to: "#ffffff",
-    },
-    {
-      eyebrow: "Мебель для ванной",
-      title: "Тумбы, зеркала и пеналы",
-      subtitle: "Соберите ванную комнату целиком — мебель, зеркала с подсветкой и раковины.",
-      href: "/catalog?category=tumby-s-umyvalnikom",
-      cta: "Смотреть мебель",
-      image: pick("tumby-s-umyvalnikom"),
-      from: "#EEF2F5",
-      to: "#ffffff",
-    },
-  ];
-
   const trust = [
     { icon: Truck, title: "Доставка 24ч", text: "по Астане" },
     { icon: ShieldCheck, title: "Гарантия", text: "официальная" },
@@ -57,7 +19,7 @@ export default function HomePage() {
       <CategoryChips />
 
       <section className="max-w-7xl mx-auto px-4 pt-3 md:pt-5">
-        <HeroSlider slides={slides} />
+        <HeroSlider items={heroPicks} />
       </section>
 
       <section className="max-w-7xl mx-auto px-4 pt-5">

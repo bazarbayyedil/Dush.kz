@@ -77,6 +77,49 @@ export const topPicks = (() => {
   return out;
 })();
 
+// Слайды хиро на главной: популярные бренды, красивое фото, со скидкой,
+// не самое дорогое. Разнобрендовая подборка (по кругу), лучшие фото вперёд.
+const HERO_BRANDS = new Set(["Grohe", "Hansgrohe", "Frap", "Gappo", "LE MARK"]);
+export const heroPicks = (() => {
+  const pool = catalogItems.filter(
+    (p) =>
+      p.in_stock &&
+      p.image &&
+      (p.img_kb ?? 0) >= 120 &&
+      HERO_BRANDS.has(p.brand) &&
+      p.on_sale &&
+      !!p.old_price &&
+      !!p.price &&
+      (p.old_price ?? 0) > (p.price ?? 0) &&
+      (p.price ?? 0) >= 15000 &&
+      (p.price ?? 0) <= 250000,
+  );
+  pool.sort((a, b) => (b.img_kb ?? 0) - (a.img_kb ?? 0));
+  const seen = new Set<string>();
+  const uniq: CatalogItem[] = [];
+  for (const p of pool) {
+    const k = dedupeKey(p);
+    if (seen.has(k)) continue;
+    seen.add(k);
+    uniq.push(p);
+  }
+  const brands = [...new Set(uniq.map((p) => p.brand))];
+  const buckets = brands.map((b) => uniq.filter((p) => p.brand === b));
+  const out: CatalogItem[] = [];
+  for (let i = 0; out.length < 6; i++) {
+    let any = false;
+    for (const bk of buckets) {
+      if (bk[i]) {
+        out.push(bk[i]);
+        any = true;
+        if (out.length >= 6) break;
+      }
+    }
+    if (!any) break;
+  }
+  return out;
+})();
+
 // Инсталляции и готовые комплекты (с унитазом) — без «ванн в комплекте с ножками»
 export const installations = dedupe(
   withImg

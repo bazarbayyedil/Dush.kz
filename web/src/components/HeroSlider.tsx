@@ -3,111 +3,126 @@ import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import type { CatalogItem } from "@/lib/catalog";
+import { formatPrice, discountPercent } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
 
-type Slide = {
-  eyebrow: string;
-  title: string;
-  subtitle: string;
-  href: string;
-  cta: string;
-  image?: string;
-  from: string;
-  to: string;
-};
-
-export function HeroSlider({ slides }: { slides: Slide[] }) {
+export function HeroSlider({ items }: { items: CatalogItem[] }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
-  const n = slides.length;
+  const n = items.length;
 
   const go = useCallback((d: number) => setI((c) => (c + d + n) % n), [n]);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || n <= 1) return;
     const t = setInterval(() => setI((c) => (c + 1) % n), 5500);
     return () => clearInterval(t);
   }, [paused, n]);
 
-  const s = slides[i];
+  if (n === 0) return null;
+  const s = items[i];
+  const discount = discountPercent(s.price, s.old_price);
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-border"
+      className="relative overflow-hidden rounded-2xl md:rounded-3xl border border-border bg-gradient-to-br from-surface to-white"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <AnimatePresence mode="wait">
         <motion.div
-          key={i}
+          key={s.slug}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.5 }}
-          className="grid md:grid-cols-2 min-h-[280px] md:min-h-[360px]"
-          style={{ background: `linear-gradient(120deg, ${s.from}, ${s.to})` }}
+          transition={{ duration: 0.4 }}
+          className="grid grid-cols-1 md:grid-cols-2 min-h-[300px] md:min-h-[380px]"
         >
-          <div className="flex flex-col justify-center p-7 md:p-12">
+          {/* Текст + цена */}
+          <div className="flex flex-col justify-center order-2 md:order-1 p-6 md:p-12">
             <motion.div
               initial={{ y: 16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1, duration: 0.4 }}
             >
-              <div className="text-xs font-medium uppercase tracking-wider text-accent mb-3">{s.eyebrow}</div>
-              <h2 className="text-2xl md:text-4xl font-bold leading-tight max-w-md">{s.title}</h2>
-              <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-sm">{s.subtitle}</p>
+              <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-accent mb-3">
+                {discount > 0 && (
+                  <span className="px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
+                    Акция −{discount}%
+                  </span>
+                )}
+                <span>{s.brand}</span>
+              </div>
+              <h2 className="text-xl md:text-3xl font-bold leading-tight max-w-md line-clamp-3">{s.title}</h2>
+
+              <div className="mt-4 flex items-end gap-3">
+                <span className="text-3xl md:text-4xl font-bold text-accent">{formatPrice(s.price)}</span>
+                {s.old_price && s.old_price > (s.price ?? 0) && (
+                  <span className="mb-1 text-base md:text-lg text-muted-foreground line-through">
+                    {formatPrice(s.old_price)}
+                  </span>
+                )}
+              </div>
+
               <Link
-                href={s.href}
+                href={`/product/${s.slug}`}
                 className="mt-6 inline-flex items-center gap-2 px-6 h-11 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent-hover transition-colors w-fit"
               >
-                {s.cta} <ArrowRight size={18} />
+                Смотреть товар <ArrowRight size={18} />
               </Link>
             </motion.div>
           </div>
-          <div className="relative hidden md:block">
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
-              Фото скоро
-            </div>
+
+          {/* Фото товара */}
+          <Link
+            href={`/product/${s.slug}`}
+            className="relative order-1 md:order-2 h-56 md:h-auto flex items-center justify-center p-6"
+          >
             {s.image && (
               <motion.img
-                initial={{ scale: 1.05, opacity: 0 }}
+                initial={{ scale: 1.04, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6 }}
+                transition={{ duration: 0.5 }}
                 src={productImageUrl(s.image)}
-                alt=""
-                className="absolute inset-0 w-full h-full object-contain p-8 bg-transparent"
+                alt={s.title}
+                className="max-h-full max-w-full object-contain"
                 onError={(event) => event.currentTarget.remove()}
               />
             )}
-          </div>
+          </Link>
         </motion.div>
       </AnimatePresence>
 
-      <button
-        onClick={() => go(-1)}
-        className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
-        aria-label="Назад"
-      >
-        <ChevronLeft size={20} />
-      </button>
-      <button
-        onClick={() => go(1)}
-        className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
-        aria-label="Вперёд"
-      >
-        <ChevronRight size={20} />
-      </button>
-
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-        {slides.map((_, idx) => (
+      {n > 1 && (
+        <>
           <button
-            key={idx}
-            onClick={() => setI(idx)}
-            aria-label={`Слайд ${idx + 1}`}
-            className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-accent" : "w-2 bg-foreground/25"}`}
-          />
-        ))}
-      </div>
+            onClick={() => go(-1)}
+            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
+            aria-label="Назад"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={() => go(1)}
+            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
+            aria-label="Вперёд"
+          >
+            <ChevronRight size={20} />
+          </button>
+
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+            {items.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setI(idx)}
+                aria-label={`Слайд ${idx + 1}`}
+                className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-accent" : "w-2 bg-foreground/25"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
