@@ -37,19 +37,14 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       transition={{ type: "spring", stiffness: 300, damping: 22 }}
       className="group relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.18)] hover:border-border transition-shadow"
     >
-      {/* Бейджи */}
-      <div className="absolute top-2.5 left-2.5 z-10 flex flex-col gap-1.5">
-        {discount > 0 && (
+      {/* Бейдж скидки */}
+      {discount > 0 && (
+        <div className="absolute top-2.5 left-2.5 z-10">
           <span className="px-2 py-0.5 text-[11px] bg-sale text-sale-foreground rounded-md font-semibold">
             −{discount}%
           </span>
-        )}
-        {product.in_stock && discount === 0 && (
-          <span className="px-2 py-0.5 text-[11px] bg-success/10 text-success rounded-md font-medium">
-            В наличии
-          </span>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Избранное */}
       <button
@@ -92,6 +87,20 @@ export function ProductCard({ product }: { product: CatalogItem }) {
           <span className="text-lg font-bold">{formatPrice(product.price)}</span>
           {discount > 0 && (
             <span className="text-xs text-muted-foreground line-through">{formatPrice(product.old_price)}</span>
+          )}
+        </div>
+
+        {/* Наличие + срок доставки — видно всегда, в т.ч. со скидкой */}
+        <div className="flex items-center gap-1.5 text-[11px] leading-none">
+          {product.in_stock ? (
+            <>
+              <span className="inline-flex items-center gap-1 text-success font-medium">
+                <span className="w-1.5 h-1.5 rounded-full bg-success" /> В наличии
+              </span>
+              <span className="text-muted-foreground">· доставка 24 ч</span>
+            </>
+          ) : (
+            <span className="text-muted-foreground">Под заказ</span>
           )}
         </div>
 
