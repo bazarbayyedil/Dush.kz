@@ -111,6 +111,7 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
         src_folder = SRC_IMG / folder
         dst_folder = DST_IMG / folder
         images_web = []
+        main_kb = 0
         if src_folder.exists():
             dst_folder.mkdir(exist_ok=True)
             files = [f for f in src_folder.iterdir() if f.is_file()]
@@ -119,6 +120,7 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
             files.sort(key=lambda f: f.stat().st_size, reverse=True)
             # Отбрасываем крохотные миниатюры, если есть нормальные фото.
             biggest = files[0].stat().st_size if files else 0
+            main_kb = round(biggest / 1024)
             if biggest >= 15_000:
                 files = [f for f in files if f.stat().st_size >= 6_000]
             for img in files:
@@ -146,6 +148,7 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
             "in_stock": p.get("in_stock", False),
             "on_sale": p.get("on_sale", False),
             "images": images_web,
+            "img_kb": main_kb,
             "attrs": attrs_display,
             "description": description,
         })
@@ -187,6 +190,7 @@ index = [{
     "in_stock": p["in_stock"],
     "on_sale": p["on_sale"],
     "image": (p["images"][0] if p["images"] else ""),
+    "img_kb": p["img_kb"],
     "color": facet_color(p.get("attrs") or {}),
     "material": facet_material(p.get("attrs") or {}),
     "width": facet_width(p.get("attrs") or {}),

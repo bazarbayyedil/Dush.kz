@@ -15,6 +15,7 @@ export type CatalogItem = {
   in_stock: boolean;
   on_sale: boolean;
   image: string;
+  img_kb?: number;
   color?: string;
   material?: string;
   width?: number | null;

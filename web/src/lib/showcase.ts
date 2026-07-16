@@ -17,7 +17,11 @@ function groupCats(title: string): Set<string> {
   return new Set(g ? g.categories : []);
 }
 
-const withImg = catalogItems.filter((p) => p.image && p.price && p.price > 0);
+// Только товары с нормальным фото (мелкие миниатюры < 15 KB не тащим в карусели).
+const MIN_PHOTO_KB = 15;
+const withImg = catalogItems.filter(
+  (p) => p.image && p.price && p.price > 0 && (p.img_kb ?? 0) >= MIN_PHOTO_KB,
+);
 
 // Убираем почти-дубли (варианты размера одной модели): по бренду + началу названия
 function dedupe(list: CatalogItem[], limit: number): CatalogItem[] {
@@ -44,7 +48,8 @@ const dedupeKey = (p: CatalogItem) =>
 // «Популярное»: смесь приоритетных брендов по кругу (не один бренд подряд),
 // только в наличии, без почти-дублей. Не «самое дорогое», как было раньше.
 export const topPicks = (() => {
-  const inStock = withImg.filter((p) => p.in_stock);
+  // лучшие фото вперёд — карусель на главной должна выглядеть чисто
+  const inStock = withImg.filter((p) => p.in_stock).sort((a, b) => (b.img_kb ?? 0) - (a.img_kb ?? 0));
   const buckets = PRIORITY_BRANDS.map((brand) => {
     const seen = new Set<string>();
     const list: CatalogItem[] = [];

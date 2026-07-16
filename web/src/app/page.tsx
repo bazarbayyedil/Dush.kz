@@ -78,6 +78,8 @@ export default function HomePage() {
 
       <CategoryTiles />
 
+      <BrandStrip />
+
       <ProductCarousel title="Популярное" items={topPicks} href="/catalog?brand=Frap&brand=Gappo&brand=Grohe&brand=LE%20MARK" />
       {bestDeals.length > 0 && (
         <ProductCarousel title="Лучшие скидки" items={bestDeals} href="/catalog?onSale=1" accent />
@@ -85,8 +87,6 @@ export default function HomePage() {
       <ProductCarousel title="Инсталляции и комплекты" items={installations} href="/catalog?category=knopki-dlya-installyacij" />
       <ProductCarousel title="Смесители топ-брендов" items={topFaucets} href="/catalog?category=dlya-umyvalnikov" />
       <ProductCarousel title="Премиум-ванны" items={premiumBaths} href="/catalog?category=akrilovye-vanny" />
-
-      <BrandStrip />
     </div>
   );
 }
