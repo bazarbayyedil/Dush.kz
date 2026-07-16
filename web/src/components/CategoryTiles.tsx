@@ -1,16 +1,16 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { catalogTree } from "@/lib/catalogTree";
+import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { getCategoryMap } from "@/lib/catalog";
 
 export function CategoryTiles() {
   const catMap = getCategoryMap();
 
   const groups = catalogTree.map((g) => {
-    const count = g.categories.reduce((s, c) => s + (catMap[c]?.count ?? 0), 0);
-    const firstWithItems = g.categories.find((c) => (catMap[c]?.count ?? 0) > 0) ?? g.categories[0];
-    return { ...g, count, first: firstWithItems };
+    const slugs = g.categories.filter((c) => (catMap[c]?.count ?? 0) > 0);
+    const count = slugs.reduce((s, c) => s + (catMap[c]?.count ?? 0), 0);
+    return { ...g, count, href: groupHref(slugs.length ? slugs : g.categories.slice(0, 1)) };
   });
 
   return (
@@ -28,7 +28,7 @@ export function CategoryTiles() {
               transition={{ delay: idx * 0.03, duration: 0.3 }}
             >
               <Link
-                href={`/catalog?category=${g.first}`}
+                href={g.href}
                 className="group flex flex-col gap-2 p-4 rounded-2xl border border-border bg-card hover:border-brand hover:shadow-md transition-all h-full"
               >
                 <span className="w-11 h-11 rounded-xl bg-brand/10 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white transition-colors">

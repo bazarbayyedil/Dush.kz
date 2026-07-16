@@ -14,6 +14,7 @@ import {
   getWidthRange,
   type FilterState,
 } from "@/lib/catalog";
+import { matchGroupTitle } from "@/lib/catalogTree";
 import { formatPrice } from "@/lib/format";
 import { ProductCard } from "@/components/ProductCard";
 
@@ -250,9 +251,11 @@ export function CatalogView() {
   const pageTitle =
     filters.category?.length === 1
       ? cats.find((c) => c.slug === filters.category![0])?.title ?? "Каталог"
-      : filters.q
-        ? `Поиск: «${filters.q}»`
-        : "Каталог";
+      : (filters.category?.length ?? 0) > 1
+        ? matchGroupTitle(filters.category!) ?? "Каталог"
+        : filters.q
+          ? `Поиск: «${filters.q}»`
+          : "Каталог";
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">

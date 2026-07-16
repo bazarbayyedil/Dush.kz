@@ -152,3 +152,18 @@ export const catalogTree: CatalogGroup[] = [
     ],
   },
 ];
+
+// Ссылка на весь раздел: все переданные слаги как отдельные category-параметры.
+// filterCatalog объединяет их (товар проходит, если его категория в списке).
+export function groupHref(slugs: string[]): string {
+  const qs = slugs.map((s) => `category=${encodeURIComponent(s)}`).join("&");
+  return `/catalog?${qs}`;
+}
+
+// Если выбранные категории целиком лежат в одном разделе — вернуть его название
+// (для заголовка каталога при выборе всей группы «Смесители» и т.п.).
+export function matchGroupTitle(slugs: string[]): string | null {
+  if (slugs.length < 2) return null;
+  const group = catalogTree.find((g) => slugs.every((s) => g.categories.includes(s)));
+  return group ? group.title : null;
+}

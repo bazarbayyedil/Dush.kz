@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
-import { catalogTree } from "@/lib/catalogTree";
+import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { getCategoryMap, sampleByCategories } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
@@ -70,7 +70,7 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                       {group.title}
                     </h3>
                     <Link
-                      href={`/catalog?category=${group.categories[0]}`}
+                      href={groupHref(subs.length ? subs.map((s) => s.slug) : group.categories.slice(0, 1))}
                       onClick={onClose}
                       className="text-sm text-accent hover:underline shrink-0"
                     >

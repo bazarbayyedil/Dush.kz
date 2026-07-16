@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X } from "lucide-react";
-import { catalogTree } from "@/lib/catalogTree";
+import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { getCategoryMap } from "@/lib/catalog";
 
 export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -61,6 +61,16 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                           className="overflow-hidden bg-surface"
                         >
                           <div className="px-4 pb-3 pt-1 flex flex-col">
+                            {subs.length > 1 && (
+                              <Link
+                                href={groupHref(subs.map((s) => s.slug))}
+                                onClick={onClose}
+                                className="flex items-center justify-between py-2 text-sm font-medium text-accent"
+                              >
+                                <span>Все товары раздела</span>
+                                <span className="text-xs">{subs.reduce((n, s) => n + s.count, 0)}</span>
+                              </Link>
+                            )}
                             {subs.map((s) => (
                               <Link
                                 key={s.slug}
