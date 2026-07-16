@@ -15,6 +15,9 @@ export type CatalogItem = {
   in_stock: boolean;
   on_sale: boolean;
   image: string;
+  color?: string;
+  material?: string;
+  width?: number | null;
 };
 
 export const catalogItems: CatalogItem[] = indexData as CatalogItem[];
@@ -23,8 +26,12 @@ export type FilterState = {
   q?: string;
   brand?: string[];
   category?: string[];
+  color?: string[];
+  material?: string[];
   priceMin?: number;
   priceMax?: number;
+  widthMin?: number;
+  widthMax?: number;
   inStock?: boolean;
   onSale?: boolean;
   sort?: "popular" | "price_asc" | "price_desc" | "name";
@@ -37,8 +44,12 @@ export function filterCatalog(all: CatalogItem[], f: FilterState): CatalogItem[]
   }
   if (f.brand?.length) out = out.filter((p) => f.brand!.includes(p.brand));
   if (f.category?.length) out = out.filter((p) => f.category!.includes(p.category));
+  if (f.color?.length) out = out.filter((p) => p.color && f.color!.includes(p.color));
+  if (f.material?.length) out = out.filter((p) => p.material && f.material!.includes(p.material));
   if (f.priceMin != null) out = out.filter((p) => (p.price ?? 0) >= f.priceMin!);
   if (f.priceMax != null) out = out.filter((p) => (p.price ?? 0) <= f.priceMax!);
+  if (f.widthMin != null) out = out.filter((p) => p.width != null && p.width >= f.widthMin!);
+  if (f.widthMax != null) out = out.filter((p) => p.width != null && p.width <= f.widthMax!);
   if (f.inStock) out = out.filter((p) => p.in_stock);
   if (f.onSale) out = out.filter((p) => p.on_sale || (p.old_price && p.old_price > (p.price ?? 0)));
 
@@ -62,6 +73,25 @@ export function getAllBrands(): { name: string; count: number }[] {
   return [...map.entries()]
     .map(([name, count]) => ({ name, count }))
     .sort((a, b) => b.count - a.count);
+}
+
+function facetCounts(key: "color" | "material"): { name: string; count: number }[] {
+  const map = new Map<string, number>();
+  for (const p of catalogItems) {
+    const v = p[key];
+    if (v) map.set(v, (map.get(v) ?? 0) + 1);
+  }
+  return [...map.entries()]
+    .map(([name, count]) => ({ name, count }))
+    .sort((a, b) => b.count - a.count);
+}
+
+export const getAllColors = () => facetCounts("color");
+export const getAllMaterials = () => facetCounts("material");
+
+export function getWidthRange(): { min: number; max: number } {
+  const w = catalogItems.map((p) => p.width ?? 0).filter((x) => x > 0);
+  return { min: Math.min(...w), max: Math.max(...w) };
 }
 
 export function getAllCategories(): { slug: string; title: string; count: number }[] {

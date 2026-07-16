@@ -1,5 +1,5 @@
 import { Truck, ShieldCheck, BadgeCheck, Headset } from "lucide-react";
-import { catalogItems, getAllBrands } from "@/lib/catalog";
+import { catalogItems } from "@/lib/catalog";
 import { topPicks, installations, premiumBaths, topFaucets, bestDeals } from "@/lib/showcase";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryTiles } from "@/components/CategoryTiles";
@@ -11,11 +11,6 @@ function pick(cat: string) {
 }
 
 export default function HomePage() {
-  const brands = getAllBrands()
-    .filter((b) => b.name !== "Без бренда")
-    .slice(0, 14)
-    .map((b) => b.name);
-
   const slides = [
     {
       eyebrow: "Душевые кабины",
@@ -88,7 +83,7 @@ export default function HomePage() {
       <ProductCarousel title="Смесители топ-брендов" items={topFaucets} href="/catalog?category=dlya-umyvalnikov" />
       <ProductCarousel title="Премиум-ванны" items={premiumBaths} href="/catalog?category=akrilovye-vanny" />
 
-      <BrandStrip brands={brands} />
+      <BrandStrip />
     </div>
   );
 }

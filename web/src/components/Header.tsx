@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, Search, Heart, ShoppingCart, X } from "lucide-react";
+import { Menu, Search, Heart, ShoppingCart, X, MapPin } from "lucide-react";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { SearchBar } from "./SearchBar";
 import { MegaMenu } from "./MegaMenu";
@@ -56,12 +56,19 @@ export function Header() {
 
           <div className="flex-1 md:flex-none" />
 
-          <a
-            href="tel:+77022525438"
-            className="hidden xl:block text-sm text-muted-foreground hover:text-foreground shrink-0"
-          >
-            +7 702 252 54 38
-          </a>
+          <div className="hidden xl:flex flex-col items-end leading-tight shrink-0">
+            <a href="tel:+77022525438" className="text-sm font-medium hover:text-accent">
+              +7 702 252 54 38
+            </a>
+            <a
+              href="https://2gis.kz/astana/firm/70000001018116894?m=71.46823%2C51.164252%2F16"
+              target="_blank"
+              rel="noopener"
+              className="text-xs text-muted-foreground hover:text-accent inline-flex items-center gap-1"
+            >
+              <MapPin size={12} /> Абая 94, Астана
+            </a>
+          </div>
 
           {/* Поиск (mobile toggle) */}
           <button

@@ -153,9 +153,28 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
 out = DATA_DIR / "products.json"
 out.write_text(json.dumps(all_products, ensure_ascii=False, indent=2))
 
+def facet_color(attrs: dict) -> str:
+    return (attrs.get("Цвет") or "").strip()
+
+
+def facet_material(attrs: dict) -> str:
+    return (attrs.get("Материал") or attrs.get("Материал изготовления") or "").strip()
+
+
+def facet_width(attrs: dict):
+    for key in ("Ширина", "Ширина ванны", "Длина", "Длина ванны"):
+        v = attrs.get(key)
+        if not v:
+            continue
+        m = re.search(r"\d{2,4}", str(v))
+        if m:
+            return int(m.group())
+    return None
+
+
 # Тонкий индекс для клиента (каталог + поиск): без attrs/description и без
-# лишних фото — только то, что нужно карточке. Полные данные (products.json)
-# читаются только на серверной странице товара, в браузер не уезжают.
+# лишних фото — только то, что нужно карточке и фильтрам. Полные данные
+# (products.json) читаются только на серверной странице товара.
 index = [{
     "slug": p["slug"],
     "sku": p["sku"],
@@ -168,6 +187,9 @@ index = [{
     "in_stock": p["in_stock"],
     "on_sale": p["on_sale"],
     "image": (p["images"][0] if p["images"] else ""),
+    "color": facet_color(p.get("attrs") or {}),
+    "material": facet_material(p.get("attrs") or {}),
+    "width": facet_width(p.get("attrs") or {}),
 } for p in all_products]
 idx_out = DATA_DIR / "products-index.json"
 idx_out.write_text(json.dumps(index, ensure_ascii=False))

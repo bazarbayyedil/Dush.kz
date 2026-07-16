@@ -9,6 +9,9 @@ import {
   getAllBrands,
   getAllCategories,
   getPriceRange,
+  getAllColors,
+  getAllMaterials,
+  getWidthRange,
   type FilterState,
 } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
@@ -26,14 +29,21 @@ export function CatalogView() {
   const brands = useMemo(() => getAllBrands(), []);
   const cats = useMemo(() => getAllCategories(), []);
   const priceRange = useMemo(() => getPriceRange(), []);
+  const colors = useMemo(() => getAllColors().filter((c) => c.count >= 5).slice(0, 16), []);
+  const materials = useMemo(() => getAllMaterials().filter((m) => m.count >= 5).slice(0, 14), []);
+  const widthRange = useMemo(() => getWidthRange(), []);
 
   const filters: FilterState = useMemo(() => {
     return {
       q: sp.get("q") || undefined,
       brand: sp.getAll("brand"),
       category: sp.getAll("category"),
+      color: sp.getAll("color"),
+      material: sp.getAll("material"),
       priceMin: sp.get("priceMin") ? Number(sp.get("priceMin")) : undefined,
       priceMax: sp.get("priceMax") ? Number(sp.get("priceMax")) : undefined,
+      widthMin: sp.get("widthMin") ? Number(sp.get("widthMin")) : undefined,
+      widthMax: sp.get("widthMax") ? Number(sp.get("widthMax")) : undefined,
       inStock: sp.get("inStock") === "1",
       onSale: sp.get("onSale") === "1",
       sort: (sp.get("sort") as FilterState["sort"]) || "popular",
@@ -59,7 +69,7 @@ export function CatalogView() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const toggleArray = (key: "brand" | "category", value: string) => {
+  const toggleArray = (key: "brand" | "category" | "color" | "material", value: string) => {
     const cur = filters[key] || [];
     const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value];
     update({ [key]: next });
@@ -70,8 +80,12 @@ export function CatalogView() {
   const anyActive =
     (filters.brand?.length ?? 0) > 0 ||
     (filters.category?.length ?? 0) > 0 ||
+    (filters.color?.length ?? 0) > 0 ||
+    (filters.material?.length ?? 0) > 0 ||
     filters.priceMin != null ||
     filters.priceMax != null ||
+    filters.widthMin != null ||
+    filters.widthMax != null ||
     !!filters.inStock ||
     !!filters.onSale ||
     !!filters.q;
@@ -119,6 +133,45 @@ export function CatalogView() {
           {brands.map((b) => (
             <Row key={b.name} label={b.name} count={b.count} checked={filters.brand?.includes(b.name) ?? false} onChange={() => toggleArray("brand", b.name)} />
           ))}
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-4">
+        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Цвет</div>
+        <div className="space-y-0.5 max-h-44 overflow-y-auto no-scrollbar pr-1">
+          {colors.map((c) => (
+            <Row key={c.name} label={c.name} count={c.count} checked={filters.color?.includes(c.name) ?? false} onChange={() => toggleArray("color", c.name)} />
+          ))}
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-4">
+        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Материал</div>
+        <div className="space-y-0.5 max-h-44 overflow-y-auto no-scrollbar pr-1">
+          {materials.map((m) => (
+            <Row key={m.name} label={m.name} count={m.count} checked={filters.material?.includes(m.name) ?? false} onChange={() => toggleArray("material", m.name)} />
+          ))}
+        </div>
+      </div>
+
+      <div className="border-t border-border pt-4">
+        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Ширина, мм</div>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            placeholder={String(widthRange.min)}
+            value={filters.widthMin ?? ""}
+            onChange={(e) => update({ widthMin: e.target.value ? Number(e.target.value) : null })}
+            className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:border-accent"
+          />
+          <span className="text-muted-foreground">—</span>
+          <input
+            type="number"
+            placeholder={String(widthRange.max)}
+            value={filters.widthMax ?? ""}
+            onChange={(e) => update({ widthMax: e.target.value ? Number(e.target.value) : null })}
+            className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:border-accent"
+          />
         </div>
       </div>
 

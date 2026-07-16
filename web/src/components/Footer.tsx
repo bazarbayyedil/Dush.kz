@@ -35,8 +35,17 @@ export function Footer() {
           <ul className="space-y-2 text-neutral-400">
             <li><a href="tel:+77022525438" className="hover:text-white">+7 702 252 54 38</a></li>
             <li><a href="https://instagram.com/dush_market" target="_blank" rel="noopener" className="hover:text-white">Instagram: @dush_market</a></li>
-            <li>г. Астана, ул. Абая, 94</li>
-            <li>Пн–Сб: 10:00 — 20:00</li>
+            <li>
+              <a
+                href="https://2gis.kz/astana/firm/70000001018116894?m=71.46823%2C51.164252%2F16"
+                target="_blank"
+                rel="noopener"
+                className="hover:text-white"
+              >
+                г. Астана, ул. Абая, 94 — на карте
+              </a>
+            </li>
+            <li>Ежедневно: 10:00 — 19:00</li>
           </ul>
         </div>
       </div>
