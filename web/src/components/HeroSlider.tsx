@@ -13,6 +13,17 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
 
   const go = useCallback((d: number) => setI((c) => (c + d + n) % n), [n]);
 
+  // Предзагрузка всех фото — чтобы смена слайда была мгновенной, без
+  // рассинхрона «новый текст / ещё старое фото» при авто-перелистывании.
+  useEffect(() => {
+    items.forEach((it) => {
+      if (it.image) {
+        const im = new window.Image();
+        im.src = productImageUrl(it.image);
+      }
+    });
+  }, [items]);
+
   useEffect(() => {
     if (paused || n <= 1) return;
     const t = setInterval(() => setI((c) => (c + 1) % n), 5500);
