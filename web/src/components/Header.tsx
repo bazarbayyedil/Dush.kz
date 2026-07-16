@@ -5,6 +5,8 @@ import { Menu, Heart, ShoppingCart, X, MapPin, MessageCircle } from "lucide-reac
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { ymGoal } from "@/lib/metrika";
 import { WHATSAPP_URL } from "@/lib/contacts";
+import { useT } from "@/lib/i18n";
+import { LangSwitch } from "./LangSwitch";
 import { SearchBar } from "./SearchBar";
 import { MegaMenu } from "./MegaMenu";
 import { MobileCatalog } from "./MobileCatalog";
@@ -14,6 +16,7 @@ export function Header() {
   const openCart = useCart((s) => s.open);
   const favCount = useFavorites((s) => s.count());
   const hydrated = useHydrated();
+  const t = useT();
 
   const [catOpen, setCatOpen] = useState(false);
   const [mobileCat, setMobileCat] = useState(false);
@@ -26,7 +29,7 @@ export function Header() {
           <button
             onClick={() => setMobileCat(true)}
             className="md:hidden p-2 -ml-2 rounded-lg hover:bg-muted"
-            aria-label="Каталог"
+            aria-label={t("nav.catalog")}
           >
             <Menu size={22} />
           </button>
@@ -48,7 +51,7 @@ export function Header() {
               }`}
             >
               {catOpen ? <X size={18} /> : <Menu size={18} />}
-              Каталог
+              {t("nav.catalog")}
             </button>
             <MegaMenu open={catOpen} onClose={() => setCatOpen(false)} />
           </div>
@@ -84,16 +87,18 @@ export function Header() {
             rel="noopener"
             onClick={() => ymGoal("call")}
             className="md:hidden p-2 rounded-lg hover:bg-muted"
-            aria-label="Написать в WhatsApp"
+            aria-label={t("nav.whatsapp")}
           >
             <MessageCircle size={22} />
           </a>
+
+          <LangSwitch className="shrink-0" />
 
           {/* Избранное */}
           <Link
             href="/favorites"
             className="relative p-2 rounded-lg hover:bg-muted shrink-0"
-            aria-label="Избранное"
+            aria-label={t("nav.favorites")}
           >
             <Heart size={22} />
             {hydrated && favCount > 0 && (
@@ -107,10 +112,10 @@ export function Header() {
           <button
             onClick={openCart}
             className="relative flex items-center gap-2 px-2.5 md:px-3 h-10 rounded-xl bg-accent text-accent-foreground hover:bg-accent-hover transition-colors shrink-0"
-            aria-label="Корзина"
+            aria-label={t("nav.cart")}
           >
             <ShoppingCart size={20} />
-            <span className="hidden sm:inline text-sm font-medium">Корзина</span>
+            <span className="hidden sm:inline text-sm font-medium">{t("nav.cart")}</span>
             {hydrated && cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-sale text-sale-foreground text-[10px] min-w-5 h-5 px-1 rounded-full flex items-center justify-center font-medium">
                 {cartCount}
@@ -127,7 +132,7 @@ export function Header() {
             rel="noopener"
             className="shrink-0 inline-flex items-center gap-1 text-xs text-muted-foreground"
           >
-            <MapPin size={13} /> Астана
+            <MapPin size={13} /> {t("nav.city")}
           </a>
           <SearchBar className="flex-1" />
         </div>

@@ -5,11 +5,13 @@ import { catalogItems } from "@/lib/catalog";
 import { searchProducts } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
 import { ymGoal } from "@/lib/metrika";
+import { useT } from "@/lib/i18n";
 import Link from "next/link";
 import { productImageUrl } from "@/lib/media";
 
 export function SearchBar({ className = "" }: { className?: string }) {
   const router = useRouter();
+  const t = useT();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -83,15 +85,15 @@ export function SearchBar({ className = "" }: { className?: string }) {
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          placeholder="Поиск: унитаз, смеситель, душевая кабина…"
+          placeholder={t("search.placeholder")}
           className="flex-1 px-3 h-full text-sm bg-transparent focus:outline-none"
-          aria-label="Поиск по каталогу"
+          aria-label={t("cat.search")}
         />
         <button
           onClick={() => submit(q)}
           className="h-full px-4 bg-accent text-accent-foreground text-sm font-medium hover:bg-accent-hover shrink-0"
         >
-          Найти
+          {t("search.find")}
         </button>
       </div>
 
@@ -128,7 +130,7 @@ export function SearchBar({ className = "" }: { className?: string }) {
             onMouseDown={() => submit(q)}
             className="w-full text-center py-2 text-sm text-accent hover:bg-muted border-t border-border"
           >
-            Показать все результаты по «{q.trim()}»
+            {t("search.show_all")} «{q.trim()}»
           </button>
         </div>
       )}

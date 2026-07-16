@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Check, ShoppingCart } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
+import { useT } from "@/lib/i18n";
 
 export function MobileBuyBar({
   slug,
@@ -20,6 +21,7 @@ export function MobileBuyBar({
   inStock: boolean;
 }) {
   const add = useCart((s) => s.add);
+  const t = useT();
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
@@ -33,9 +35,9 @@ export function MobileBuyBar({
       <div className="flex flex-col leading-none">
         <span className="text-lg font-bold">{formatPrice(price)}</span>
         {inStock ? (
-          <span className="text-[11px] text-success font-medium">В наличии</span>
+          <span className="text-[11px] text-success font-medium">{t("card.in_stock")}</span>
         ) : (
-          <span className="text-[11px] text-muted-foreground">Под заказ</span>
+          <span className="text-[11px] text-muted-foreground">{t("card.on_order")}</span>
         )}
       </div>
       <button
@@ -45,7 +47,7 @@ export function MobileBuyBar({
         }`}
       >
         {added ? <Check size={18} /> : <ShoppingCart size={18} />}
-        {added ? "Добавлено" : "В корзину"}
+        {added ? t("prod.added") : t("prod.buy")}
       </button>
     </div>
   );

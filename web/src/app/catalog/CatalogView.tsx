@@ -16,6 +16,7 @@ import {
 } from "@/lib/catalog";
 import { catalogTree, matchGroupTitle } from "@/lib/catalogTree";
 import { formatPrice } from "@/lib/format";
+import { useT, useLangHydrated } from "@/lib/i18n";
 import { ProductCard } from "@/components/ProductCard";
 
 type FacetItem = { value: string; label: string; count: number };
@@ -52,6 +53,7 @@ function FacetSection({
   collapsed?: number;
 }) {
   const [expanded, setExpanded] = useState(false);
+  const t = useT();
   if (items.length === 0) return null;
   const shown = expanded ? items : items.slice(0, collapsed);
   const more = items.length - collapsed;
@@ -69,9 +71,9 @@ function FacetSection({
           className="mt-2 text-xs text-accent inline-flex items-center gap-1 hover:underline"
         >
           {expanded ? (
-            <><Minus size={13} /> Свернуть</>
+            <><Minus size={13} /> {t("cat.collapse")}</>
           ) : (
-            <><Plus size={13} /> Ещё {more}</>
+            <><Plus size={13} /> {t("cat.more")} {more}</>
           )}
         </button>
       )}
@@ -85,6 +87,8 @@ export function CatalogView() {
   const sp = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const t = useT();
+  const lang = useLangHydrated();
   const [mobileFilters, setMobileFilters] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -172,43 +176,43 @@ export function CatalogView() {
   const FilterPanel = (
     <div className="space-y-5 text-sm">
       <div>
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">Поиск</div>
+        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2">{t("cat.search")}</div>
         <input
           type="search"
           value={filters.q || ""}
           onChange={(e) => update({ q: e.target.value || null })}
-          placeholder="Название, артикул…"
+          placeholder={t("search.name_sku")}
           className="w-full px-3.5 py-2.5 rounded-xl border border-border bg-white focus:outline-none focus:border-accent"
         />
       </div>
 
       <FacetSection
-        title="Категория"
+        title={t("cat.category")}
         items={cats.map((c) => ({ value: c.slug, label: c.title, count: c.count }))}
         selected={filters.category ?? []}
         onToggle={(v) => toggleArray("category", v)}
       />
       <FacetSection
-        title="Бренд"
+        title={t("cat.brand")}
         items={brands.map((b) => ({ value: b.name, label: b.name, count: b.count }))}
         selected={filters.brand ?? []}
         onToggle={(v) => toggleArray("brand", v)}
       />
       <FacetSection
-        title="Цвет"
+        title={t("cat.color")}
         items={colors.map((c) => ({ value: c.name, label: c.name, count: c.count }))}
         selected={filters.color ?? []}
         onToggle={(v) => toggleArray("color", v)}
       />
       <FacetSection
-        title="Материал"
+        title={t("cat.material")}
         items={materials.map((m) => ({ value: m.name, label: m.name, count: m.count }))}
         selected={filters.material ?? []}
         onToggle={(v) => toggleArray("material", v)}
       />
 
       <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Ширина, мм</div>
+        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{t("cat.width")}</div>
         <div className="flex items-center gap-2">
           <input
             type="number"
@@ -229,7 +233,7 @@ export function CatalogView() {
       </div>
 
       <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Цена, ₸</div>
+        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{t("cat.price")}</div>
         <div className="flex items-center gap-2">
           <input
             type="number"
@@ -250,8 +254,8 @@ export function CatalogView() {
       </div>
 
       <div className="border-t border-border pt-4 flex flex-col gap-2.5">
-        <Row label="Только в наличии" count={0} checked={filters.inStock ?? false} onChange={() => update({ inStock: !filters.inStock })} />
-        <Row label="Только со скидкой" count={0} checked={filters.onSale ?? false} onChange={() => update({ onSale: !filters.onSale })} />
+        <Row label={t("cat.only_stock")} count={0} checked={filters.inStock ?? false} onChange={() => update({ inStock: !filters.inStock })} />
+        <Row label={t("cat.only_sale")} count={0} checked={filters.onSale ?? false} onChange={() => update({ onSale: !filters.onSale })} />
       </div>
 
       {anyActive && (
@@ -259,7 +263,7 @@ export function CatalogView() {
           onClick={clearAll}
           className="w-full py-2.5 border border-border rounded-xl text-sm hover:bg-muted flex items-center justify-center gap-2"
         >
-          <X size={15} /> Сбросить фильтры
+          <X size={15} /> {t("cat.reset")}
         </button>
       )}
     </div>
@@ -267,17 +271,17 @@ export function CatalogView() {
 
   const pageTitle =
     filters.category?.length === 1
-      ? cats.find((c) => c.slug === filters.category![0])?.title ?? "Каталог"
+      ? cats.find((c) => c.slug === filters.category![0])?.title ?? t("cat.title")
       : (filters.category?.length ?? 0) > 1
-        ? matchGroupTitle(filters.category!) ?? "Каталог"
+        ? matchGroupTitle(filters.category!) ?? t("cat.title")
         : filters.q
-          ? `Поиск: «${filters.q}»`
-          : "Каталог";
+          ? `${t("cat.search_hint")}${filters.q}»`
+          : t("cat.title");
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-        <Link href="/" className="hover:text-foreground">Главная</Link>
+        <Link href="/" className="hover:text-foreground">{t("cat.home")}</Link>
         <span>/</span>
         <span className="text-foreground">{pageTitle}</span>
       </div>
@@ -286,7 +290,7 @@ export function CatalogView() {
         <div>
           <h1 className="text-2xl md:text-3xl font-bold">{pageTitle}</h1>
           <div className="text-sm text-muted-foreground mt-1">
-            {filtered.length} {plural(filtered.length, "товар", "товара", "товаров")}
+            {filtered.length} {lang === "kk" ? "тауар" : plural(filtered.length, "товар", "товара", "товаров")}
           </div>
         </div>
         <div className="flex items-center gap-2.5">
@@ -295,7 +299,7 @@ export function CatalogView() {
             className="lg:hidden px-3.5 h-10 border border-border rounded-xl text-sm flex items-center gap-2 hover:bg-muted"
           >
             <SlidersHorizontal size={16} />
-            Фильтры
+            {t("cat.filters")}
             {anyActive && <span className="w-2 h-2 rounded-full bg-accent" />}
           </button>
           <select
@@ -303,10 +307,10 @@ export function CatalogView() {
             onChange={(e) => update({ sort: e.target.value === "popular" ? null : e.target.value })}
             className="px-3.5 h-10 border border-border rounded-xl bg-white text-sm focus:outline-none focus:border-accent cursor-pointer"
           >
-            <option value="popular">По популярности</option>
-            <option value="price_asc">Сначала дешевле</option>
-            <option value="price_desc">Сначала дороже</option>
-            <option value="name">По названию</option>
+            <option value="popular">{t("cat.sort_popular")}</option>
+            <option value="price_asc">{t("cat.sort_price_asc")}</option>
+            <option value="price_desc">{t("cat.sort_price_desc")}</option>
+            <option value="name">{t("cat.sort_name")}</option>
           </select>
         </div>
       </div>
@@ -319,7 +323,7 @@ export function CatalogView() {
               allGroupActive ? "bg-accent text-accent-foreground border-accent" : "border-border bg-card hover:border-accent/50"
             }`}
           >
-            Все
+            {t("cat.all")}
           </button>
           {subChips.map((c) => {
             const active = filters.category?.length === 1 && filters.category[0] === c.slug;
@@ -348,9 +352,9 @@ export function CatalogView() {
         <div>
           {filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-16 text-center">
-              <div className="text-muted-foreground">Ничего не нашли по этим фильтрам</div>
+              <div className="text-muted-foreground">{t("cat.nothing")}</div>
               <button onClick={clearAll} className="mt-3 px-4 py-2 text-sm text-accent hover:underline">
-                Сбросить фильтры
+                {t("cat.reset")}
               </button>
             </div>
           ) : (
@@ -366,7 +370,7 @@ export function CatalogView() {
                     onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
                     className="h-11 px-6 rounded-xl border border-border bg-white text-sm font-medium hover:bg-muted"
                   >
-                    Показать ещё
+                    {t("cat.show_more")}
                   </button>
                 </div>
               )}
@@ -381,9 +385,9 @@ export function CatalogView() {
           <div className="absolute inset-y-0 left-0 w-[88%] max-w-sm bg-white flex flex-col">
             <div className="flex items-center justify-between px-5 h-14 border-b border-border shrink-0">
               <h3 className="text-lg font-semibold flex items-center gap-2">
-                <SlidersHorizontal size={18} /> Фильтры
+                <SlidersHorizontal size={18} /> {t("cat.filters")}
               </h3>
-              <button onClick={() => setMobileFilters(false)} className="p-2 hover:bg-muted rounded-lg" aria-label="Закрыть">
+              <button onClick={() => setMobileFilters(false)} className="p-2 hover:bg-muted rounded-lg" aria-label={t("common.close")}>
                 <X size={20} />
               </button>
             </div>
@@ -393,7 +397,7 @@ export function CatalogView() {
                 onClick={() => setMobileFilters(false)}
                 className="w-full h-12 bg-accent text-accent-foreground rounded-xl font-medium"
               >
-                Показать {filtered.length}
+                {t("cat.show")} {filtered.length}
               </button>
             </div>
           </div>

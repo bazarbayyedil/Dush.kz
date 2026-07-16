@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { BadgeCheck } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 // display — как показываем, brand — точное имя в данных для фильтра
 const BRANDS: { display: string; brand: string; style?: string }[] = [
@@ -15,18 +16,17 @@ const BRANDS: { display: string; brand: string; style?: string }[] = [
 ];
 
 export function BrandStrip() {
+  const t = useT();
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
       <div className="rounded-3xl border border-border bg-gradient-to-br from-surface to-white p-6 md:p-10">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-7">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand/10 text-accent text-xs font-medium mb-3">
-              <BadgeCheck size={15} /> Официальный дистрибьютор
+              <BadgeCheck size={15} /> {t("brands.badge")}
             </div>
-            <h2 className="text-xl md:text-2xl font-bold">Работаем напрямую с ведущими брендами</h2>
-            <p className="text-sm text-muted-foreground mt-1 max-w-lg">
-              Оригинальная продукция с гарантией производителя — без подделок и серого импорта.
-            </p>
+            <h2 className="text-xl md:text-2xl font-bold">{t("brands.title")}</h2>
+            <p className="text-sm text-muted-foreground mt-1 max-w-lg">{t("brands.sub")}</p>
           </div>
         </div>
 

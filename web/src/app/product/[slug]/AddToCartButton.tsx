@@ -4,9 +4,11 @@ import { formatPrice } from "@/lib/format";
 import { useCart } from "@/lib/cart";
 import { useState } from "react";
 import { Check, ShoppingCart } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 export function AddToCartButton({ product }: { product: Product }) {
   const add = useCart((s) => s.add);
+  const t = useT();
   const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
   const unit = product.price ?? 0;
@@ -51,7 +53,7 @@ export function AddToCartButton({ product }: { product: Product }) {
           }`}
         >
           {added ? <Check size={18} /> : <ShoppingCart size={18} />}
-          {added ? "Добавлено" : `В корзину · ${formatPrice(unit * qty)}`}
+          {added ? t("prod.added") : `${t("prod.buy")} · ${formatPrice(unit * qty)}`}
         </button>
       </div>
       {qty > 1 && (

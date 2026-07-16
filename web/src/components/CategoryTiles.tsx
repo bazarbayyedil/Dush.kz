@@ -3,9 +3,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { getCategoryMap } from "@/lib/catalog";
+import { useT } from "@/lib/i18n";
 
 export function CategoryTiles() {
   const catMap = getCategoryMap();
+  const t = useT();
 
   const groups = catalogTree.map((g) => {
     const slugs = g.categories.filter((c) => (catMap[c]?.count ?? 0) > 0);
@@ -15,7 +17,7 @@ export function CategoryTiles() {
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-8">
-      <h2 className="text-xl md:text-2xl font-bold mb-5">Категории</h2>
+      <h2 className="text-xl md:text-2xl font-bold mb-5">{t("home.categories")}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
         {groups.map((g, idx) => {
           const Icon = g.icon;
@@ -35,7 +37,7 @@ export function CategoryTiles() {
                   <Icon size={22} strokeWidth={1.8} />
                 </span>
                 <span className="text-sm font-medium leading-tight mt-1">{g.title}</span>
-                <span className="text-xs text-muted-foreground">{g.count} товаров</span>
+                <span className="text-xs text-muted-foreground">{g.count} {t("home.goods_count")}</span>
               </Link>
             </motion.div>
           );

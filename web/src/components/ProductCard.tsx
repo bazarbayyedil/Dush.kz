@@ -7,12 +7,14 @@ import { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { productImageUrl } from "@/lib/media";
+import { useT } from "@/lib/i18n";
 
 export function ProductCard({ product }: { product: CatalogItem }) {
   const add = useCart((s) => s.add);
   const favToggle = useFavorites((s) => s.toggle);
   const favSlugs = useFavorites((s) => s.slugs);
   const hydrated = useHydrated();
+  const t = useT();
   const [added, setAdded] = useState(false);
 
   const img = product.image;
@@ -95,12 +97,12 @@ export function ProductCard({ product }: { product: CatalogItem }) {
           {product.in_stock ? (
             <>
               <span className="inline-flex items-center gap-1 text-success font-medium">
-                <span className="w-1.5 h-1.5 rounded-full bg-success" /> В наличии
+                <span className="w-1.5 h-1.5 rounded-full bg-success" /> {t("card.in_stock")}
               </span>
-              <span className="text-muted-foreground">· доставка 24 ч</span>
+              <span className="text-muted-foreground">· {t("card.delivery")}</span>
             </>
           ) : (
-            <span className="text-muted-foreground">Под заказ</span>
+            <span className="text-muted-foreground">{t("card.on_order")}</span>
           )}
         </div>
 
@@ -113,7 +115,7 @@ export function ProductCard({ product }: { product: CatalogItem }) {
           }`}
         >
           {added ? <Check size={17} /> : <ShoppingCart size={17} />}
-          {added ? "В корзине" : "В корзину"}
+          {added ? t("card.added") : t("card.add")}
         </button>
       </div>
     </motion.div>

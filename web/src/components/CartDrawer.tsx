@@ -4,11 +4,13 @@ import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 import { useEffect } from "react";
 import { productImageUrl } from "@/lib/media";
+import { useT } from "@/lib/i18n";
 
 export function CartDrawer() {
   const { items, isOpen, close, remove, setQty } = useCart();
   const total = useCart((s) => s.total());
   const openOrder = useOrder((s) => s.open);
+  const t = useT();
 
   const checkout = () => {
     close();
@@ -38,11 +40,11 @@ export function CartDrawer() {
       />
       <aside className="relative w-full max-w-md bg-white h-full shadow-2xl flex flex-col">
         <header className="flex items-center justify-between px-5 py-4 border-b border-border">
-          <h2 className="text-lg font-semibold">Корзина</h2>
+          <h2 className="text-lg font-semibold">{t("cart.title")}</h2>
           <button
             onClick={close}
             className="p-2 rounded-lg hover:bg-muted"
-            aria-label="Закрыть"
+            aria-label={t("common.close")}
           >
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
@@ -57,13 +59,13 @@ export function CartDrawer() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.5l2.7 12.6a2.25 2.25 0 002.2 1.8h8.7a2.25 2.25 0 002.2-1.8L21 6.75H6" />
               </svg>
             </div>
-            <p className="text-muted-foreground">Корзина пуста</p>
+            <p className="text-muted-foreground">{t("cart.empty")}</p>
             <Link
               href="/catalog"
               onClick={close}
               className="mt-2 px-4 py-2 bg-accent text-accent-foreground rounded-lg text-sm hover:bg-accent-hover"
             >
-              Перейти в каталог
+              {t("cart.to_catalog")}
             </Link>
           </div>
         ) : (
@@ -127,18 +129,16 @@ export function CartDrawer() {
 
             <footer className="border-t border-border p-5 space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Итого</span>
+                <span className="text-muted-foreground">{t("cart.total")}</span>
                 <span className="text-lg font-semibold">{formatPrice(total)}</span>
               </div>
               <button
                 onClick={checkout}
                 className="w-full bg-accent text-accent-foreground py-3 rounded-lg font-medium hover:bg-accent-hover transition-colors"
               >
-                Оформить заказ
+                {t("cart.checkout")}
               </button>
-              <p className="text-xs text-muted-foreground text-center">
-                Оплата и доставка обсуждаются с менеджером после оформления
-              </p>
+              <p className="text-xs text-muted-foreground text-center">{t("cart.pay_note")}</p>
             </footer>
           </>
         )}

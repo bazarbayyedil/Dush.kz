@@ -4,6 +4,7 @@ import { getProduct, products, formatPrice } from "@/lib/products";
 import { catalogItems } from "@/lib/catalog";
 import { crossSell } from "@/lib/crosssell";
 import { ProductCard } from "@/components/ProductCard";
+import { T } from "@/components/T";
 import { ProductGallery } from "./ProductGallery";
 import { AddToCartButton } from "./AddToCartButton";
 import { BuyOneClickButton } from "./BuyOneClickButton";
@@ -67,9 +68,9 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-6">
       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5 flex-wrap">
-        <Link href="/" className="hover:text-foreground">Главная</Link>
+        <Link href="/" className="hover:text-foreground"><T k="cat.home" /></Link>
         <span>/</span>
-        <Link href="/catalog" className="hover:text-foreground">Каталог</Link>
+        <Link href="/catalog" className="hover:text-foreground"><T k="prod.catalog" /></Link>
         <span>/</span>
         <Link href={`/catalog?category=${product.category}`} className="hover:text-foreground">
           {product.category_title}
@@ -86,11 +87,11 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
           <h1 className="text-2xl md:text-3xl font-semibold leading-tight">{product.title}</h1>
           <div className="flex items-center gap-3 text-sm mt-2">
             {hasSku(product.sku) && (
-              <span className="text-muted-foreground">Артикул: <span className="text-foreground">{product.sku}</span></span>
+              <span className="text-muted-foreground"><T k="prod.sku" />: <span className="text-foreground">{product.sku}</span></span>
             )}
             {product.in_stock && (
               <span className="inline-flex items-center gap-1 text-success">
-                <span className="w-1.5 h-1.5 rounded-full bg-success" /> В наличии
+                <span className="w-1.5 h-1.5 rounded-full bg-success" /> <T k="card.in_stock" />
               </span>
             )}
           </div>
@@ -116,22 +117,22 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
           <div className="mt-8 grid grid-cols-3 gap-3 text-xs text-muted-foreground">
             <div className="p-3 rounded-lg border border-border">
-              <div className="text-foreground font-medium mb-0.5">Доставка</div>
-              По Астане — 24ч
+              <div className="text-foreground font-medium mb-0.5"><T k="prod.delivery" /></div>
+              <T k="prod.delivery_v" />
             </div>
             <div className="p-3 rounded-lg border border-border">
-              <div className="text-foreground font-medium mb-0.5">Гарантия</div>
-              2 года
+              <div className="text-foreground font-medium mb-0.5"><T k="prod.warranty" /></div>
+              <T k="prod.warranty_v" />
             </div>
             <div className="p-3 rounded-lg border border-border">
-              <div className="text-foreground font-medium mb-0.5">Оригинал</div>
-              Прямые поставки
+              <div className="text-foreground font-medium mb-0.5"><T k="prod.original" /></div>
+              <T k="prod.original_v" />
             </div>
           </div>
 
           {keyFacts.length > 0 && (
             <div className="mt-8 rounded-xl border border-border p-4">
-              <div className="text-sm font-semibold mb-3">Ключевое</div>
+              <div className="text-sm font-semibold mb-3"><T k="prod.key" /></div>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2.5">
                 {keyFacts.slice(0, 6).map(([k, v]) => (
                   <div key={k} className="text-sm">
@@ -145,7 +146,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
           {attrEntries.length > 0 && (
             <div className="mt-8">
-              <h3 className="text-lg font-semibold mb-3">Характеристики</h3>
+              <h3 className="text-lg font-semibold mb-3"><T k="prod.specs" /></h3>
               <dl className="divide-y divide-border border-y border-border">
                 {attrEntries.slice(0, 20).map(([k, v]) => (
                   <div key={k} className="flex py-2.5 text-sm">
@@ -161,7 +162,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
       {product.description && (
         <section className="mt-12 max-w-3xl">
-          <h2 className="text-xl font-semibold mb-3">Описание</h2>
+          <h2 className="text-xl font-semibold mb-3"><T k="prod.desc" /></h2>
           <div className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
             {product.description.slice(0, 2000)}
           </div>
@@ -170,7 +171,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
       {withYou.length > 0 && (
         <section className="mt-16">
-          <h2 className="text-2xl font-semibold mb-6">С этим берут</h2>
+          <h2 className="text-2xl font-semibold mb-6"><T k="prod.with_this" /></h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {withYou.map((p) => (
               <ProductCard key={p.slug} product={p} />
@@ -181,7 +182,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
       {related.length > 0 && (
         <section className="mt-16">
-          <h2 className="text-2xl font-semibold mb-6">Похожие товары</h2>
+          <h2 className="text-2xl font-semibold mb-6"><T k="prod.similar" /></h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
             {related.map((p) => (
               <ProductCard key={p.slug} product={p} />

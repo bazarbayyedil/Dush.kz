@@ -5,8 +5,10 @@ import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import type { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
+import { useT } from "@/lib/i18n";
 
 export function HeroSlider({ items }: { items: CatalogItem[] }) {
+  const t = useT();
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const n = items.length;
@@ -46,7 +48,7 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
           <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-accent mb-3">
             {discount > 0 && (
               <span className="px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
-                Акция −{discount}%
+                {t("hero.sale")} −{discount}%
               </span>
             )}
             <span>{s.brand}</span>
@@ -66,7 +68,7 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
             href={`/product/${s.slug}`}
             className="mt-6 inline-flex items-center gap-2 px-6 h-11 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent-hover transition-colors w-fit"
           >
-            Смотреть товар <ArrowRight size={18} />
+            {t("hero.cta")} <ArrowRight size={18} />
           </Link>
         </div>
 
