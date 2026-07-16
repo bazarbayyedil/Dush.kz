@@ -23,7 +23,19 @@ ln -sfn "$release_dir" "$root/current"
 sudo systemctl restart dush-api
 sudo nginx -t
 sudo systemctl reload nginx
-curl --fail --silent --show-error http://127.0.0.1:8000/api/v1/health
+
+healthy=false
+for _ in $(seq 1 30); do
+  if curl --fail --silent --show-error http://127.0.0.1:8000/api/v1/health; then
+    healthy=true
+    break
+  fi
+  sleep 1
+done
+if [[ "$healthy" != true ]]; then
+  echo "dush-api did not become healthy within 30 seconds" >&2
+  exit 1
+fi
 
 find "$root/releases" -mindepth 1 -maxdepth 1 -type d -printf '%T@ %p\n' \
   | sort -nr | tail -n +4 | cut -d' ' -f2- | xargs -r rm -rf
