@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, Search, Heart, ShoppingCart, X, MapPin } from "lucide-react";
+import { Menu, Heart, ShoppingCart, X, MapPin, Phone } from "lucide-react";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { SearchBar } from "./SearchBar";
 import { MegaMenu } from "./MegaMenu";
@@ -15,7 +15,6 @@ export function Header() {
 
   const [catOpen, setCatOpen] = useState(false);
   const [mobileCat, setMobileCat] = useState(false);
-  const [mobileSearch, setMobileSearch] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-border [--header-h:64px]">
@@ -56,7 +55,7 @@ export function Header() {
 
           <div className="flex-1 md:flex-none" />
 
-          <div className="hidden xl:flex flex-col items-end leading-tight shrink-0">
+          <div className="hidden lg:flex flex-col items-end leading-tight shrink-0">
             <a href="tel:+77022525438" className="text-sm font-medium hover:text-accent">
               +7 702 252 54 38
             </a>
@@ -70,14 +69,14 @@ export function Header() {
             </a>
           </div>
 
-          {/* Поиск (mobile toggle) */}
-          <button
-            onClick={() => setMobileSearch((v) => !v)}
+          {/* Звонок (mobile) */}
+          <a
+            href="tel:+77022525438"
             className="md:hidden p-2 rounded-lg hover:bg-muted"
-            aria-label="Поиск"
+            aria-label="Позвонить"
           >
-            <Search size={22} />
-          </button>
+            <Phone size={22} />
+          </a>
 
           {/* Избранное */}
           <Link
@@ -109,12 +108,18 @@ export function Header() {
           </button>
         </div>
 
-        {/* Строка поиска на мобильных */}
-        {mobileSearch && (
-          <div className="md:hidden px-4 pb-3">
-            <SearchBar />
-          </div>
-        )}
+        {/* Город + строка поиска на мобильных (всегда видна) */}
+        <div className="md:hidden px-4 pb-2.5 flex items-center gap-2">
+          <a
+            href="https://2gis.kz/astana/firm/70000001018116894?m=71.46823%2C51.164252%2F16"
+            target="_blank"
+            rel="noopener"
+            className="shrink-0 inline-flex items-center gap-1 text-xs text-muted-foreground"
+          >
+            <MapPin size={13} /> Астана
+          </a>
+          <SearchBar className="flex-1" />
+        </div>
       </div>
 
       <MobileCatalog open={mobileCat} onClose={() => setMobileCat(false)} />

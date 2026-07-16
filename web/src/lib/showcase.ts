@@ -35,11 +35,42 @@ function dedupe(list: CatalogItem[], limit: number): CatalogItem[] {
 
 const byPriceDesc = (a: CatalogItem, b: CatalogItem) => (b.price ?? 0) - (a.price ?? 0);
 
-// Флагманы: премиум-бренды или просто дорогие позиции, самое-самое сверху
-export const topPicks = dedupe(
-  withImg.filter((p) => PREMIUM.has(p.brand) || (p.price ?? 0) >= 130000).sort(byPriceDesc),
-  16,
-);
+// Приоритетные бренды для блока «Популярное» (по договорённости с магазином)
+const PRIORITY_BRANDS = ["Frap", "Gappo", "Grohe", "LE MARK"];
+
+const dedupeKey = (p: CatalogItem) =>
+  p.brand + "|" + p.title.replace(/\d+/g, "").slice(0, 22).trim().toLowerCase();
+
+// «Популярное»: смесь приоритетных брендов по кругу (не один бренд подряд),
+// только в наличии, без почти-дублей. Не «самое дорогое», как было раньше.
+export const topPicks = (() => {
+  const inStock = withImg.filter((p) => p.in_stock);
+  const buckets = PRIORITY_BRANDS.map((brand) => {
+    const seen = new Set<string>();
+    const list: CatalogItem[] = [];
+    for (const p of inStock) {
+      if (p.brand !== brand) continue;
+      const k = dedupeKey(p);
+      if (seen.has(k)) continue;
+      seen.add(k);
+      list.push(p);
+    }
+    return list;
+  });
+  const out: CatalogItem[] = [];
+  for (let i = 0; out.length < 16; i++) {
+    let any = false;
+    for (const bucket of buckets) {
+      if (bucket[i]) {
+        out.push(bucket[i]);
+        any = true;
+        if (out.length >= 16) break;
+      }
+    }
+    if (!any) break;
+  }
+  return out;
+})();
 
 // Инсталляции и готовые комплекты (с унитазом) — без «ванн в комплекте с ножками»
 export const installations = dedupe(

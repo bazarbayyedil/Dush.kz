@@ -79,14 +79,14 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
         )}
       </div>
 
-      {/* Превью */}
+      {/* Превью — один горизонтальный ряд на мобиле, сетка на десктопе */}
       {total > 1 && (
-        <div className="grid grid-cols-6 gap-2">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar md:grid md:grid-cols-6">
           {availableImages.slice(0, 12).map((src, i) => (
             <button
               key={src + i}
               onClick={() => setCurrent(i)}
-              className={`aspect-square rounded-lg overflow-hidden border p-1 bg-white ${
+              className={`shrink-0 w-14 md:w-auto aspect-square rounded-lg overflow-hidden border p-1 bg-white ${
                 i === current ? "border-accent ring-2 ring-accent/30" : "border-border hover:border-accent/50"
               }`}
               aria-label={`Фото ${i + 1}`}

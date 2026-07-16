@@ -14,7 +14,7 @@ import {
   getWidthRange,
   type FilterState,
 } from "@/lib/catalog";
-import { matchGroupTitle } from "@/lib/catalogTree";
+import { catalogTree, matchGroupTitle } from "@/lib/catalogTree";
 import { formatPrice } from "@/lib/format";
 import { ProductCard } from "@/components/ProductCard";
 
@@ -114,6 +114,23 @@ export function CatalogView() {
 
   const filtered = useMemo(() => filterCatalog(catalogItems, filters), [filters]);
   const visibleProducts = filtered.slice(0, visibleCount);
+
+  // Чипсы-подкатегории раздела, к которому относится выбранная категория
+  const activeGroup = useMemo(() => {
+    const first = filters.category?.[0];
+    if (!first) return null;
+    return catalogTree.find((g) => g.categories.includes(first)) ?? null;
+  }, [filters.category]);
+
+  const subChips = useMemo(() => {
+    if (!activeGroup) return [];
+    return activeGroup.categories
+      .map((slug) => cats.find((c) => c.slug === slug))
+      .filter((c): c is (typeof cats)[number] => !!c && c.count > 0);
+  }, [activeGroup, cats]);
+
+  const groupAllSlugs = subChips.map((c) => c.slug);
+  const allGroupActive = (filters.category?.length ?? 0) === groupAllSlugs.length;
 
   useEffect(() => {
     setVisibleCount(PAGE_SIZE);
@@ -293,6 +310,33 @@ export function CatalogView() {
           </select>
         </div>
       </div>
+
+      {subChips.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 mb-4">
+          <button
+            onClick={() => update({ category: groupAllSlugs })}
+            className={`shrink-0 px-3 h-8 rounded-full text-sm whitespace-nowrap border transition-colors ${
+              allGroupActive ? "bg-accent text-accent-foreground border-accent" : "border-border bg-card hover:border-accent/50"
+            }`}
+          >
+            Все
+          </button>
+          {subChips.map((c) => {
+            const active = filters.category?.length === 1 && filters.category[0] === c.slug;
+            return (
+              <button
+                key={c.slug}
+                onClick={() => update({ category: [c.slug] })}
+                className={`shrink-0 px-3 h-8 rounded-full text-sm whitespace-nowrap border transition-colors ${
+                  active ? "bg-accent text-accent-foreground border-accent" : "border-border bg-card hover:border-accent/50"
+                }`}
+              >
+                {c.title} <span className={active ? "opacity-80" : "text-muted-foreground"}>{c.count}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-[270px_1fr] gap-6">
         <aside className="hidden lg:block sticky top-24 self-start max-h-[calc(100vh-7rem)]">

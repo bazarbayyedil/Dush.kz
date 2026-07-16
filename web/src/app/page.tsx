@@ -2,6 +2,7 @@ import { Truck, ShieldCheck, BadgeCheck, Headset } from "lucide-react";
 import { catalogItems } from "@/lib/catalog";
 import { topPicks, installations, premiumBaths, topFaucets, bestDeals } from "@/lib/showcase";
 import { HeroSlider } from "@/components/HeroSlider";
+import { CategoryChips } from "@/components/CategoryChips";
 import { CategoryTiles } from "@/components/CategoryTiles";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { BrandStrip } from "@/components/BrandStrip";
@@ -53,7 +54,9 @@ export default function HomePage() {
 
   return (
     <div className="pb-8">
-      <section className="max-w-7xl mx-auto px-4 pt-5">
+      <CategoryChips />
+
+      <section className="max-w-7xl mx-auto px-4 pt-3 md:pt-5">
         <HeroSlider slides={slides} />
       </section>
 
@@ -75,7 +78,7 @@ export default function HomePage() {
 
       <CategoryTiles />
 
-      <ProductCarousel title="Топ выбор" items={topPicks} href="/catalog?sort=price_desc" />
+      <ProductCarousel title="Популярное" items={topPicks} href="/catalog?brand=Frap&brand=Gappo&brand=Grohe&brand=LE%20MARK" />
       {bestDeals.length > 0 && (
         <ProductCarousel title="Лучшие скидки" items={bestDeals} href="/catalog?onSale=1" accent />
       )}
