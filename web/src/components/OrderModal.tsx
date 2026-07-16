@@ -7,12 +7,37 @@ import { ymGoal } from "@/lib/metrika";
 // Корпоративный номер для приёма заявок (WhatsApp), междунар. формат без +
 const WHATSAPP_NUMBER = "77022525438";
 
+// Мобильные коды операторов Казахстана (после +7). Национальный номер — 7XX XXX XX XX.
+const KZ_MOBILE = new Set([
+  "700", "701", "702", "703", "704", "705", "706", "707", "708", "709",
+  "747", "750", "751", "760", "761", "762", "763", "764",
+  "771", "775", "776", "777", "778",
+]);
+
+// Из произвольного ввода оставляем только 10 цифр национального номера.
+// Ведущая «7» (от префикса +7) или «8» отбрасывается.
+function toNational(raw: string): string {
+  let d = raw.replace(/\D/g, "");
+  if (d.startsWith("7") || d.startsWith("8")) d = d.slice(1);
+  return d.slice(0, 10);
+}
+
+// Маска отображения: +7 7XX XXX XX XX
+function formatKzPhone(nat: string): string {
+  let s = "+7";
+  if (nat.length > 0) s += " " + nat.slice(0, 3);
+  if (nat.length > 3) s += " " + nat.slice(3, 6);
+  if (nat.length > 6) s += " " + nat.slice(6, 8);
+  if (nat.length > 8) s += " " + nat.slice(8, 10);
+  return s;
+}
+
 export function OrderModal() {
   const { isOpen, items, fromCart, close } = useOrder();
   const clearCart = useCart((s) => s.clear);
 
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneNat, setPhoneNat] = useState("");
   const [city, setCity] = useState("");
   const [comment, setComment] = useState("");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
@@ -38,13 +63,15 @@ export function OrderModal() {
   if (!isOpen) return null;
 
   const total = items.reduce((s, i) => s + i.price * i.qty, 0);
+  const phoneDisplay = formatKzPhone(phoneNat);
+  const phoneValid = phoneNat.length === 10 && KZ_MOBILE.has(phoneNat.slice(0, 3));
 
   const validate = () => {
     const e: { name?: string; phone?: string } = {};
     if (!name.trim()) e.name = "Укажите имя";
-    const digits = phone.replace(/\D/g, "");
-    if (!digits) e.phone = "Укажите телефон";
-    else if (digits.length < 10) e.phone = "Телефон слишком короткий";
+    if (phoneNat.length === 0) e.phone = "Укажите телефон";
+    else if (phoneNat.length < 10) e.phone = "Введите номер полностью";
+    else if (!KZ_MOBILE.has(phoneNat.slice(0, 3))) e.phone = "Неверный код оператора Казахстана";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -59,7 +86,7 @@ export function OrderModal() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           customer_name: name,
-          phone,
+          phone: phoneDisplay,
           city,
           comment,
           items: items.map((item) => ({ slug: item.slug, quantity: item.qty })),
@@ -73,7 +100,7 @@ export function OrderModal() {
     const text =
       `Новый заказ ${order.id} — dush.kz\n\n` +
       `Имя: ${name.trim()}\n` +
-      `Телефон: ${phone.trim()}\n` +
+      `Телефон: ${phoneDisplay}\n` +
       (city.trim() ? `Город: ${city.trim()}\n` : "") +
       (comment.trim() ? `Комментарий: ${comment.trim()}\n` : "") +
       `\nТовары:\n${lines.join("\n")}\n\nИтого: ${formatPrice(total)}`;
@@ -149,14 +176,17 @@ export function OrderModal() {
             <div>
               <label className="block text-sm mb-1">Телефон <span className="text-danger">*</span></label>
               <input
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                inputMode="tel"
-                maxLength={20}
+                value={phoneDisplay}
+                onChange={(e) => setPhoneNat(toNational(e.target.value))}
+                onFocus={(e) => e.currentTarget.setSelectionRange(e.currentTarget.value.length, e.currentTarget.value.length)}
+                inputMode="numeric"
+                maxLength={18}
                 className={`w-full px-3 py-2 rounded-lg border bg-white focus:outline-none focus:border-accent ${errors.phone ? "border-danger" : "border-border"}`}
                 placeholder="+7 700 000 00 00"
               />
-              {errors.phone && <p className="text-xs text-danger mt-1">{errors.phone}</p>}
+              {errors.phone
+                ? <p className="text-xs text-danger mt-1">{errors.phone}</p>
+                : phoneNat.length > 0 && !phoneValid && <p className="text-xs text-muted-foreground mt-1">Номер оператора Казахстана, 10 цифр после +7</p>}
             </div>
 
             <div>
