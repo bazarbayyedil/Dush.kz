@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, Heart, ShoppingCart, X, MapPin, Phone } from "lucide-react";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
+import { ymGoal } from "@/lib/metrika";
 import { SearchBar } from "./SearchBar";
 import { MegaMenu } from "./MegaMenu";
 import { MobileCatalog } from "./MobileCatalog";
@@ -56,7 +57,7 @@ export function Header() {
           <div className="flex-1 md:flex-none" />
 
           <div className="hidden lg:flex flex-col items-end leading-tight shrink-0">
-            <a href="tel:+77022525438" className="text-sm font-medium hover:text-accent">
+            <a href="tel:+77022525438" onClick={() => ymGoal("call")} className="text-sm font-medium hover:text-accent">
               +7 702 252 54 38
             </a>
             <a
@@ -72,6 +73,7 @@ export function Header() {
           {/* Звонок (mobile) */}
           <a
             href="tel:+77022525438"
+            onClick={() => ymGoal("call")}
             className="md:hidden p-2 rounded-lg hover:bg-muted"
             aria-label="Позвонить"
           >

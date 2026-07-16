@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CallLink } from "./CallLink";
 
 export function Footer() {
   return (
@@ -33,7 +34,7 @@ export function Footer() {
         <div>
           <h4 className="text-white font-medium mb-3">Контакты</h4>
           <ul className="space-y-2 text-neutral-400">
-            <li><a href="tel:+77022525438" className="hover:text-white">+7 702 252 54 38</a></li>
+            <li><CallLink className="hover:text-white">+7 702 252 54 38</CallLink></li>
             <li><a href="https://instagram.com/dush_market" target="_blank" rel="noopener" className="hover:text-white">Instagram: @dush_market</a></li>
             <li>
               <a

@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { catalogItems } from "@/lib/catalog";
 import { searchProducts } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
+import { ymGoal } from "@/lib/metrika";
 import Link from "next/link";
 import { productImageUrl } from "@/lib/media";
 
@@ -35,6 +36,7 @@ export function SearchBar({ className = "" }: { className?: string }) {
     const term = value.trim();
     if (!term) return;
     setOpen(false);
+    ymGoal("search", { query: term });
     router.push(`/catalog?q=${encodeURIComponent(term)}`);
   };
 
