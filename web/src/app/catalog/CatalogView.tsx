@@ -55,8 +55,11 @@ function FacetSection({
   const [expanded, setExpanded] = useState(false);
   const t = useT();
   if (items.length === 0) return null;
-  const shown = expanded ? items : items.slice(0, collapsed);
-  const more = items.length - collapsed;
+  // Отмеченные всегда видны, даже если по сортировке ушли ниже сгиба
+  const shown = expanded
+    ? items
+    : [...items.slice(0, collapsed), ...items.slice(collapsed).filter((it) => selected.includes(it.value))];
+  const more = items.length - shown.length;
   return (
     <div className="border-t border-border pt-4">
       <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{title}</div>
@@ -119,6 +122,33 @@ export function CatalogView() {
   const filtered = useMemo(() => filterCatalog(catalogItems, filters), [filters]);
   const visibleProducts = filtered.slice(0, visibleCount);
 
+  // Зависимые счётчики фасетов: каждая секция считается по выборке, суженной
+  // всеми ОСТАЛЬНЫМИ фильтрами. Свои отметки секцию не сужают — чтобы можно
+  // было довыбрать второй бренд/цвет внутри секции.
+  const facetCounts = useMemo(() => {
+    const build = (key: "brand" | "category" | "color" | "material") => {
+      const base = filterCatalog(catalogItems, { ...filters, [key]: undefined });
+      const m = new Map<string, number>();
+      for (const p of base) {
+        const v = key === "brand" ? p.brand : key === "category" ? p.category : p[key];
+        if (v) m.set(v, (m.get(v) ?? 0) + 1);
+      }
+      return m;
+    };
+    return { brand: build("brand"), category: build("category"), color: build("color"), material: build("material") };
+  }, [filters]);
+
+  // Пункты секции с живыми счётчиками: нули прячем (кроме уже отмеченных).
+  const dynItems = (
+    list: { value: string; label: string }[],
+    counts: Map<string, number>,
+    selected: string[],
+  ): FacetItem[] =>
+    list
+      .map((it) => ({ ...it, count: counts.get(it.value) ?? 0 }))
+      .filter((it) => it.count > 0 || selected.includes(it.value))
+      .sort((a, b) => b.count - a.count);
+
   // Чипсы-подкатегории раздела, к которому относится выбранная категория
   const activeGroup = useMemo(() => {
     const first = filters.category?.[0];
@@ -129,9 +159,14 @@ export function CatalogView() {
   const subChips = useMemo(() => {
     if (!activeGroup) return [];
     return activeGroup.categories
-      .map((slug) => cats.find((c) => c.slug === slug))
-      .filter((c): c is (typeof cats)[number] => !!c && c.count > 0);
-  }, [activeGroup, cats]);
+      .map((slug) => {
+        const c = cats.find((x) => x.slug === slug);
+        if (!c || c.count === 0) return null;
+        // состав чипсов стабильный, счётчик — живой (с учётом остальных фильтров)
+        return { slug, title: c.title, count: facetCounts.category.get(slug) ?? 0 };
+      })
+      .filter((c): c is { slug: string; title: string; count: number } => !!c);
+  }, [activeGroup, cats, facetCounts]);
 
   const groupAllSlugs = subChips.map((c) => c.slug);
   const allGroupActive = (filters.category?.length ?? 0) === groupAllSlugs.length;
@@ -188,25 +223,25 @@ export function CatalogView() {
 
       <FacetSection
         title={t("cat.category")}
-        items={cats.map((c) => ({ value: c.slug, label: c.title, count: c.count }))}
+        items={dynItems(cats.map((c) => ({ value: c.slug, label: c.title })), facetCounts.category, filters.category ?? [])}
         selected={filters.category ?? []}
         onToggle={(v) => toggleArray("category", v)}
       />
       <FacetSection
         title={t("cat.brand")}
-        items={brands.map((b) => ({ value: b.name, label: b.name, count: b.count }))}
+        items={dynItems(brands.map((b) => ({ value: b.name, label: b.name })), facetCounts.brand, filters.brand ?? [])}
         selected={filters.brand ?? []}
         onToggle={(v) => toggleArray("brand", v)}
       />
       <FacetSection
         title={t("cat.color")}
-        items={colors.map((c) => ({ value: c.name, label: c.name, count: c.count }))}
+        items={dynItems(colors.map((c) => ({ value: c.name, label: c.name })), facetCounts.color, filters.color ?? [])}
         selected={filters.color ?? []}
         onToggle={(v) => toggleArray("color", v)}
       />
       <FacetSection
         title={t("cat.material")}
-        items={materials.map((m) => ({ value: m.name, label: m.name, count: m.count }))}
+        items={dynItems(materials.map((m) => ({ value: m.name, label: m.name })), facetCounts.material, filters.material ?? [])}
         selected={filters.material ?? []}
         onToggle={(v) => toggleArray("material", v)}
       />
