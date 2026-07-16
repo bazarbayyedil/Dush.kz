@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import type { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent } from "@/lib/format";
@@ -30,69 +29,51 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={s.slug}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.4 }}
-          className="grid grid-cols-1 md:grid-cols-2 min-h-[300px] md:min-h-[380px]"
-        >
-          {/* Текст + цена */}
-          <div className="flex flex-col justify-center order-2 md:order-1 p-6 md:p-12">
-            <motion.div
-              initial={{ y: 16, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.1, duration: 0.4 }}
-            >
-              <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-accent mb-3">
-                {discount > 0 && (
-                  <span className="px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
-                    Акция −{discount}%
-                  </span>
-                )}
-                <span>{s.brand}</span>
-              </div>
-              <h2 className="text-xl md:text-3xl font-bold leading-tight max-w-md line-clamp-3">{s.title}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-[300px] md:min-h-[380px]">
+        {/* Текст + цена */}
+        <div className="flex flex-col justify-center order-2 md:order-1 p-6 md:p-12">
+          <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-accent mb-3">
+            {discount > 0 && (
+              <span className="px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
+                Акция −{discount}%
+              </span>
+            )}
+            <span>{s.brand}</span>
+          </div>
+          <h2 className="text-xl md:text-3xl font-bold leading-tight max-w-md line-clamp-3">{s.title}</h2>
 
-              <div className="mt-4 flex items-end gap-3">
-                <span className="text-3xl md:text-4xl font-bold text-accent">{formatPrice(s.price)}</span>
-                {s.old_price && s.old_price > (s.price ?? 0) && (
-                  <span className="mb-1 text-base md:text-lg text-muted-foreground line-through">
-                    {formatPrice(s.old_price)}
-                  </span>
-                )}
-              </div>
-
-              <Link
-                href={`/product/${s.slug}`}
-                className="mt-6 inline-flex items-center gap-2 px-6 h-11 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent-hover transition-colors w-fit"
-              >
-                Смотреть товар <ArrowRight size={18} />
-              </Link>
-            </motion.div>
+          <div className="mt-4 flex items-end gap-3">
+            <span className="text-3xl md:text-4xl font-bold text-accent">{formatPrice(s.price)}</span>
+            {s.old_price && s.old_price > (s.price ?? 0) && (
+              <span className="mb-1 text-base md:text-lg text-muted-foreground line-through">
+                {formatPrice(s.old_price)}
+              </span>
+            )}
           </div>
 
-          {/* Фото товара */}
           <Link
             href={`/product/${s.slug}`}
-            className="relative order-1 md:order-2 h-56 md:h-auto flex items-center justify-center p-6"
+            className="mt-6 inline-flex items-center gap-2 px-6 h-11 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent-hover transition-colors w-fit"
           >
-            {s.image && (
-              <motion.img
-                initial={{ scale: 1.04, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.5 }}
-                src={productImageUrl(s.image)}
-                alt={s.title}
-                className="max-h-full max-w-full object-contain"
-                onError={(event) => event.currentTarget.remove()}
-              />
-            )}
+            Смотреть товар <ArrowRight size={18} />
           </Link>
-        </motion.div>
-      </AnimatePresence>
+        </div>
+
+        {/* Фото товара */}
+        <Link
+          href={`/product/${s.slug}`}
+          className="relative order-1 md:order-2 h-56 md:h-auto flex items-center justify-center p-6"
+        >
+          {s.image && (
+            <img
+              src={productImageUrl(s.image)}
+              alt={s.title}
+              className="max-h-full max-w-full object-contain"
+              onError={(event) => event.currentTarget.remove()}
+            />
+          )}
+        </Link>
+      </div>
 
       {n > 1 && (
         <>
