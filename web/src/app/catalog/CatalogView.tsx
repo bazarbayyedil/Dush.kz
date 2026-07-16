@@ -120,7 +120,7 @@ export function CatalogView() {
 
       <div className="border-t border-border pt-4">
         <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Категория</div>
-        <div className="space-y-0.5 max-h-56 overflow-y-auto no-scrollbar pr-1">
+        <div className="space-y-0.5 pr-1">
           {cats.map((c) => (
             <Row key={c.slug} label={c.title} count={c.count} checked={filters.category?.includes(c.slug) ?? false} onChange={() => toggleArray("category", c.slug)} />
           ))}
@@ -129,7 +129,7 @@ export function CatalogView() {
 
       <div className="border-t border-border pt-4">
         <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Бренд</div>
-        <div className="space-y-0.5 max-h-44 overflow-y-auto no-scrollbar pr-1">
+        <div className="space-y-0.5 pr-1">
           {brands.map((b) => (
             <Row key={b.name} label={b.name} count={b.count} checked={filters.brand?.includes(b.name) ?? false} onChange={() => toggleArray("brand", b.name)} />
           ))}
@@ -138,7 +138,7 @@ export function CatalogView() {
 
       <div className="border-t border-border pt-4">
         <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Цвет</div>
-        <div className="space-y-0.5 max-h-44 overflow-y-auto no-scrollbar pr-1">
+        <div className="space-y-0.5 pr-1">
           {colors.map((c) => (
             <Row key={c.name} label={c.name} count={c.count} checked={filters.color?.includes(c.name) ?? false} onChange={() => toggleArray("color", c.name)} />
           ))}
@@ -147,7 +147,7 @@ export function CatalogView() {
 
       <div className="border-t border-border pt-4">
         <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Материал</div>
-        <div className="space-y-0.5 max-h-44 overflow-y-auto no-scrollbar pr-1">
+        <div className="space-y-0.5 pr-1">
           {materials.map((m) => (
             <Row key={m.name} label={m.name} count={m.count} checked={filters.material?.includes(m.name) ?? false} onChange={() => toggleArray("material", m.name)} />
           ))}
@@ -257,8 +257,10 @@ export function CatalogView() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[270px_1fr] gap-6">
-        <aside className="hidden lg:block sticky top-24 self-start">
-          <div className="rounded-2xl border border-border bg-card p-5">{FilterPanel}</div>
+        <aside className="hidden lg:block sticky top-24 self-start max-h-[calc(100vh-7rem)]">
+          <div className="rounded-2xl border border-border bg-card p-5 max-h-[calc(100vh-7rem)] overflow-y-auto no-scrollbar">
+            {FilterPanel}
+          </div>
         </aside>
 
         <div>
