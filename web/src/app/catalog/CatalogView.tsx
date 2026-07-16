@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { SlidersHorizontal, X, Check } from "lucide-react";
+import { SlidersHorizontal, X, Check, Plus, Minus } from "lucide-react";
 import {
   catalogItems,
   filterCatalog,
@@ -16,6 +16,67 @@ import {
 } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
 import { ProductCard } from "@/components/ProductCard";
+
+type FacetItem = { value: string; label: string; count: number };
+
+function Row({ label, count, checked, onChange }: { label: string; count: number; checked: boolean; onChange: () => void }) {
+  return (
+    <label className="flex items-center gap-2.5 cursor-pointer group py-0.5">
+      <span
+        className={`w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center shrink-0 transition-colors ${
+          checked ? "bg-accent border-accent text-white" : "border-border group-hover:border-accent/50"
+        }`}
+      >
+        {checked && <Check size={13} strokeWidth={3} />}
+      </span>
+      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />
+      <span className={`flex-1 ${checked ? "text-foreground" : "text-foreground/85"} group-hover:text-accent`}>{label}</span>
+      {count > 0 && <span className="text-xs text-muted-foreground">{count}</span>}
+    </label>
+  );
+}
+
+// Сворачиваемая секция фильтра: показываем первые N, остальное — по кнопке «+ Ещё»
+function FacetSection({
+  title,
+  items,
+  selected,
+  onToggle,
+  collapsed = 7,
+}: {
+  title: string;
+  items: FacetItem[];
+  selected: string[];
+  onToggle: (v: string) => void;
+  collapsed?: number;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  if (items.length === 0) return null;
+  const shown = expanded ? items : items.slice(0, collapsed);
+  const more = items.length - collapsed;
+  return (
+    <div className="border-t border-border pt-4">
+      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{title}</div>
+      <div className="space-y-0.5 pr-1">
+        {shown.map((it) => (
+          <Row key={it.value} label={it.label} count={it.count} checked={selected.includes(it.value)} onChange={() => onToggle(it.value)} />
+        ))}
+      </div>
+      {more > 0 && (
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-2 text-xs text-accent inline-flex items-center gap-1 hover:underline"
+        >
+          {expanded ? (
+            <><Minus size={13} /> Свернуть</>
+          ) : (
+            <><Plus size={13} /> Ещё {more}</>
+          )}
+        </button>
+      )}
+    </div>
+  );
+}
 
 const PAGE_SIZE = 48;
 
@@ -90,21 +151,6 @@ export function CatalogView() {
     !!filters.onSale ||
     !!filters.q;
 
-  const Row = ({ label, count, checked, onChange }: { label: string; count: number; checked: boolean; onChange: () => void }) => (
-    <label className="flex items-center gap-2.5 cursor-pointer group py-0.5">
-      <span
-        className={`w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center shrink-0 transition-colors ${
-          checked ? "bg-accent border-accent text-white" : "border-border group-hover:border-accent/50"
-        }`}
-      >
-        {checked && <Check size={13} strokeWidth={3} />}
-      </span>
-      <input type="checkbox" checked={checked} onChange={onChange} className="sr-only" />
-      <span className={`flex-1 ${checked ? "text-foreground" : "text-foreground/85"} group-hover:text-accent`}>{label}</span>
-      {count > 0 && <span className="text-xs text-muted-foreground">{count}</span>}
-    </label>
-  );
-
   const FilterPanel = (
     <div className="space-y-5 text-sm">
       <div>
@@ -118,41 +164,30 @@ export function CatalogView() {
         />
       </div>
 
-      <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Категория</div>
-        <div className="space-y-0.5 pr-1">
-          {cats.map((c) => (
-            <Row key={c.slug} label={c.title} count={c.count} checked={filters.category?.includes(c.slug) ?? false} onChange={() => toggleArray("category", c.slug)} />
-          ))}
-        </div>
-      </div>
-
-      <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Бренд</div>
-        <div className="space-y-0.5 pr-1">
-          {brands.map((b) => (
-            <Row key={b.name} label={b.name} count={b.count} checked={filters.brand?.includes(b.name) ?? false} onChange={() => toggleArray("brand", b.name)} />
-          ))}
-        </div>
-      </div>
-
-      <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Цвет</div>
-        <div className="space-y-0.5 pr-1">
-          {colors.map((c) => (
-            <Row key={c.name} label={c.name} count={c.count} checked={filters.color?.includes(c.name) ?? false} onChange={() => toggleArray("color", c.name)} />
-          ))}
-        </div>
-      </div>
-
-      <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Материал</div>
-        <div className="space-y-0.5 pr-1">
-          {materials.map((m) => (
-            <Row key={m.name} label={m.name} count={m.count} checked={filters.material?.includes(m.name) ?? false} onChange={() => toggleArray("material", m.name)} />
-          ))}
-        </div>
-      </div>
+      <FacetSection
+        title="Категория"
+        items={cats.map((c) => ({ value: c.slug, label: c.title, count: c.count }))}
+        selected={filters.category ?? []}
+        onToggle={(v) => toggleArray("category", v)}
+      />
+      <FacetSection
+        title="Бренд"
+        items={brands.map((b) => ({ value: b.name, label: b.name, count: b.count }))}
+        selected={filters.brand ?? []}
+        onToggle={(v) => toggleArray("brand", v)}
+      />
+      <FacetSection
+        title="Цвет"
+        items={colors.map((c) => ({ value: c.name, label: c.name, count: c.count }))}
+        selected={filters.color ?? []}
+        onToggle={(v) => toggleArray("color", v)}
+      />
+      <FacetSection
+        title="Материал"
+        items={materials.map((m) => ({ value: m.name, label: m.name, count: m.count }))}
+        selected={filters.material ?? []}
+        onToggle={(v) => toggleArray("material", v)}
+      />
 
       <div className="border-t border-border pt-4">
         <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">Ширина, мм</div>
