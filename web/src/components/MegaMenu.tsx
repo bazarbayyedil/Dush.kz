@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
@@ -10,6 +11,8 @@ import { productImageUrl } from "@/lib/media";
 
 export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [active, setActive] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const catMap = getCategoryMap();
   const group = catalogTree[active];
   const subs = group.categories
@@ -21,14 +24,18 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
     <AnimatePresence>
       {open && (
         <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-[var(--header-h,64px)] bg-black/40 z-40"
-            onClick={onClose}
-          />
+          {mounted &&
+            createPortal(
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 top-[var(--header-h,64px)] bg-black/40 z-30"
+                onClick={onClose}
+              />,
+              document.body,
+            )}
           <motion.div
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}

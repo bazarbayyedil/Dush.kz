@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X } from "lucide-react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
@@ -10,7 +11,13 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
   const [expanded, setExpanded] = useState<number | null>(0);
   const catMap = getCategoryMap();
 
-  return (
+  // Портал в body: шапка с backdrop-blur является containing block для
+  // fixed-потомков, из-за чего шторка обрезалась до высоты шапки.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return null;
+
+  return createPortal(
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-[60] md:hidden">
@@ -93,6 +100,7 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
           </motion.div>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

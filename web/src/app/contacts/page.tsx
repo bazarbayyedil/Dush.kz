@@ -18,7 +18,7 @@ export default function ContactsPage() {
         <a href="https://2gis.kz/astana/search/Абая%2094" target="_blank" rel="noopener">Посмотреть на карте</a>
       </p>
       <h2>Режим работы</h2>
-      <p>Пн–Сб: 10:00 — 20:00<br />Воскресенье — выходной</p>
+      <p>Ежедневно: 10:00 — 19:00</p>
     </InfoPage>
   );
 }
