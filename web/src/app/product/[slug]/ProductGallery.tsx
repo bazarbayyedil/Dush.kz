@@ -48,7 +48,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
         <img
           src={main}
           alt={alt}
-          className="w-full h-full object-contain p-4 cursor-zoom-in"
+          className="w-full h-full object-contain p-4 cursor-zoom-in mix-blend-multiply"
           onClick={() => setZoom(true)}
         />
 
@@ -91,7 +91,7 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
               }`}
               aria-label={`Фото ${i + 1}`}
             >
-              <img src={src} alt="" className="w-full h-full object-contain" />
+              <img src={src} alt="" className="w-full h-full object-contain mix-blend-multiply" />
             </button>
           ))}
         </div>

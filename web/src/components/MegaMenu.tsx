@@ -109,16 +109,19 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                           className="group flex items-center gap-3 rounded-xl p-2 hover:bg-surface transition-colors"
                         >
                           <div className="relative w-14 h-14 shrink-0 rounded-lg bg-surface overflow-hidden">
-                            <span className="absolute inset-0 flex items-center justify-center text-[9px] text-muted-foreground">
-                              Нет фото
-                            </span>
-                            {p.image && (
+                            {p.image ? (
                               <img
                                 src={productImageUrl(p.image)}
                                 alt=""
-                                className="relative w-full h-full object-contain bg-surface"
-                                onError={(event) => event.currentTarget.remove()}
+                                className="relative w-full h-full object-contain mix-blend-multiply"
+                                onError={(event) => {
+                                  event.currentTarget.style.display = "none";
+                                }}
                               />
+                            ) : (
+                              <span className="absolute inset-0 flex items-center justify-center text-[9px] text-muted-foreground">
+                                Нет фото
+                              </span>
                             )}
                           </div>
                           <div className="min-w-0">

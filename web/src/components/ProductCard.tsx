@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Heart, ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
 import { CatalogItem } from "@/lib/catalog";
-import { formatPrice, discountPercent } from "@/lib/format";
+import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { productImageUrl } from "@/lib/media";
 import { useT } from "@/lib/i18n";
@@ -18,7 +18,8 @@ export function ProductCard({ product }: { product: CatalogItem }) {
   const [added, setAdded] = useState(false);
 
   const img = product.image;
-  const discount = discountPercent(product.price, product.old_price);
+  const oldPrice = effectiveOldPrice(product.slug, product.price, product.old_price);
+  const discount = discountPercent(product.price, oldPrice);
   const isFav = hydrated && favSlugs.includes(product.slug);
 
   const handleAdd = () => {
@@ -62,17 +63,20 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       </button>
 
       <Link href={`/product/${product.slug}`} className="relative aspect-square bg-surface overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs">
-          Нет фото
-        </div>
-        {img && (
+        {img ? (
           <img
             src={productImageUrl(img)}
             alt={product.title}
-            className="relative w-full h-full object-contain p-2 bg-surface group-hover:scale-105 transition-transform duration-500"
+            className="relative w-full h-full object-contain p-2 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
             loading="lazy"
-            onError={(event) => event.currentTarget.remove()}
+            onError={(event) => {
+              event.currentTarget.style.display = "none";
+            }}
           />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-xs">
+            Нет фото
+          </div>
         )}
       </Link>
 
@@ -88,7 +92,7 @@ export function ProductCard({ product }: { product: CatalogItem }) {
         <div className="flex items-baseline gap-2 mt-auto pt-1">
           <span className="text-lg font-bold">{formatPrice(product.price)}</span>
           {discount > 0 && (
-            <span className="text-xs text-muted-foreground line-through">{formatPrice(product.old_price)}</span>
+            <span className="text-xs text-muted-foreground line-through">{formatPrice(oldPrice)}</span>
           )}
         </div>
 

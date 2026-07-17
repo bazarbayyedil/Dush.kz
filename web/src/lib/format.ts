@@ -17,3 +17,23 @@ export function discountPercent(price: number | null, oldPrice: number | null): 
   if (!price || !oldPrice || oldPrice <= price) return 0;
   return Math.round(((oldPrice - price) / oldPrice) * 100);
 }
+
+// Витринная «старая цена». Реальная — если есть в данных; иначе синтетическая
+// для части ассортимента, детерминированно по slug (как pseudoRating). Нужна
+// только для отображения зачёркнутой цены и бейджа скидки; в корзине/заказе
+// всегда используется настоящая price.
+const SALE_PCTS = [10, 12, 15, 18, 20, 22, 25];
+export function effectiveOldPrice(
+  slug: string,
+  price: number | null | undefined,
+  realOld?: number | null,
+): number | null {
+  if (realOld && price && realOld > price) return realOld;
+  if (!price || price <= 0) return null;
+  let h = 0;
+  for (let i = 0; i < slug.length; i++) h = (h * 31 + slug.charCodeAt(i)) >>> 0;
+  if (h % 100 >= 40) return null; // скидка примерно у 40% товаров
+  const pct = SALE_PCTS[(h >>> 5) % SALE_PCTS.length];
+  const old = Math.round(price / (1 - pct / 100) / 100) * 100; // ровное число
+  return old > price ? old : price + 100;
+}

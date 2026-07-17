@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProduct, products, formatPrice } from "@/lib/products";
+import { effectiveOldPrice, discountPercent } from "@/lib/format";
 import { catalogItems } from "@/lib/catalog";
 import { crossSell } from "@/lib/crosssell";
 import { ProductCard } from "@/components/ProductCard";
@@ -49,10 +50,8 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
   const product = getProduct(slug);
   if (!product) notFound();
 
-  const discount =
-    product.old_price && product.price
-      ? Math.round(((product.old_price - product.price) / product.old_price) * 100)
-      : 0;
+  const oldPrice = effectiveOldPrice(product.slug, product.price, product.old_price);
+  const discount = discountPercent(product.price, oldPrice);
 
   const related = catalogItems
     .filter((p) => p.slug !== product.slug && p.category === product.category)
@@ -98,10 +97,10 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
 
           <div className="mt-6 flex items-baseline gap-3">
             <span className="text-3xl font-bold">{formatPrice(product.price)}</span>
-            {product.old_price && product.old_price > (product.price ?? 0) && (
+            {oldPrice && oldPrice > (product.price ?? 0) && (
               <>
                 <span className="text-lg text-muted-foreground line-through">
-                  {formatPrice(product.old_price)}
+                  {formatPrice(oldPrice)}
                 </span>
                 <span className="px-2 py-0.5 bg-danger text-white text-xs rounded font-medium">
                   −{discount}%

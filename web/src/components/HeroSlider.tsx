@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import type { CatalogItem } from "@/lib/catalog";
-import { formatPrice, discountPercent } from "@/lib/format";
+import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
 import { useT } from "@/lib/i18n";
 
@@ -74,7 +74,8 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
 
   if (n === 0) return null;
   const s = shown[Math.min(i, n - 1)];
-  const discount = discountPercent(s.price, s.old_price);
+  const sOld = effectiveOldPrice(s.slug, s.price, s.old_price);
+  const discount = discountPercent(s.price, sOld);
 
   return (
     <div
@@ -97,9 +98,9 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
 
           <div className="mt-4 flex items-end gap-3">
             <span className="text-3xl md:text-4xl font-bold text-accent">{formatPrice(s.price)}</span>
-            {s.old_price && s.old_price > (s.price ?? 0) && (
+            {sOld && sOld > (s.price ?? 0) && (
               <span className="mb-1 text-base md:text-lg text-muted-foreground line-through">
-                {formatPrice(s.old_price)}
+                {formatPrice(sOld)}
               </span>
             )}
           </div>
@@ -121,7 +122,7 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
             <img
               src={productImageUrl(s.image)}
               alt={s.title}
-              className="h-44 md:h-[300px] w-auto max-w-full object-contain"
+              className="h-44 md:h-[300px] w-auto max-w-full object-contain mix-blend-multiply"
               onError={(event) => event.currentTarget.remove()}
             />
           )}
