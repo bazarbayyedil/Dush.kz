@@ -1,30 +1,70 @@
 "use client";
 import Link from "next/link";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import type { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
 import { useT } from "@/lib/i18n";
 
+const SHOW = 6; // сколько слайдов показываем в день
+
+// Детерминированный ГПСЧ по одному 32-битному seed (mulberry32).
+function rngFrom(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Стабильная в течение суток выборка `count` товаров из пула: seed = номер дня,
+// поэтому подборка одинакова весь день и меняется на следующий.
+function pickForDay(pool: CatalogItem[], count: number, day: number): CatalogItem[] {
+  const idx = pool.map((_, k) => k);
+  const rnd = rngFrom(day * 2654435761);
+  for (let k = idx.length - 1; k > 0; k--) {
+    const j = Math.floor(rnd() * (k + 1));
+    [idx[k], idx[j]] = [idx[j], idx[k]];
+  }
+  return idx.slice(0, count).map((k) => pool[k]);
+}
+
 export function HeroSlider({ items }: { items: CatalogItem[] }) {
   const t = useT();
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
-  const n = items.length;
+
+  // day === null до маунта → показываем стабильный дефолт (первые SHOW = 6 GROHE),
+  // чтобы SSR и первая клиентская отрисовка совпадали. После маунта берём выборку
+  // по локальному дню (Астана, UTC+5) — так подборка сменяется без пересборки сайта.
+  const [day, setDay] = useState<number | null>(null);
+  useEffect(() => {
+    setDay(Math.floor((Date.now() + 5 * 3600_000) / 86400_000));
+  }, []);
+
+  const shown = useMemo(
+    () => (day === null ? items.slice(0, SHOW) : pickForDay(items, SHOW, day)),
+    [items, day],
+  );
+  useEffect(() => setI(0), [day]);
+
+  const n = shown.length;
 
   const go = useCallback((d: number) => setI((c) => (c + d + n) % n), [n]);
 
   // Предзагрузка всех фото — чтобы смена слайда была мгновенной, без
   // рассинхрона «новый текст / ещё старое фото» при авто-перелистывании.
   useEffect(() => {
-    items.forEach((it) => {
+    shown.forEach((it) => {
       if (it.image) {
         const im = new window.Image();
         im.src = productImageUrl(it.image);
       }
     });
-  }, [items]);
+  }, [shown]);
 
   useEffect(() => {
     if (paused || n <= 1) return;
@@ -33,7 +73,7 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
   }, [paused, n]);
 
   if (n === 0) return null;
-  const s = items[i];
+  const s = shown[Math.min(i, n - 1)];
   const discount = discountPercent(s.price, s.old_price);
 
   return (
@@ -106,7 +146,7 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
           </button>
 
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {items.map((_, idx) => (
+            {shown.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setI(idx)}

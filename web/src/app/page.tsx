@@ -1,6 +1,6 @@
 "use client";
 import { Truck, ShieldCheck, BadgeCheck, Headset } from "lucide-react";
-import { heroPicks, topPicks, installations, premiumBaths, topFaucets, bestDeals } from "@/lib/showcase";
+import { heroPool, topPicks, installations, premiumBaths, topFaucets, bestDeals } from "@/lib/showcase";
 import { useT } from "@/lib/i18n";
 import { HeroSlider } from "@/components/HeroSlider";
 import { CategoryChips } from "@/components/CategoryChips";
@@ -22,7 +22,7 @@ export default function HomePage() {
       <CategoryChips />
 
       <section className="max-w-7xl mx-auto px-4 pt-3 md:pt-5">
-        <HeroSlider items={heroPicks} />
+        <HeroSlider items={heroPool} />
       </section>
 
       <section className="max-w-7xl mx-auto px-4 pt-5">

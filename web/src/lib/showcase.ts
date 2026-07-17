@@ -89,9 +89,61 @@ const HERO_SLUGS = [
   "smesitel-dla-dusa-bauedge-grohe-23635001",
   "sistema-installacii-dla-unitaza-grohe-rapid-1000046-5-v-1",
 ];
-export const heroPicks: CatalogItem[] = HERO_SLUGS.map((slug) =>
-  catalogItems.find((p) => p.slug === slug),
-).filter((p): p is CatalogItem => !!p && p.in_stock);
+
+// Gappo: чистые студийные фото на белом из официального каталога 2025-26
+// (вручную отобраны из применённых catalog.jpg — без сцен, аннотаций и раскладок).
+const GAPPO_HERO_SLUGS = [
+  "dusevaa-sistema-gappo-g-2417-3-matovoe-zoloto",
+  "dusevaa-sistema-gappo-g-2491-6-s-termostatom-cernaa",
+  "dusevaa-sistema-gappo-g-7117-6-vstroennyj-dla-vanny-s-3-funkciami-cernyj",
+  "dusevaa-sistema-gappo-g2406-3-zoloto-satin-s-izlivom",
+  "dusevaa-sistema-gappo-g2406-9-oruzejnaa-stal-s-izlivom",
+  "dusevaa-sistema-gappo-g2448-9-grafit",
+  "dusevaa-sistema-gappo-g7106-3-zoloto-satin",
+  "dusevaa-sistema-gappo-g7106-6-cernyj",
+  "dusevaa-stojka-gappo-g-2407-40-s-termostatom-hrom",
+  "dusevaa-stojka-gappo-g-2417-9-oruzejnaa-stal",
+  "dusevaa-stojka-gappo-g2427-9-oruzejnaa-stal",
+  "dusevaa-stojka-gappo-g2448-3-zolotoj-satin",
+  "dusevaa-stojka-gappo-g2491-9-s-termostatom-izliv-avlaetsa-pereklucatelem-na-lejku-oruzejnaa-stal_20250711110454",
+  "dusevaa-stojka-s-termostatom-gappo-g2495-71",
+  "dusevaa-stojka-s-termostatom-gappo-g2495-79",
+  "dusevaa-stojka-so-smesitelem-gappo-jacob-g2407",
+  "gigieniceskij-dus-gappo-cernyj-g-2007-6",
+  "gigieniceskij-dus-gappo-g-2007-hrom",
+  "smesitel-dla-rakoviny-g-1007-13-zoloto",
+  "smesitel-dla-rakoviny-g-1007-3-zoloto",
+  "smesitel-dla-rakoviny-gappo-g1017-6-cernyj",
+  "smesitel-dla-rakoviny-gappo-g1206-3-skrytyj-montaz-zolotoj-satin",
+  "smesitel-dla-rakoviny-gappo-g1206-skrytyj-montaz-hrom",
+  "smesitel-dla-rakoviny-gappo-jacob-g-1007-6-cernyj",
+  "smesitel-dla-umyval-nika-gappo-g-1017-3-zoloto-mat",
+  "smesitel-gappo-dla-rakoviny-g-1017-16-cernyj-futura",
+  "smesitel-gappo-dla-rakoviny-g1010-23-vysokij-zoloto-satin",
+  "smesitel-gappo-dla-rakoviny-g1010-9-oruzejnaa-stal",
+  "smesitel-gappo-dla-rakoviny-g1017-9-oruzejnaa-stal",
+  "smesitel-gappo-dla-rakoviny-g1028-3-zolotoj-satin",
+  "smesitel-gappo-dla-rakoviny-g1028-9-oruzejnaa-stal",
+  "smesitel-gappo-dla-rakoviny-g1048-3-zolotoj-satin",
+  "smesitel-gappo-dla-rakoviny-g1206-9-oruzejnaa-stal-vstraivaemyj",
+  "smesitel-gappo-dla-umyval-nika-vysokij-g-1007-78-belyj-hrom",
+];
+
+const bySlugInStock = (slug: string) => {
+  const p = catalogItems.find((x) => x.slug === slug);
+  return p && p.in_stock ? p : null;
+};
+
+// Дефолт для SSR/первой отрисовки — 6 GROHE (стабильно, без рассинхрона гидрации).
+export const heroPicks: CatalogItem[] = HERO_SLUGS.map(bySlugInStock).filter(
+  (p): p is CatalogItem => !!p,
+);
+
+// Полный пул для hero — из него слайдер каждый день детерминированно берёт 6.
+// GROHE впереди: первые 6 совпадают с heroPicks (тот же дефолт до маунта).
+export const heroPool: CatalogItem[] = [...HERO_SLUGS, ...GAPPO_HERO_SLUGS]
+  .map(bySlugInStock)
+  .filter((p): p is CatalogItem => !!p);
 
 // Инсталляции и готовые комплекты (с унитазом) — без «ванн в комплекте с ножками»
 export const installations = dedupe(
