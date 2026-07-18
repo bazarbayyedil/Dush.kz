@@ -81,7 +81,14 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       </Link>
 
       <div className="p-3.5 flex flex-col flex-1 gap-1.5">
-        <div className="text-[11px] text-muted-foreground uppercase tracking-wide">{product.brand}</div>
+        <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-wide">
+          <span className="truncate">{product.brand}</span>
+          {product.size && (
+            <span className="ml-auto shrink-0 normal-case tabular-nums font-medium text-foreground/70">
+              {product.size} см
+            </span>
+          )}
+        </div>
         <Link
           href={`/product/${product.slug}`}
           className="text-sm leading-snug line-clamp-2 hover:text-accent min-h-[2.5rem]"

@@ -19,6 +19,7 @@ export type CatalogItem = {
   color?: string;
   material?: string;
   width?: number | null;
+  size?: string; // габариты ванны «длина×ширина» в см
 };
 
 export const catalogItems: CatalogItem[] = indexData as CatalogItem[];

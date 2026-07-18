@@ -175,6 +175,40 @@ def facet_width(attrs: dict):
     return None
 
 
+# Габариты «длина×ширина» в см — показываем в карточке ванны рядом с брендом.
+# Только для самих ванн: панели, сливы и смесители «для ванны» размер не несут.
+BATH_CATS = {
+    "akrilovye-vanny",
+    "chugunnye-vanny",
+    "mramornye-vanny",
+    "stalnye-vanny",
+    "vanny-iz-santekhnicheskogo-akrila-abs-pmma",
+}
+
+
+def _dim_cm(value):
+    m = re.search(r"\d{2,4}", str(value or ""))
+    if not m:
+        return None
+    n = int(m.group())
+    return round(n / 10) if n >= 500 else n  # в данных бывают и мм, и см
+
+
+def facet_size(attrs: dict, title: str, category: str) -> str:
+    if category not in BATH_CATS:
+        return ""
+    a = attrs or {}
+    length = _dim_cm(a.get("Длина ванны") or a.get("Длина"))
+    width = _dim_cm(a.get("Ширина ванны") or a.get("Ширина"))
+    if not (length and width):
+        m = re.search(r"(\d{2,4})\s*[xхX×*]\s*(\d{2,4})", title or "")
+        if m:
+            length, width = _dim_cm(m.group(1)), _dim_cm(m.group(2))
+    if length and width and 50 <= length <= 250 and 50 <= width <= 250:
+        return f"{length}×{width}"
+    return ""
+
+
 # Тонкий индекс для клиента (каталог + поиск): без attrs/description и без
 # лишних фото — только то, что нужно карточке и фильтрам. Полные данные
 # (products.json) читаются только на серверной странице товара.
@@ -194,6 +228,7 @@ index = [{
     "color": facet_color(p.get("attrs") or {}),
     "material": facet_material(p.get("attrs") or {}),
     "width": facet_width(p.get("attrs") or {}),
+    "size": facet_size(p.get("attrs") or {}, p["title"], p["category"]),
 } for p in all_products]
 idx_out = DATA_DIR / "products-index.json"
 idx_out.write_text(json.dumps(index, ensure_ascii=False))
