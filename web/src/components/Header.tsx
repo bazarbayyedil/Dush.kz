@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, Heart, ShoppingCart, X, MapPin, MessageCircle } from "lucide-react";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { ymGoal } from "@/lib/metrika";
@@ -21,6 +21,25 @@ export function Header() {
   const [catOpen, setCatOpen] = useState(false);
   const [mobileCat, setMobileCat] = useState(false);
 
+  // Каталог открывается по клику, а не по наведению: иначе меню перехватывает
+  // курсор при обычном движении по шапке. Закрываем кликом вне и по Escape.
+  const catRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!catOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (!catRef.current?.contains(e.target as Node)) setCatOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setCatOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [catOpen]);
+
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-border [--header-h:64px]">
       <div className="relative">
@@ -39,11 +58,7 @@ export function Header() {
           </Link>
 
           {/* Кнопка Каталог (desktop) */}
-          <div
-            className="hidden md:block"
-            onMouseEnter={() => setCatOpen(true)}
-            onMouseLeave={() => setCatOpen(false)}
-          >
+          <div ref={catRef} className="hidden md:block">
             <button
               onClick={() => setCatOpen((v) => !v)}
               className={`flex items-center gap-2 px-4 h-10 rounded-xl font-medium text-sm transition-colors ${
