@@ -12,6 +12,7 @@ import {
   getAllColors,
   getAllMaterials,
   getAllLengths,
+  getLengthCategories,
   getWidthRange,
   type FilterState,
 } from "@/lib/catalog";
@@ -102,6 +103,7 @@ export function CatalogView() {
   const colors = useMemo(() => getAllColors().filter((c) => c.count >= 5).slice(0, 16), []);
   const materials = useMemo(() => getAllMaterials().filter((m) => m.count >= 5).slice(0, 14), []);
   const lengths = useMemo(() => getAllLengths(), []);
+  const lengthCats = useMemo(() => getLengthCategories(), []);
   const widthRange = useMemo(() => getWidthRange(), []);
 
   const filters: FilterState = useMemo(() => {
@@ -227,6 +229,13 @@ export function CatalogView() {
     !!filters.onSale ||
     !!filters.q;
 
+  // Длина — фильтр узкий, показываем только когда речь про ванны: выбран раздел
+  // ванн, в поиске «ванн…», либо длина уже отмечена (иначе нечем снять).
+  const showLength =
+    (filters.length?.length ?? 0) > 0 ||
+    (filters.category ?? []).some((c) => lengthCats.has(c)) ||
+    /ванн/i.test(filters.q ?? "");
+
   const FilterPanel = (
     <div className="space-y-5 text-sm">
       <div>
@@ -246,18 +255,19 @@ export function CatalogView() {
         selected={filters.category ?? []}
         onToggle={(v) => toggleArray("category", v)}
       />
-      {/* Длина ванны — секция сама скрывается там, где длины нет */}
-      <FacetSection
-        title={t("cat.length")}
-        items={dynItems(
-          lengths.map((l) => ({ value: String(l.value), label: `${l.value} см` })),
-          facetCounts.length,
-          filters.length ?? [],
-        )}
-        selected={filters.length ?? []}
-        onToggle={(v) => toggleArray("length", v)}
-        collapsed={8}
-      />
+      {showLength && (
+        <FacetSection
+          title={t("cat.length")}
+          items={dynItems(
+            lengths.map((l) => ({ value: String(l.value), label: `${l.value} см` })),
+            facetCounts.length,
+            filters.length ?? [],
+          )}
+          selected={filters.length ?? []}
+          onToggle={(v) => toggleArray("length", v)}
+          collapsed={8}
+        />
+      )}
       <FacetSection
         title={t("cat.brand")}
         items={dynItems(brands.map((b) => ({ value: b.name, label: b.name })), facetCounts.brand, filters.brand ?? [])}

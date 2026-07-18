@@ -94,6 +94,17 @@ function facetCounts(key: "color" | "material"): { name: string; count: number }
 export const getAllColors = () => facetCounts("color");
 export const getAllMaterials = () => facetCounts("material");
 
+// Категории, где у товаров есть длина (ванны). Считаем из данных, а не списком,
+// чтобы не разъезжалось с парсером при добавлении новых категорий ванн.
+let _lenCats: Set<string> | null = null;
+export function getLengthCategories(): Set<string> {
+  if (_lenCats) return _lenCats;
+  const s = new Set<string>();
+  for (const p of catalogItems) if (p.length != null) s.add(p.category);
+  _lenCats = s;
+  return s;
+}
+
 // Длины ванн (см) — фасет показывается только там, где длина вообще есть.
 export function getAllLengths(): { value: number; count: number }[] {
   const map = new Map<number, number>();
