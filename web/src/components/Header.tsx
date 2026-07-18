@@ -1,10 +1,10 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Menu, Heart, ShoppingCart, X, MapPin, MessageCircle } from "lucide-react";
+import { Menu, Heart, ShoppingCart, X, MapPin, MessageCircle, Phone } from "lucide-react";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { ymGoal } from "@/lib/metrika";
-import { WHATSAPP_URL } from "@/lib/contacts";
+import { WHATSAPP_URL, PHONE_DISPLAY } from "@/lib/contacts";
 import { useT } from "@/lib/i18n";
 import { LangSwitch } from "./LangSwitch";
 import { SearchBar } from "./SearchBar";
@@ -75,24 +75,38 @@ export function Header() {
 
           <div className="flex-1 md:flex-none" />
 
-          <div className="hidden lg:flex flex-col items-end leading-tight shrink-0">
+          {/* Кружок с иконкой прячем до xl: на 1024 он выдавливал корзину за край */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-2.5 shrink-0">
             <a
               href={WHATSAPP_URL}
               target="_blank"
               rel="noopener"
               onClick={() => ymGoal("call")}
-              className="text-sm font-medium hover:text-accent"
+              aria-label={PHONE_DISPLAY}
+              className="hidden xl:flex w-9 h-9 rounded-full bg-brand/10 text-brand items-center justify-center shrink-0 transition-colors hover:bg-brand hover:text-white"
             >
-              +7 702 252 54 38
+              <Phone size={16} strokeWidth={2.2} />
             </a>
-            <a
-              href="https://2gis.kz/astana/firm/70000001018116894?m=71.46823%2C51.164252%2F16"
-              target="_blank"
-              rel="noopener"
-              className="text-xs text-muted-foreground hover:text-accent inline-flex items-center gap-1"
-            >
-              <MapPin size={12} /> Абая 94, Астана
-            </a>
+            <div className="flex flex-col leading-tight">
+              <a
+                href={WHATSAPP_URL}
+                target="_blank"
+                rel="noopener"
+                onClick={() => ymGoal("call")}
+                className="text-[15px] font-semibold tracking-tight tabular-nums hover:text-accent transition-colors"
+              >
+                {PHONE_DISPLAY}
+              </a>
+              <a
+                href="https://2gis.kz/astana/firm/70000001018116894?m=71.46823%2C51.164252%2F16"
+                target="_blank"
+                rel="noopener"
+                className="text-[11px] text-muted-foreground hover:text-accent transition-colors inline-flex items-center gap-1 mt-0.5"
+              >
+                <MapPin size={11} className="shrink-0" />
+                Абая 94 · до 19:00
+              </a>
+            </div>
           </div>
 
           {/* WhatsApp (mobile) */}
