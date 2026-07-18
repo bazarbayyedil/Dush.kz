@@ -219,6 +219,10 @@ def facet_length(attrs: dict, title: str, category: str):
     return bath_dims(attrs, title, category)[0]
 
 
+def facet_width_cm(attrs: dict, title: str, category: str):
+    return bath_dims(attrs, title, category)[1]
+
+
 # Тонкий индекс для клиента (каталог + поиск): без attrs/description и без
 # лишних фото — только то, что нужно карточке и фильтрам. Полные данные
 # (products.json) читаются только на серверной странице товара.
@@ -240,6 +244,7 @@ index = [{
     "width": facet_width(p.get("attrs") or {}),
     "size": facet_size(p.get("attrs") or {}, p["title"], p["category"]),
     "length": facet_length(p.get("attrs") or {}, p["title"], p["category"]),
+    "width_cm": facet_width_cm(p.get("attrs") or {}, p["title"], p["category"]),
 } for p in all_products]
 idx_out = DATA_DIR / "products-index.json"
 idx_out.write_text(json.dumps(index, ensure_ascii=False))

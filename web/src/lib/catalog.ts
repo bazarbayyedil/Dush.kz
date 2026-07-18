@@ -21,6 +21,7 @@ export type CatalogItem = {
   width?: number | null;
   size?: string; // габариты ванны «длина×ширина» в см
   length?: number | null; // длина ванны в см — для фильтра
+  width_cm?: number | null; // ширина ванны в см — для фильтра
 };
 
 export const catalogItems: CatalogItem[] = indexData as CatalogItem[];
@@ -32,6 +33,7 @@ export type FilterState = {
   color?: string[];
   material?: string[];
   length?: string[]; // выбранные длины ванн в см
+  widthCm?: string[]; // выбранные ширины ванн в см
   priceMin?: number;
   priceMax?: number;
   widthMin?: number;
@@ -51,6 +53,8 @@ export function filterCatalog(all: CatalogItem[], f: FilterState): CatalogItem[]
   if (f.color?.length) out = out.filter((p) => p.color && f.color!.includes(p.color));
   if (f.material?.length) out = out.filter((p) => p.material && f.material!.includes(p.material));
   if (f.length?.length) out = out.filter((p) => p.length != null && f.length!.includes(String(p.length)));
+  if (f.widthCm?.length)
+    out = out.filter((p) => p.width_cm != null && f.widthCm!.includes(String(p.width_cm)));
   if (f.priceMin != null) out = out.filter((p) => (p.price ?? 0) >= f.priceMin!);
   if (f.priceMax != null) out = out.filter((p) => (p.price ?? 0) <= f.priceMax!);
   if (f.widthMin != null) out = out.filter((p) => p.width != null && p.width >= f.widthMin!);
@@ -105,16 +109,19 @@ export function getLengthCategories(): Set<string> {
   return s;
 }
 
-// Длины ванн (см) — фасет показывается только там, где длина вообще есть.
-export function getAllLengths(): { value: number; count: number }[] {
+// Габариты ванн в см. Порядок задаёт сам фасет: длина сверху вниз от большей,
+// ширина — от меньшей, так покупателю привычнее выбирать размер.
+function dimValues(key: "length" | "width_cm"): { value: number; count: number }[] {
   const map = new Map<number, number>();
   for (const p of catalogItems) {
-    if (p.length != null) map.set(p.length, (map.get(p.length) ?? 0) + 1);
+    const v = p[key];
+    if (v != null) map.set(v, (map.get(v) ?? 0) + 1);
   }
-  return [...map.entries()]
-    .map(([value, count]) => ({ value, count }))
-    .sort((a, b) => b.count - a.count);
+  return [...map.entries()].map(([value, count]) => ({ value, count }));
 }
+
+export const getAllLengths = () => dimValues("length").sort((a, b) => b.value - a.value);
+export const getAllWidthsCm = () => dimValues("width_cm").sort((a, b) => a.value - b.value);
 
 export function getWidthRange(): { min: number; max: number } {
   const w = catalogItems.map((p) => p.width ?? 0).filter((x) => x > 0);
