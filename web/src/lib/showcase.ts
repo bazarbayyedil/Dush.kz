@@ -77,56 +77,43 @@ export const topPicks = (() => {
   return out;
 })();
 
-// Слайды хиро — вручную отобранные чистые студийные фото. Автоматике на этом
-// каталоге доверия нет: среди «крупных» файлов попадаются размерные чертежи и
-// рекламные композиты с вотермарками. Порядок = порядок показа; скидка (если
-// есть у товара) отрисовывается сама. Товар не в наличии выпадает из слайдера.
+// Слайды хиро — витрина лучших фото по трём ключевым брендам. Отобраны вручную:
+// высокое разрешение, чистый кадр без чертежей, вотермарок и инфографики.
+// Бренды чередуются, поэтому в подборку любого дня попадают все три.
+// Скидка берётся из данных товара и отрисовывается сама.
 const HERO_SLUGS = [
-  "gigieniceskij-smesitel-komplekt-bauflow-23755000-27513001",
-  "smesitel-dla-rakoviny-grohe-bauloop-s-ogranicitelem-temperatury-i-rycaznym-donnym-klapanom-razmer-s-hrom-23335001",
-  "smesitel-dla-umyval-nika-bauloop-grohe-23762001",
-  "smesitel-dla-bide-bauedge-grohe-23331001",
-  "smesitel-dla-dusa-bauedge-grohe-23635001",
-  "sistema-installacii-dla-unitaza-grohe-rapid-1000046-5-v-1",
-];
-
-// Gappo: чистые студийные фото на белом из официального каталога 2025-26
-// (вручную отобраны из применённых catalog.jpg — без сцен, аннотаций и раскладок).
-const GAPPO_HERO_SLUGS = [
-  "dusevaa-sistema-gappo-g-2417-3-matovoe-zoloto",
-  "dusevaa-sistema-gappo-g-2491-6-s-termostatom-cernaa",
-  "dusevaa-sistema-gappo-g-7117-6-vstroennyj-dla-vanny-s-3-funkciami-cernyj",
-  "dusevaa-sistema-gappo-g2406-3-zoloto-satin-s-izlivom",
-  "dusevaa-sistema-gappo-g2406-9-oruzejnaa-stal-s-izlivom",
-  "dusevaa-sistema-gappo-g2448-9-grafit",
-  "dusevaa-sistema-gappo-g7106-3-zoloto-satin",
-  "dusevaa-sistema-gappo-g7106-6-cernyj",
-  "dusevaa-stojka-gappo-g-2407-40-s-termostatom-hrom",
-  "dusevaa-stojka-gappo-g-2417-9-oruzejnaa-stal",
-  "dusevaa-stojka-gappo-g2427-9-oruzejnaa-stal",
-  "dusevaa-stojka-gappo-g2448-3-zolotoj-satin",
-  "dusevaa-stojka-gappo-g2491-9-s-termostatom-izliv-avlaetsa-pereklucatelem-na-lejku-oruzejnaa-stal_20250711110454",
-  "dusevaa-stojka-s-termostatom-gappo-g2495-71",
-  "dusevaa-stojka-s-termostatom-gappo-g2495-79",
-  "dusevaa-stojka-so-smesitelem-gappo-jacob-g2407",
-  "gigieniceskij-dus-gappo-cernyj-g-2007-6",
-  "gigieniceskij-dus-gappo-g-2007-hrom",
-  "smesitel-dla-rakoviny-g-1007-13-zoloto",
-  "smesitel-dla-rakoviny-g-1007-3-zoloto",
-  "smesitel-dla-rakoviny-gappo-g1017-6-cernyj",
-  "smesitel-dla-rakoviny-gappo-g1206-3-skrytyj-montaz-zolotoj-satin",
-  "smesitel-dla-rakoviny-gappo-g1206-skrytyj-montaz-hrom",
-  "smesitel-dla-rakoviny-gappo-jacob-g-1007-6-cernyj",
-  "smesitel-dla-umyval-nika-gappo-g-1017-3-zoloto-mat",
-  "smesitel-gappo-dla-rakoviny-g-1017-16-cernyj-futura",
-  "smesitel-gappo-dla-rakoviny-g1010-23-vysokij-zoloto-satin",
-  "smesitel-gappo-dla-rakoviny-g1010-9-oruzejnaa-stal",
-  "smesitel-gappo-dla-rakoviny-g1017-9-oruzejnaa-stal",
-  "smesitel-gappo-dla-rakoviny-g1028-3-zolotoj-satin",
-  "smesitel-gappo-dla-rakoviny-g1028-9-oruzejnaa-stal",
-  "smesitel-gappo-dla-rakoviny-g1048-3-zolotoj-satin",
-  "smesitel-gappo-dla-rakoviny-g1206-9-oruzejnaa-stal-vstraivaemyj",
-  "smesitel-gappo-dla-umyval-nika-vysokij-g-1007-78-belyj-hrom",
+  "bide-podvesnoe-grohe-39208000-euro-ceramic-germania",
+  "smesitel-dla-rakoviny-lemark-bronx-lm-3706-gm",
+  "smesitel-dla-rakoviny-gappo-g1006-9-oruzejnaa-stal",
+  "smesitel-dla-dusa-grohe-bauclassic-vnesnaa-i-vstraivaemaa-casti-hrom-29048000",
+  "lemark-mista-lm6426wg",
+  "rakovina-nakladnaa-bez-pereliva-gappo-gt-302-620mm-400mm-150mm-oval-naa",
+  "smesitel-dla-vanny-grohe-bauclassic-hrom-32867000",
+  "smesitel-lemark-bronx-s-gigieniceskim-dusem-vstraivaemyj-lm-3720-bl",
+  "smesitel-vstraivaemyj-dla-rakoviny-gappo-g-1206-6-cernyj",
+  "smesitel-dla-umyval-nika-eurostyle-grohe-23707003",
+  "smesitel-dla-vanny-s-korotkim-izlivom-lemark-lm-0414-c-linara-cehia",
+  "rakovina-nakladnaa-bez-pereliva-gappo-gt-403-8-370mm-480mm-130mm-pramougol-naa-cvet-cernyj",
+  "smesitel-dla-vanny-grohe-eurostyle-hrom-23726003",
+  "nabor-smesitelej-3-v-1-dla-vanny-dla-umyval-nika-dus-garnitur-hrom-lm-0380-c",
+  "gigieniceskij-dus-gappo-g7206-3-vstraivaemyj-zoloto-satin",
+  "smesitel-dla-dusa-grohe-eurosmart-cosmopolitan-hrom-24044000",
+  "gigieniceskij-dus-lemark-bronx-lm-3718-bl",
+  "smesitel-dla-rakoviny-gappo-hrom-g1006",
+  "smesitel-dla-dusa-grohe-eurostyle-33635003",
+  "smesitel-dla-vanny-s-korotkim-izlivom-lemark-lm-0614-c-aura-cehia",
+  "smesitel-dla-rakoviny-gappo-g1006-6-cernyj",
+  "smesitel-dla-dusa-grohe-eurostyle-cosmopolitan-33590002",
+  "smesitel-dla-umyval-nika-monolitnyj-lemark-lm-0606-c-aura-cehia",
+  "smesitel-dla-rakoviny-gappo-g1006-29-oruzejnaa-stal",
+  "dusevaa-sistema-grohe-euphoria-smartcontrol-310-duo-s-termostatom-hrom-26507000",
+  "smesitel-dla-vanny-s-korotkim-izlivom-hrom-lm-0314-c-point",
+  "dusevaa-stojka-gappo-g2491-3-s-termostatom-zolotoj-satin",
+  "smesitel-dla-dusa-grohe-essence-hrom-33636001",
+  "smesitel-dla-umyval-nika-monolitnyj-lemark-lm-0506-c-evitta-cehia",
+  "smesitel-dla-kuhni-gappo-g-4398-16-cernyj-s-gibkim-gusakom-i-s-vyhodom-pod-fil-tr",
+  "gigieniceskij-smesitel-komplekt-bauedge",
+  "dusevaa-stojka-gappo-g-2417-8-belyj",
 ];
 
 const bySlugInStock = (slug: string) => {
@@ -140,10 +127,9 @@ export const heroPicks: CatalogItem[] = HERO_SLUGS.map(bySlugInStock).filter(
 );
 
 // Полный пул для hero — из него слайдер каждый день детерминированно берёт 6.
-// GROHE впереди: первые 6 совпадают с heroPicks (тот же дефолт до маунта).
-export const heroPool: CatalogItem[] = [...HERO_SLUGS, ...GAPPO_HERO_SLUGS]
-  .map(bySlugInStock)
-  .filter((p): p is CatalogItem => !!p);
+export const heroPool: CatalogItem[] = HERO_SLUGS.map(bySlugInStock).filter(
+  (p): p is CatalogItem => !!p,
+);
 
 // Инсталляции и готовые комплекты (с унитазом) — без «ванн в комплекте с ножками»
 export const installations = dedupe(
