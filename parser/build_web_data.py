@@ -157,6 +157,15 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
             "description": description,
         })
 
+# Выверенные габариты (см. parser/dims-clean.json) накладываем поверх разбора:
+# в исходных полях единицы и смысл разъезжаются от поставщика к поставщику.
+_dims_file = ROOT / "parser/dims-clean.json"
+DIMS_CLEAN = json.loads(_dims_file.read_text()) if _dims_file.exists() else {}
+for p in all_products:
+    d = DIMS_CLEAN.get(p["slug"])
+    if d:
+        p["dims"] = {"L": d["L"], "W": d["W"]}
+
 out = DATA_DIR / "products.json"
 out.write_text(json.dumps(all_products, ensure_ascii=False, indent=2))
 
@@ -249,6 +258,7 @@ index = [{
     "size": facet_size(p.get("attrs") or {}, p["title"], p["category"]),
     "length": facet_length(p.get("attrs") or {}, p["title"], p["category"]),
     "width_cm": facet_width_cm(p.get("attrs") or {}, p["title"], p["category"]),
+    **({"dimL": p["dims"]["L"], "dimW": p["dims"]["W"]} if p.get("dims") else {}),
 } for p in all_products]
 idx_out = DATA_DIR / "products-index.json"
 idx_out.write_text(json.dumps(index, ensure_ascii=False))
