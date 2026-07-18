@@ -29,6 +29,7 @@ export function Footer() {
             <li><Link href="/about" className="hover:text-white">{t("footer.about")}</Link></li>
             <li><Link href="/contacts" className="hover:text-white">{t("footer.contacts_link")}</Link></li>
             <li><Link href="/wholesale" className="hover:text-white">{t("footer.wholesale")}</Link></li>
+            <li><Link href="/planner" className="hover:text-white">{t("footer.planner")}</Link></li>
           </ul>
         </div>
 
