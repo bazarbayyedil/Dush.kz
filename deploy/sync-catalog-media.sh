@@ -24,7 +24,11 @@ fi
 python3 .agents/skills/dush-catalog-pipeline/scripts/check_catalog.py --require-images
 
 ssh "$target" "mkdir -p '$remote_media'"
-rsync -az --partial --progress "$media_dir/" "$target:$remote_media/"
+# --delete: сервер повторяет локальную папку один в один. Без него заменённые
+# фото копились годами и оставались доступны по прямым ссылкам — включая кадры
+# с водяными знаками конкурентов, которые мы убрали с витрины.
+# --exclude '._*': AppleDouble от macOS-tar, на сервере они мусор.
+rsync -az --partial --progress --delete --exclude '._*' "$media_dir/" "$target:$remote_media/"
 scp "$catalog" "$target:$remote_catalog"
 ssh "$target" "set -a; source /etc/dush.kz/backend.env; set +a; cd /var/www/dush.kz/current/backend; /var/www/dush.kz/shared/venv/bin/python scripts/import_catalog.py '$remote_catalog'; rm -f '$remote_catalog'"
 
