@@ -11,6 +11,7 @@ import {
   getPriceRange,
   getAllColors,
   getAllMaterials,
+  getAllLengths,
   getWidthRange,
   type FilterState,
 } from "@/lib/catalog";
@@ -100,6 +101,7 @@ export function CatalogView() {
   const priceRange = useMemo(() => getPriceRange(), []);
   const colors = useMemo(() => getAllColors().filter((c) => c.count >= 5).slice(0, 16), []);
   const materials = useMemo(() => getAllMaterials().filter((m) => m.count >= 5).slice(0, 14), []);
+  const lengths = useMemo(() => getAllLengths(), []);
   const widthRange = useMemo(() => getWidthRange(), []);
 
   const filters: FilterState = useMemo(() => {
@@ -109,6 +111,7 @@ export function CatalogView() {
       category: sp.getAll("category"),
       color: sp.getAll("color"),
       material: sp.getAll("material"),
+      length: sp.getAll("length"),
       priceMin: sp.get("priceMin") ? Number(sp.get("priceMin")) : undefined,
       priceMax: sp.get("priceMax") ? Number(sp.get("priceMax")) : undefined,
       widthMin: sp.get("widthMin") ? Number(sp.get("widthMin")) : undefined,
@@ -126,16 +129,31 @@ export function CatalogView() {
   // всеми ОСТАЛЬНЫМИ фильтрами. Свои отметки секцию не сужают — чтобы можно
   // было довыбрать второй бренд/цвет внутри секции.
   const facetCounts = useMemo(() => {
-    const build = (key: "brand" | "category" | "color" | "material") => {
+    const build = (key: "brand" | "category" | "color" | "material" | "length") => {
       const base = filterCatalog(catalogItems, { ...filters, [key]: undefined });
       const m = new Map<string, number>();
       for (const p of base) {
-        const v = key === "brand" ? p.brand : key === "category" ? p.category : p[key];
+        const v =
+          key === "brand"
+            ? p.brand
+            : key === "category"
+              ? p.category
+              : key === "length"
+                ? p.length != null
+                  ? String(p.length)
+                  : ""
+                : p[key];
         if (v) m.set(v, (m.get(v) ?? 0) + 1);
       }
       return m;
     };
-    return { brand: build("brand"), category: build("category"), color: build("color"), material: build("material") };
+    return {
+      brand: build("brand"),
+      category: build("category"),
+      color: build("color"),
+      material: build("material"),
+      length: build("length"),
+    };
   }, [filters]);
 
   // Пункты секции с живыми счётчиками: нули прячем (кроме уже отмеченных).
@@ -187,7 +205,7 @@ export function CatalogView() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const toggleArray = (key: "brand" | "category" | "color" | "material", value: string) => {
+  const toggleArray = (key: "brand" | "category" | "color" | "material" | "length", value: string) => {
     const cur = filters[key] || [];
     const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value];
     update({ [key]: next });
@@ -200,6 +218,7 @@ export function CatalogView() {
     (filters.category?.length ?? 0) > 0 ||
     (filters.color?.length ?? 0) > 0 ||
     (filters.material?.length ?? 0) > 0 ||
+    (filters.length?.length ?? 0) > 0 ||
     filters.priceMin != null ||
     filters.priceMax != null ||
     filters.widthMin != null ||
@@ -226,6 +245,18 @@ export function CatalogView() {
         items={dynItems(cats.map((c) => ({ value: c.slug, label: c.title })), facetCounts.category, filters.category ?? [])}
         selected={filters.category ?? []}
         onToggle={(v) => toggleArray("category", v)}
+      />
+      {/* Длина ванны — секция сама скрывается там, где длины нет */}
+      <FacetSection
+        title={t("cat.length")}
+        items={dynItems(
+          lengths.map((l) => ({ value: String(l.value), label: `${l.value} см` })),
+          facetCounts.length,
+          filters.length ?? [],
+        )}
+        selected={filters.length ?? []}
+        onToggle={(v) => toggleArray("length", v)}
+        collapsed={8}
       />
       <FacetSection
         title={t("cat.brand")}

@@ -194,9 +194,10 @@ def _dim_cm(value):
     return round(n / 10) if n >= 500 else n  # в данных бывают и мм, и см
 
 
-def facet_size(attrs: dict, title: str, category: str) -> str:
+def bath_dims(attrs: dict, title: str, category: str):
+    """(длина, ширина) ванны в см или (None, None)."""
     if category not in BATH_CATS:
-        return ""
+        return None, None
     a = attrs or {}
     length = _dim_cm(a.get("Длина ванны") or a.get("Длина"))
     width = _dim_cm(a.get("Ширина ванны") or a.get("Ширина"))
@@ -205,8 +206,17 @@ def facet_size(attrs: dict, title: str, category: str) -> str:
         if m:
             length, width = _dim_cm(m.group(1)), _dim_cm(m.group(2))
     if length and width and 50 <= length <= 250 and 50 <= width <= 250:
-        return f"{length}×{width}"
-    return ""
+        return length, width
+    return None, None
+
+
+def facet_size(attrs: dict, title: str, category: str) -> str:
+    length, width = bath_dims(attrs, title, category)
+    return f"{length}×{width}" if length and width else ""
+
+
+def facet_length(attrs: dict, title: str, category: str):
+    return bath_dims(attrs, title, category)[0]
 
 
 # Тонкий индекс для клиента (каталог + поиск): без attrs/description и без
@@ -229,6 +239,7 @@ index = [{
     "material": facet_material(p.get("attrs") or {}),
     "width": facet_width(p.get("attrs") or {}),
     "size": facet_size(p.get("attrs") or {}, p["title"], p["category"]),
+    "length": facet_length(p.get("attrs") or {}, p["title"], p["category"]),
 } for p in all_products]
 idx_out = DATA_DIR / "products-index.json"
 idx_out.write_text(json.dumps(index, ensure_ascii=False))

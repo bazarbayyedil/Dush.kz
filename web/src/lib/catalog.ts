@@ -20,6 +20,7 @@ export type CatalogItem = {
   material?: string;
   width?: number | null;
   size?: string; // габариты ванны «длина×ширина» в см
+  length?: number | null; // длина ванны в см — для фильтра
 };
 
 export const catalogItems: CatalogItem[] = indexData as CatalogItem[];
@@ -30,6 +31,7 @@ export type FilterState = {
   category?: string[];
   color?: string[];
   material?: string[];
+  length?: string[]; // выбранные длины ванн в см
   priceMin?: number;
   priceMax?: number;
   widthMin?: number;
@@ -48,6 +50,7 @@ export function filterCatalog(all: CatalogItem[], f: FilterState): CatalogItem[]
   if (f.category?.length) out = out.filter((p) => f.category!.includes(p.category));
   if (f.color?.length) out = out.filter((p) => p.color && f.color!.includes(p.color));
   if (f.material?.length) out = out.filter((p) => p.material && f.material!.includes(p.material));
+  if (f.length?.length) out = out.filter((p) => p.length != null && f.length!.includes(String(p.length)));
   if (f.priceMin != null) out = out.filter((p) => (p.price ?? 0) >= f.priceMin!);
   if (f.priceMax != null) out = out.filter((p) => (p.price ?? 0) <= f.priceMax!);
   if (f.widthMin != null) out = out.filter((p) => p.width != null && p.width >= f.widthMin!);
@@ -90,6 +93,17 @@ function facetCounts(key: "color" | "material"): { name: string; count: number }
 
 export const getAllColors = () => facetCounts("color");
 export const getAllMaterials = () => facetCounts("material");
+
+// Длины ванн (см) — фасет показывается только там, где длина вообще есть.
+export function getAllLengths(): { value: number; count: number }[] {
+  const map = new Map<number, number>();
+  for (const p of catalogItems) {
+    if (p.length != null) map.set(p.length, (map.get(p.length) ?? 0) + 1);
+  }
+  return [...map.entries()]
+    .map(([value, count]) => ({ value, count }))
+    .sort((a, b) => b.count - a.count);
+}
 
 export function getWidthRange(): { min: number; max: number } {
   const w = catalogItems.map((p) => p.width ?? 0).filter((x) => x > 0);
