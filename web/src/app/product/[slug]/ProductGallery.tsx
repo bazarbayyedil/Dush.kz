@@ -1,6 +1,27 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { productImageUrl } from "@/lib/media";
+
+// Свайп пальцем. Горизонталь засчитываем только если она заметно больше
+// вертикали — иначе перелистывание срабатывало бы при обычной прокрутке страницы.
+const SWIPE_MIN = 40;
+function useSwipe(onSwipe: (dir: number) => void) {
+  const start = useRef<{ x: number; y: number } | null>(null);
+  return {
+    onTouchStart: (e: React.TouchEvent) => {
+      const t = e.touches[0];
+      start.current = { x: t.clientX, y: t.clientY };
+    },
+    onTouchEnd: (e: React.TouchEvent) => {
+      if (!start.current) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - start.current.x;
+      const dy = t.clientY - start.current.y;
+      start.current = null;
+      if (Math.abs(dx) > SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.5) onSwipe(dx < 0 ? 1 : -1);
+    },
+  };
+}
 
 export function ProductGallery({ images, alt }: { images: string[]; alt: string }) {
   const [current, setCurrent] = useState(0);
@@ -16,6 +37,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
     },
     [total],
   );
+
+  const swipe = useSwipe(go);
 
   // Клавиатура в полноэкранном режиме
   useEffect(() => {
@@ -44,11 +67,15 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
   return (
     <div className="flex flex-col gap-3">
       {/* Главное фото */}
-      <div className="relative group aspect-square bg-muted rounded-2xl overflow-hidden border border-border">
+      <div
+        className="relative group aspect-square bg-muted rounded-2xl overflow-hidden border border-border touch-pan-y"
+        {...swipe}
+      >
         <img
           src={main}
           alt={alt}
-          className="w-full h-full object-contain p-4 cursor-zoom-in mix-blend-multiply"
+          className="w-full h-full object-contain p-4 cursor-zoom-in mix-blend-multiply select-none"
+          draggable={false}
           onClick={() => setZoom(true)}
         />
 
@@ -100,8 +127,9 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
       {/* Полноэкранный просмотр */}
       {zoom && (
         <div
-          className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center"
+          className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center touch-pan-y"
           onClick={() => setZoom(false)}
+          {...swipe}
         >
           <button
             onClick={() => setZoom(false)}
@@ -116,7 +144,8 @@ export function ProductGallery({ images, alt }: { images: string[]; alt: string 
           <img
             src={main}
             alt={alt}
-            className="max-w-[92vw] max-h-[88vh] object-contain"
+            className="max-w-[92vw] max-h-[88vh] object-contain select-none"
+            draggable={false}
             onClick={(e) => e.stopPropagation()}
           />
 

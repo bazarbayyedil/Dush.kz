@@ -6,9 +6,11 @@ import { catalogItems } from "@/lib/catalog";
 import { crossSell } from "@/lib/crosssell";
 import { ProductCard } from "@/components/ProductCard";
 import { T } from "@/components/T";
+import { CatTitle } from "@/components/CatTitle";
 import { ProductGallery } from "./ProductGallery";
 import { AddToCartButton } from "./AddToCartButton";
 import { BuyOneClickButton } from "./BuyOneClickButton";
+import { FavoriteButton } from "./FavoriteButton";
 import { MobileBuyBar } from "./MobileBuyBar";
 
 // Ключевые характеристики выбора — показываем первыми, если есть у товара.
@@ -72,7 +74,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
         <Link href="/catalog" className="hover:text-foreground"><T k="prod.catalog" /></Link>
         <span>/</span>
         <Link href={`/catalog?category=${product.category}`} className="hover:text-foreground">
-          {product.category_title}
+          <CatTitle slug={product.category} ru={product.category_title} />
         </Link>
         <span>/</span>
         <span className="text-foreground line-clamp-1">{product.title}</span>
@@ -112,6 +114,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
           <div className="mt-6 flex flex-wrap gap-3">
             <AddToCartButton product={product} />
             <BuyOneClickButton slug={product.slug} title={product.title} price={product.price ?? 0} />
+            <FavoriteButton slug={product.slug} />
           </div>
 
           <div className="mt-8 grid grid-cols-3 gap-3 text-xs text-muted-foreground">

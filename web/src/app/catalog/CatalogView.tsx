@@ -20,6 +20,7 @@ import {
 import { catalogTree, matchGroupTitle } from "@/lib/catalogTree";
 import { formatPrice } from "@/lib/format";
 import { useT, useLangHydrated } from "@/lib/i18n";
+import { useCatTitle, useGroupTitle } from "@/lib/categories-kk";
 import { ProductCard } from "@/components/ProductCard";
 
 type FacetItem = { value: string; label: string; count: number };
@@ -95,6 +96,8 @@ export function CatalogView() {
   const pathname = usePathname();
   const t = useT();
   const lang = useLangHydrated();
+  const cat = useCatTitle();
+  const grp = useGroupTitle();
   const [mobileFilters, setMobileFilters] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
@@ -206,10 +209,10 @@ export function CatalogView() {
         const c = cats.find((x) => x.slug === slug);
         if (!c || c.count === 0) return null;
         // состав чипсов стабильный, счётчик — живой (с учётом остальных фильтров)
-        return { slug, title: c.title, count: facetCounts.category.get(slug) ?? 0 };
+        return { slug, title: cat(slug, c.title), count: facetCounts.category.get(slug) ?? 0 };
       })
       .filter((c): c is { slug: string; title: string; count: number } => !!c);
-  }, [activeGroup, cats, facetCounts]);
+  }, [activeGroup, cats, facetCounts, cat]);
 
   const groupAllSlugs = subChips.map((c) => c.slug);
   const allGroupActive = (filters.category?.length ?? 0) === groupAllSlugs.length;
@@ -279,7 +282,7 @@ export function CatalogView() {
 
       <FacetSection
         title={t("cat.category")}
-        items={dynItems(cats.map((c) => ({ value: c.slug, label: c.title })), facetCounts.category, filters.category ?? [])}
+        items={dynItems(cats.map((c) => ({ value: c.slug, label: cat(c.slug, c.title) })), facetCounts.category, filters.category ?? [])}
         selected={filters.category ?? []}
         onToggle={(v) => toggleArray("category", v)}
       />
@@ -380,9 +383,9 @@ export function CatalogView() {
 
   const pageTitle =
     filters.category?.length === 1
-      ? cats.find((c) => c.slug === filters.category![0])?.title ?? t("cat.title")
+      ? (() => { const c = cats.find((x) => x.slug === filters.category![0]); return c ? cat(c.slug, c.title) : t("cat.title"); })()
       : (filters.category?.length ?? 0) > 1
-        ? matchGroupTitle(filters.category!) ?? t("cat.title")
+        ? (matchGroupTitle(filters.category!) ? grp(matchGroupTitle(filters.category!)!) : t("cat.title"))
         : filters.q
           ? `${t("cat.search_hint")}${filters.q}»`
           : t("cat.title");

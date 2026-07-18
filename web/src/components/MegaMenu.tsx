@@ -7,11 +7,16 @@ import { ChevronRight } from "lucide-react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { getCategoryMap, sampleByCategories } from "@/lib/catalog";
 import { formatPrice } from "@/lib/format";
+import { useCatTitle, useGroupTitle } from "@/lib/categories-kk";
+import { useT } from "@/lib/i18n";
 import { productImageUrl } from "@/lib/media";
 
 export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [active, setActive] = useState(0);
   const [mounted, setMounted] = useState(false);
+  const cat = useCatTitle();
+  const grp = useGroupTitle();
+  const t = useT();
   useEffect(() => setMounted(true), []);
 
   // Раздел переключаем по клику сразу, а по наведению — только если курсор
@@ -83,7 +88,7 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                         }`}
                       >
                         <Icon size={19} className={isActive ? "text-brand" : "text-muted-foreground"} strokeWidth={1.8} />
-                        <span className="flex-1">{g.title}</span>
+                        <span className="flex-1">{grp(g.title)}</span>
                         <ChevronRight size={15} className={isActive ? "text-accent" : "text-transparent"} />
                       </button>
                     );
@@ -95,14 +100,14 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                       <group.icon size={20} className="text-brand" strokeWidth={1.8} />
-                      {group.title}
+                      {grp(group.title)}
                     </h3>
                     <Link
                       href={groupHref(subs.length ? subs.map((s) => s.slug) : group.categories.slice(0, 1))}
                       onClick={onClose}
                       className="text-sm text-accent hover:underline shrink-0"
                     >
-                      Все товары →
+                      {t("brands.all")}
                     </Link>
                   </div>
 
@@ -114,7 +119,7 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                         onClick={onClose}
                         className="group flex items-baseline gap-2 py-1 text-sm hover:text-accent"
                       >
-                        <span className="group-hover:underline">{s.title}</span>
+                        <span className="group-hover:underline">{cat(s.slug, s.title)}</span>
                         <span className="text-xs text-muted-foreground">{s.count}</span>
                       </Link>
                     ))}

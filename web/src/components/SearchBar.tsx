@@ -6,12 +6,14 @@ import { searchProducts } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
 import { ymGoal } from "@/lib/metrika";
 import { useT } from "@/lib/i18n";
+import { useCatTitle } from "@/lib/categories-kk";
 import Link from "next/link";
 import { productImageUrl } from "@/lib/media";
 
 export function SearchBar({ className = "" }: { className?: string }) {
   const router = useRouter();
   const t = useT();
+  const cat = useCatTitle();
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
@@ -121,7 +123,7 @@ export function SearchBar({ className = "" }: { className?: string }) {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="text-sm line-clamp-1">{p.title}</div>
-                <div className="text-xs text-muted-foreground">{p.category_title}</div>
+                <div className="text-xs text-muted-foreground">{cat(p.category, p.category_title)}</div>
               </div>
               <div className="text-sm font-medium shrink-0">{formatPrice(p.price)}</div>
             </Link>

@@ -132,9 +132,13 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
         merged = {**p.get("attrs", {}), **parse_desc_to_attrs(p.get("description_text", ""))}
         description = build_description(merged)
         # Таблица характеристик — без мусорных и служебных строк
+        # Строки со «строчным» ключом — это разобранные не туда пункты
+        # маркированного списка, а не характеристики: у настоящих названий
+        # всегда заглавная («Материал», «Цвет»).
         attrs_display = {
             k: v for k, v in merged.items()
             if k and k.strip().lower() not in NOISE_ATTRS and k.strip().lower() != "артикул"
+            and k.strip()[:1].isupper()
         }
         all_products.append({
             "slug": p["slug"],

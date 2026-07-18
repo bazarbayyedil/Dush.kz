@@ -5,11 +5,16 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X } from "lucide-react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
+import { useCatTitle, useGroupTitle } from "@/lib/categories-kk";
+import { useT } from "@/lib/i18n";
 import { getCategoryMap } from "@/lib/catalog";
 
 export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [expanded, setExpanded] = useState<number | null>(0);
   const catMap = getCategoryMap();
+  const cat = useCatTitle();
+  const grp = useGroupTitle();
+  const t = useT();
 
   // Портал в body: шапка с backdrop-blur является containing block для
   // fixed-потомков, из-за чего шторка обрезалась до высоты шапки.
@@ -36,8 +41,8 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
             className="absolute inset-y-0 left-0 w-[88%] max-w-sm bg-white flex flex-col"
           >
             <header className="flex items-center justify-between px-4 h-14 border-b border-border shrink-0">
-              <span className="font-semibold">Каталог</span>
-              <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted" aria-label="Закрыть">
+              <span className="font-semibold">{t("nav.catalog")}</span>
+              <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted" aria-label={t("common.close")}>
                 <X size={20} />
               </button>
             </header>
@@ -55,7 +60,7 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                       className="w-full flex items-center gap-3 px-4 py-3.5 text-sm text-left"
                     >
                       <Icon size={20} className="text-brand" strokeWidth={1.8} />
-                      <span className="flex-1 font-medium">{g.title}</span>
+                      <span className="flex-1 font-medium">{grp(g.title)}</span>
                       <ChevronDown size={18} className={`text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
                     <AnimatePresence initial={false}>
@@ -74,7 +79,7 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                                 onClick={onClose}
                                 className="flex items-center justify-between py-2 text-sm font-medium text-accent"
                               >
-                                <span>Все товары раздела</span>
+                                <span>{t("menu.all_in_group")}</span>
                                 <span className="text-xs">{subs.reduce((n, s) => n + s.count, 0)}</span>
                               </Link>
                             )}
@@ -85,7 +90,7 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                                 onClick={onClose}
                                 className="flex items-center justify-between py-2 text-sm text-foreground/90"
                               >
-                                <span>{s.title}</span>
+                                <span>{cat(s.slug, s.title)}</span>
                                 <span className="text-xs text-muted-foreground">{s.count}</span>
                               </Link>
                             ))}

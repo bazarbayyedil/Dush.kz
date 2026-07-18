@@ -151,6 +151,9 @@ const DICT: Record<string, [string, string]> = {
   "prod.with_this": ["С этим берут", "Осымен бірге алады"],
   "prod.similar": ["Похожие товары", "Ұқсас тауарлар"],
   "prod.catalog": ["Каталог", "Каталог"],
+  "prod.to_fav": ["В избранное", "Таңдаулыға"],
+  "prod.in_fav": ["В избранном", "Таңдаулыда"],
+  "menu.all_in_group": ["Все товары раздела", "Бөлімнің барлық тауары"],
 
   // Футер
   "footer.about_store": [
