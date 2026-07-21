@@ -1,0 +1,11 @@
+[Unit]
+Description=Watch for publish requests from the admin panel
+
+[Path]
+# Панель изолирована и может писать только в shared — файл-сигнал её единственный способ
+# попросить пересборку.
+PathExists=/var/www/dush.kz/shared/publish.request
+Unit=dush-publish.service
+
+[Install]
+WantedBy=multi-user.target

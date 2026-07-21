@@ -1,0 +1,32 @@
+[
+ {
+  "slug": "komplekt-grohe-installacia-unitaz-saniteco-promo",
+  "title": "Комплект: инсталляция GROHE + подвесной унитаз SANITECO",
+  "brand": "Grohe",
+  "color": null,
+  "category": "dlya-podvesnogo-unitaza",
+  "lead": "Всё для подвесного унитаза одним заказом: немецкая рама GROHE Rapid SL с кнопкой Skate Cosmopolitan и безободковая чаша SANITECO. Совместимость проверена — ничего докупать и подгонять не придётся.",
+  "images": [
+   "/products/komplekt-grohe-installacia-unitaz-saniteco-promo/combo.jpg",
+   "/products/komplekt-grohe-installacia-unitaz-saniteco-promo/p1.jpg",
+   "/products/komplekt-grohe-installacia-unitaz-saniteco-promo/p2.jpg"
+  ],
+  "price": 150000,
+  "old_price": 174500,
+  "discount_pct": 14,
+  "parts": [
+   {
+    "slug": "installacia-dla-podvesnogo-unitaza-knopka-skate-sosmopoliten-grohe-38772001-rapid-sl-germania",
+    "title": "Инсталляция для подвесного унитаза + кнопка SKATE СOSMOPOLITEN GROHE 38772001 RAPID SL (Германия)",
+    "price": 131500,
+    "sku": "38772001"
+   },
+   {
+    "slug": "unitaz-podvesnoj-saniteco-jt-m235-515-400-345-mm",
+    "title": "Унитаз подвесной SANITECO JT M235 515*400*345 мм",
+    "price": 43000,
+    "sku": "JT M235"
+   }
+  ]
+ }
+]

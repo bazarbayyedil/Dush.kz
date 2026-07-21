@@ -16,6 +16,11 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 _cat_map_file = ROOT / "parser/categories.json"
 CATEGORY_TITLES = json.loads(_cat_map_file.read_text()) if _cat_map_file.exists() else {}
 
+# Официальные фото с сайтов производителей: порядок задан вручную (студийное
+# фото первым), сортировка по размеру файла его бы сломала.
+_photos_file = ROOT / "parser/photos-clean.json"
+PHOTOS_CLEAN = json.loads(_photos_file.read_text()) if _photos_file.exists() else {}
+
 
 def slugify(name: str) -> str:
     s = re.sub(r"[^\w\-]+", "-", name.strip(), flags=re.UNICODE).strip("-")
@@ -112,7 +117,18 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
         dst_folder = DST_IMG / folder
         images_web = []
         main_kb = 0
-        if src_folder.exists():
+        fixed = PHOTOS_CLEAN.get(p["slug"])
+        if fixed and src_folder.exists():
+            dst_folder.mkdir(exist_ok=True)
+            for name in fixed:
+                src = src_folder / name
+                if src.exists():
+                    dst = dst_folder / name
+                    if not dst.exists():
+                        shutil.copy2(src, dst)
+                    images_web.append(f"/products/{folder}/{name}")
+            main_kb = round((src_folder / fixed[0]).stat().st_size / 1024) if images_web else 0
+        elif src_folder.exists():
             dst_folder.mkdir(exist_ok=True)
             files = [f for f in src_folder.iterdir() if f.is_file()]
             # Качество: сортируем по размеру файла (крупнее ≈ выше разрешение),

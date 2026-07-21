@@ -16,7 +16,7 @@ set -a
 source /etc/dush.kz/backend.env
 set +a
 cd "$release_dir/backend"
-"$root/shared/venv/bin/python" -c 'from app import models; from app.database import Base, engine; Base.metadata.create_all(engine)'
+"$root/shared/venv/bin/python" scripts/migrate_cms.py
 "$root/shared/venv/bin/python" scripts/import_catalog.py "$release_dir/catalog/products.json"
 
 ln -sfn "$release_dir" "$root/current"
