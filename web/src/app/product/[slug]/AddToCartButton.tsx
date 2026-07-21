@@ -1,17 +1,28 @@
 "use client";
 import type { Product } from "@/lib/products";
 import { formatPrice } from "@/lib/format";
-import { useCart } from "@/lib/cart";
+import { useCart, useOrder, useHydrated } from "@/lib/cart";
 import { useState } from "react";
-import { Check, ShoppingCart } from "lucide-react";
+import { ArrowRight, ShoppingCart } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { CartQty } from "@/components/CartQty";
 
 export function AddToCartButton({ product }: { product: Product }) {
   const add = useCart((s) => s.add);
+  const cartItems = useCart((s) => s.items);
+  const openOrder = useOrder((s) => s.open);
+  const inCartQty = useCart((s) => s.items.find((i) => i.slug === product.slug)?.qty ?? 0);
+  const hydrated = useHydrated();
   const t = useT();
   const [qty, setQty] = useState(1);
-  const [added, setAdded] = useState(false);
   const unit = product.price ?? 0;
+
+  // Оформление со всей корзиной — тот же поток, что из корзины-шторки.
+  const checkout = () =>
+    openOrder(
+      cartItems.map((i) => ({ slug: i.slug, title: i.title, price: i.price, qty: i.qty })),
+      true,
+    );
 
   const handleAdd = () => {
     add(
@@ -24,9 +35,30 @@ export function AddToCartButton({ product }: { product: Product }) {
       },
       qty,
     );
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1600);
+    setQty(1);
   };
+
+  // Товар уже в корзине — управляем количеством и даём явную кнопку оформления.
+  if (hydrated && inCartQty > 0) {
+    return (
+      <div className="flex flex-col gap-2.5">
+        <div className="flex items-center gap-3 flex-wrap">
+          <CartQty slug={product.slug} className="h-12 w-40" />
+          <button
+            onClick={checkout}
+            className="h-12 px-6 rounded-lg font-semibold inline-flex items-center gap-2 bg-sale text-sale-foreground hover:bg-sale-hover transition-colors"
+          >
+            {t("prod.checkout")}
+            <ArrowRight size={18} />
+          </button>
+        </div>
+        <div className="text-xs text-muted-foreground">
+          {inCartQty} × {formatPrice(unit)} ={" "}
+          <span className="text-foreground font-medium">{formatPrice(unit * inCartQty)}</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -46,14 +78,10 @@ export function AddToCartButton({ product }: { product: Product }) {
         </div>
         <button
           onClick={handleAdd}
-          className={`px-6 h-11 rounded-lg font-medium transition-colors inline-flex items-center gap-2 ${
-            added
-              ? "bg-success text-white"
-              : "bg-accent text-accent-foreground hover:bg-accent-hover"
-          }`}
+          className="px-6 h-11 rounded-lg font-medium transition-colors inline-flex items-center gap-2 bg-accent text-accent-foreground hover:bg-accent-hover"
         >
-          {added ? <Check size={18} /> : <ShoppingCart size={18} />}
-          {added ? t("prod.added") : `${t("prod.buy")} · ${formatPrice(unit * qty)}`}
+          <ShoppingCart size={18} />
+          {`${t("prod.buy")} · ${formatPrice(unit * qty)}`}
         </button>
       </div>
       {qty > 1 && (

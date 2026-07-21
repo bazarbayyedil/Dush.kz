@@ -1,0 +1,153 @@
+<svg width="1600" height="700" viewBox="0 0 1600 700" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="700" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0A5E5C"/>
+      <stop offset="0.55" stop-color="#0C7F7A"/>
+      <stop offset="1" stop-color="#12A79E"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.78" cy="0.28" r="0.7">
+      <stop offset="0" stop-color="#3FD6C6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#3FD6C6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE59A"/>
+      <stop offset="0.5" stop-color="#FFC24B"/>
+      <stop offset="1" stop-color="#F0990F"/>
+    </linearGradient>
+    <linearGradient id="goldSeal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFDD82"/>
+      <stop offset="1" stop-color="#F2A01A"/>
+    </linearGradient>
+    <linearGradient id="van" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E4F5F2"/>
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.08"/>
+    </linearGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="10" stdDeviation="16" flood-color="#03302F" flood-opacity="0.35"/>
+    </filter>
+    <filter id="softsm" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#03302F" flood-opacity="0.30"/>
+    </filter>
+    <path id="arcTop" d="M 1250 92 A 118 118 0 0 1 1250 328" fill="none"/>
+    <path id="arcBot" d="M 1250 328 A 118 118 0 0 1 1250 92" fill="none"/>
+  </defs>
+
+  <!-- background -->
+  <rect width="1600" height="700" fill="url(#bg)"/>
+  <rect width="1600" height="700" fill="url(#glow)"/>
+
+  <!-- ripple rings top-right -->
+  <g stroke="#FFFFFF" fill="none" opacity="0.10">
+    <circle cx="1300" cy="150" r="150" stroke-width="2"/>
+    <circle cx="1300" cy="150" r="230" stroke-width="2"/>
+    <circle cx="1300" cy="150" r="320" stroke-width="2"/>
+    <circle cx="1300" cy="150" r="420" stroke-width="2"/>
+  </g>
+
+  <!-- ================= RIGHT: SCENE ================= -->
+  <!-- gold seal 24 hours -->
+  <g filter="url(#soft)">
+    <circle cx="1250" cy="210" r="118" fill="url(#goldSeal)"/>
+  </g>
+  <circle cx="1250" cy="210" r="118" fill="none" stroke="#FFFFFF" stroke-opacity="0.65" stroke-width="2"/>
+  <circle cx="1250" cy="210" r="104" fill="none" stroke="#0A5E5C" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="2 7" stroke-linecap="round"/>
+  <text font-family="Montserrat, Geist, -apple-system, Segoe UI, sans-serif" font-weight="800" font-size="17" fill="#0A5E5C" letter-spacing="3.5">
+    <textPath xlink:href="#arcTop" startOffset="50%" text-anchor="middle">• ДОСТАВКА ЗА •</textPath>
+  </text>
+  <text font-family="Montserrat, Geist, -apple-system, Segoe UI, sans-serif" font-weight="700" font-size="15" fill="#0A5E5C" letter-spacing="2.5">
+    <textPath xlink:href="#arcBot" startOffset="50%" text-anchor="middle">В БУДНИЕ ДНИ</textPath>
+  </text>
+  <text x="1250" y="212" font-family="Montserrat, Geist, -apple-system, Segoe UI, sans-serif" font-weight="900" font-size="86" fill="#0A4E4C" text-anchor="middle">24</text>
+  <text x="1250" y="252" font-family="Montserrat, Geist, -apple-system, Segoe UI, sans-serif" font-weight="800" font-size="30" fill="#0A4E4C" text-anchor="middle" letter-spacing="6">ЧАСА</text>
+
+  <!-- water droplets -->
+  <g>
+    <path d="M1500 300 c14 18 22 30 22 42 a22 22 0 1 1 -44 0 c0 -12 8 -24 22 -42 Z" fill="#7DEBD8" opacity="0.9"/>
+    <ellipse cx="1493" cy="345" rx="5" ry="7" fill="#FFFFFF" opacity="0.7"/>
+    <path d="M1090 250 c9 12 15 20 15 28 a15 15 0 1 1 -30 0 c0 -8 6 -16 15 -28 Z" fill="#B9F5EA" opacity="0.85"/>
+    <path d="M960 210 c7 9 11 15 11 21 a11 11 0 1 1 -22 0 c0 -6 4 -12 11 -21 Z" fill="#7DEBD8" opacity="0.7"/>
+  </g>
+
+  <!-- road -->
+  <rect x="900" y="590" width="660" height="8" rx="4" fill="#063E3D" opacity="0.55"/>
+  <g stroke="#7DEBD8" stroke-width="6" stroke-linecap="round" opacity="0.5" stroke-dasharray="26 22">
+    <line x1="912" y1="608" x2="1552" y2="608"/>
+  </g>
+  <!-- van shadow -->
+  <ellipse cx="1230" cy="592" rx="210" ry="20" fill="#032B2A" opacity="0.35"/>
+
+  <!-- motion lines -->
+  <g stroke="#FFFFFF" stroke-linecap="round" opacity="0.5">
+    <line x1="1000" y1="414" x2="1044" y2="414" stroke-width="6"/>
+    <line x1="984" y1="448" x2="1044" y2="448" stroke-width="6"/>
+    <line x1="1006" y1="482" x2="1044" y2="482" stroke-width="6"/>
+  </g>
+
+  <!-- ===== VAN (facing right) ===== -->
+  <g filter="url(#soft)">
+    <!-- cargo box -->
+    <path d="M1058 388 h300 v168 h-300 a14 14 0 0 1 -14 -14 v-140 a14 14 0 0 1 14 -14 Z" fill="url(#van)"/>
+    <!-- cabin -->
+    <path d="M1358 402 h70 c10 0 19 5 24 14 l40 66 c3 5 4 10 4 16 v42 c0 6 -5 12 -12 12 h-126 Z" fill="url(#van)"/>
+  </g>
+  <!-- roof stripe -->
+  <path d="M1058 388 h300 v20 h-300 Z" fill="#12A79E"/>
+  <!-- windshield -->
+  <path d="M1364 418 h58 c7 0 13 3 17 9 l26 43 h-101 Z" fill="#BFF3EE"/>
+  <path d="M1364 418 h58 c7 0 13 3 17 9 l26 43 h-101 Z" fill="#0C7F7A" opacity="0.12"/>
+  <!-- door seam -->
+  <line x1="1358" y1="408" x2="1358" y2="556" stroke="#0C7F7A" stroke-opacity="0.25" stroke-width="2"/>
+  <!-- headlight + bumper -->
+  <rect x="1486" y="500" width="14" height="20" rx="4" fill="#FFD36B"/>
+  <rect x="1470" y="540" width="34" height="12" rx="6" fill="#0C7F7A" opacity="0.35"/>
+
+  <!-- van side branding + sanitary icons -->
+  <g transform="translate(1084,432)">
+    <path d="M11 0 C18 9 23 16 23 23 A12 12 0 1 1 -1 23 C-1 16 4 9 11 0 Z" fill="#12A79E"/>
+    <text x="34" y="30" font-family="Montserrat, Geist, -apple-system, Segoe UI, sans-serif" font-weight="800" font-size="34" fill="#0C7F7A">dush<tspan fill="#12A79E">.kz</tspan></text>
+  </g>
+  <g transform="translate(1086,486)" stroke="#0C7F7A" stroke-opacity="0.75" fill="none" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- faucet -->
+    <g>
+      <path d="M2 22 v-8 c0 -8 7 -14 15 -14 h10"/>
+      <path d="M27 0 v10"/>
+      <path d="M27 10 l-6 8 h12 Z" fill="#0C7F7A" fill-opacity="0.75" stroke="none"/>
+      <line x1="2" y1="24" x2="14" y2="24"/>
+    </g>
+    <!-- shower head -->
+    <g transform="translate(60,0)">
+      <path d="M14 0 v8"/>
+      <path d="M2 12 a12 12 0 0 1 24 0 Z" fill="#0C7F7A" fill-opacity="0.15"/>
+      <line x1="8" y1="18" x2="8" y2="24"/><line x1="14" y1="18" x2="14" y2="26"/><line x1="20" y1="18" x2="20" y2="24"/>
+    </g>
+    <!-- droplet -->
+    <g transform="translate(112,2)">
+      <path d="M11 0 c7 8 11 14 11 19 a11 11 0 1 1 -22 0 c0 -5 4 -11 11 -19 Z" fill="#0C7F7A" fill-opacity="0.15"/>
+    </g>
+  </g>
+
+  <!-- wheels -->
+  <g>
+    <circle cx="1130" cy="560" r="46" fill="#0A3A3C"/>
+    <circle cx="1130" cy="560" r="22" fill="#CFEeee"/>
+    <circle cx="1130" cy="560" r="7" fill="#0A3A3C"/>
+    <circle cx="1400" cy="560" r="46" fill="#0A3A3C"/>
+    <circle cx="1400" cy="560" r="22" fill="#CFEeee"/>
+    <circle cx="1400" cy="560" r="7" fill="#0A3A3C"/>
+  </g>
+
+  <!-- parcel just delivered, on the road -->
+  <g filter="url(#softsm)" transform="translate(892,486)">
+    <path d="M0 20 L46 0 L92 20 L92 74 L46 94 L0 74 Z" fill="#F6E7C9"/>
+    <path d="M0 20 L46 40 L92 20" fill="none" stroke="#E4C98F" stroke-width="2"/>
+    <path d="M46 40 L46 94" fill="none" stroke="#E4C98F" stroke-width="2"/>
+    <path d="M33 7 L79 27 L79 33 L33 13 Z" fill="#12A79E"/>
+    <path d="M13 13 L59 33 L46 40 L0 20 Z" fill="#FBF1DC" opacity="0.6"/>
+    <circle cx="70" cy="60" r="13" fill="#25D366"/>
+    <path d="M64 60 l4 4 l8 -9" stroke="#FFFFFF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

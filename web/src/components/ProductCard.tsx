@@ -1,21 +1,21 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, ShoppingCart, Check } from "lucide-react";
-import { useState } from "react";
+import { Heart, ShoppingCart, PackageCheck } from "lucide-react";
 import { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { productImageUrl } from "@/lib/media";
 import { useT } from "@/lib/i18n";
+import { CartQty } from "./CartQty";
 
 export function ProductCard({ product }: { product: CatalogItem }) {
   const add = useCart((s) => s.add);
+  const inCart = useCart((s) => s.items.some((i) => i.slug === product.slug));
   const favToggle = useFavorites((s) => s.toggle);
   const favSlugs = useFavorites((s) => s.slugs);
   const hydrated = useHydrated();
   const t = useT();
-  const [added, setAdded] = useState(false);
 
   const img = product.image;
   const oldPrice = effectiveOldPrice(product.slug, product.price, product.old_price);
@@ -30,8 +30,6 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       price: product.price ?? 0,
       image: img ?? "",
     });
-    setAdded(true);
-    setTimeout(() => setAdded(false), 1400);
   };
 
   return (
@@ -40,12 +38,20 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       transition={{ type: "spring", stiffness: 300, damping: 22 }}
       className="group relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.18)] hover:border-border transition-shadow"
     >
-      {/* Бейдж скидки */}
-      {discount > 0 && (
-        <div className="absolute top-2.5 left-2.5 z-10">
-          <span className="px-2 py-0.5 text-[11px] bg-sale text-sale-foreground rounded-md font-semibold">
-            −{discount}%
-          </span>
+      {/* Бейдж скидки / комплекта */}
+      {(discount > 0 || product.is_combo) && (
+        <div className="absolute top-2.5 left-2.5 z-10 flex gap-1.5">
+          {product.is_combo && (
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] bg-sale text-sale-foreground rounded-md font-semibold">
+              <PackageCheck size={12} strokeWidth={2.4} />
+              {t("combo.badge")}
+            </span>
+          )}
+          {discount > 0 && !product.is_combo && (
+            <span className="px-2 py-0.5 text-[11px] bg-sale text-sale-foreground rounded-md font-semibold">
+              −{discount}%
+            </span>
+          )}
         </div>
       )}
 
@@ -117,17 +123,17 @@ export function ProductCard({ product }: { product: CatalogItem }) {
           )}
         </div>
 
-        <button
-          onClick={handleAdd}
-          className={`mt-1.5 w-full h-10 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-colors ${
-            added
-              ? "bg-success text-white"
-              : "bg-accent text-accent-foreground hover:bg-accent-hover"
-          }`}
-        >
-          {added ? <Check size={17} /> : <ShoppingCart size={17} />}
-          {added ? t("card.added") : t("card.add")}
-        </button>
+        {hydrated && inCart ? (
+          <CartQty slug={product.slug} className="mt-1.5 w-full h-10" />
+        ) : (
+          <button
+            onClick={handleAdd}
+            className="mt-1.5 w-full h-10 rounded-xl text-sm font-medium flex items-center justify-center gap-2 transition-colors bg-accent text-accent-foreground hover:bg-accent-hover"
+          >
+            <ShoppingCart size={17} />
+            {t("card.add")}
+          </button>
+        )}
       </div>
     </motion.div>
   );

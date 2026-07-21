@@ -1,12 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useOrder, useCart } from "@/lib/cart";
 import { formatPrice } from "@/lib/format";
 import { ymGoal } from "@/lib/metrika";
 import { useT } from "@/lib/i18n";
-
-// Корпоративный номер для приёма заявок (WhatsApp), междунар. формат без +
-const WHATSAPP_NUMBER = "77022525438";
 
 // Мобильные коды операторов Казахстана (после +7). Национальный номер — 7XX XXX XX XX.
 const KZ_MOBILE = new Set([
@@ -42,6 +40,7 @@ export function OrderModal() {
   const [phoneNat, setPhoneNat] = useState("");
   const [city, setCity] = useState("");
   const [comment, setComment] = useState("");
+  const [shipping, setShipping] = useState<"delivery" | "pickup">("delivery");
   const [errors, setErrors] = useState<{ name?: string; phone?: string }>({});
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
@@ -91,6 +90,8 @@ export function OrderModal() {
           phone: phoneDisplay,
           city,
           comment,
+          shipping,
+          payment_method: "prepaid",
           items: items.map((item) => ({ slug: item.slug, quantity: item.qty })),
         }),
       });
@@ -98,19 +99,11 @@ export function OrderModal() {
       const order: { id: string } = await response.json();
       setOrderId(order.id);
 
-    const lines = items.map((i) => `• ${i.title} — ${i.qty} шт × ${formatPrice(i.price)} = ${formatPrice(i.price * i.qty)}`);
-    const text =
-      `Новый заказ ${order.id} — dush.kz\n\n` +
-      `Имя: ${name.trim()}\n` +
-      `Телефон: ${phoneDisplay}\n` +
-      (city.trim() ? `Город: ${city.trim()}\n` : "") +
-      (comment.trim() ? `Комментарий: ${comment.trim()}\n` : "") +
-      `\nТовары:\n${lines.join("\n")}\n\nИтого: ${formatPrice(total)}`;
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`;
-    window.open(url, "_blank", "noopener");
-    ymGoal("order_whatsapp", { order_id: order.id, total });
-    if (fromCart) clearCart();
-    setSent(true);
+      // Заявка уже ушла менеджерам в Telegram — на WhatsApp не перекидываем,
+      // показываем клиенту подтверждение с номером заказа.
+      ymGoal("order_created", { order_id: order.id, total });
+      if (fromCart) clearCart();
+      setSent(true);
     } catch {
       setSubmitError(t("order.err_save"));
     } finally {
@@ -138,9 +131,16 @@ export function OrderModal() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p className="font-medium">{t("order.formed")}</p>
-            {orderId && <p className="text-xs text-muted-foreground">{t("order.number")}: {orderId}</p>}
-            <p className="text-sm text-muted-foreground">{t("order.wa_hint")}</p>
+            <p className="text-lg font-semibold">{t("order.formed")}</p>
+            {orderId && (
+              <div className="inline-block px-4 py-1.5 rounded-lg bg-muted">
+                <span className="text-xs text-muted-foreground">{t("order.number")} </span>
+                <span className="font-bold tracking-wider tabular-nums">
+                  {orderId.slice(0, 8).toUpperCase()}
+                </span>
+              </div>
+            )}
+            <p className="text-sm text-muted-foreground max-w-xs mx-auto">{t("order.confirm_hint")}</p>
             <button onClick={close} className="mt-2 px-5 py-2.5 bg-accent text-accent-foreground rounded-lg font-medium hover:bg-accent-hover">
               {t("order.done")}
             </button>
@@ -188,6 +188,20 @@ export function OrderModal() {
                 : phoneNat.length > 0 && !phoneValid && <p className="text-xs text-muted-foreground mt-1">{t("order.phone_hint")}</p>}
             </div>
 
+            <Choice
+              label={t("order.shipping")}
+              value={shipping}
+              onChange={(v) => setShipping(v as "delivery" | "pickup")}
+              options={[
+                { value: "delivery", label: t("order.ship_delivery") },
+                { value: "pickup", label: t("order.ship_pickup") },
+              ]}
+            />
+            {/* Оплата только предоплатой — реквизиты присылает менеджер. */}
+            <div className="text-sm bg-muted rounded-lg px-3 py-2.5 text-muted-foreground">
+              {t("order.prepay_note")}
+            </div>
+
             <div>
               <label className="block text-sm mb-1">{t("order.city")}</label>
               <input
@@ -220,8 +234,54 @@ export function OrderModal() {
             </button>
             {submitError && <p role="alert" className="text-sm text-danger text-center">{submitError}</p>}
             <p className="text-xs text-muted-foreground text-center">{t("order.agree")}</p>
+            <p className="text-xs text-muted-foreground text-center">
+              {t("order.legal_1")}{" "}
+              <Link href="/offer" className="underline hover:text-foreground" onClick={close}>
+                {t("order.legal_offer")}
+              </Link>{" "}
+              {t("order.legal_2")}{" "}
+              <Link href="/privacy" className="underline hover:text-foreground" onClick={close}>
+                {t("order.legal_privacy")}
+              </Link>
+              .
+            </p>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+/** Пара кнопок вместо выпадающего списка: на телефоне попасть проще. */
+function Choice({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  options: { value: string; label: string }[];
+}) {
+  return (
+    <div>
+      <span className="block text-sm mb-1">{label}</span>
+      <div className="grid grid-cols-2 gap-1.5">
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            onClick={() => onChange(o.value)}
+            className={`px-2 py-2 rounded-lg border text-[13px] leading-tight whitespace-nowrap transition-colors ${
+              value === o.value
+                ? "border-accent bg-accent/10 text-accent font-medium"
+                : "border-border text-muted-foreground hover:border-accent/50"
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
       </div>
     </div>
   );

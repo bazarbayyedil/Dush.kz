@@ -1,4 +1,5 @@
 import { InfoPage } from "@/components/InfoPage";
+import { INSTAGRAM_URL, INSTAGRAM_HANDLE } from "@/lib/contacts";
 
 export const metadata = { title: "О компании — dush.kz" };
 
@@ -15,7 +16,7 @@ export default function AboutPage() {
         <strong>Доставка.</strong> По Астане — за 24 часа, по регионам — транспортными компаниями.
       </p>
       <h2>Шоурум</h2>
-      <p>Приезжайте посмотреть товар вживую: г. Астана, ул. Абая, 94. Следите за новинками в Instagram <a href="https://instagram.com/dush_market" target="_blank" rel="noopener">@dush_market</a>.</p>
+      <p>Приезжайте посмотреть товар вживую: г. Астана, ул. Абая, 94. Следите за новинками в Instagram <a href={INSTAGRAM_URL} target="_blank" rel="noopener">@{INSTAGRAM_HANDLE}</a>.</p>
     </InfoPage>
   );
 }

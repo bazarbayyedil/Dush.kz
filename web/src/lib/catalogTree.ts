@@ -6,6 +6,7 @@ import {
   Toilet,
   Disc,
   Frame,
+  Blocks,
   CookingPot,
   Flame,
   Sparkles,
@@ -16,6 +17,7 @@ import {
 export type CatalogGroup = {
   title: string;
   icon: LucideIcon;
+  img: string; // обложка в /public/categories
   categories: string[]; // slugs (порядок = порядок показа)
 };
 
@@ -23,6 +25,7 @@ export type CatalogGroup = {
 export const catalogTree: CatalogGroup[] = [
   {
     title: "Смесители",
+    img: "smesiteli",
     icon: Droplets,
     categories: [
       "dlya-umyvalnikov",
@@ -39,6 +42,7 @@ export const catalogTree: CatalogGroup[] = [
   },
   {
     title: "Душ и гигиена",
+    img: "dush",
     icon: ShowerHead,
     categories: [
       "dushevaya-sistema",
@@ -51,11 +55,13 @@ export const catalogTree: CatalogGroup[] = [
   },
   {
     title: "Кабины и ограждения",
+    img: "kabiny",
     icon: SquareStack,
     categories: ["dushevye-kabiny", "dushevye-ograzhdeniya", "shtorki-steklyannye"],
   },
   {
     title: "Ванны",
+    img: "vanny",
     icon: Bath,
     categories: [
       "akrilovye-vanny",
@@ -67,16 +73,22 @@ export const catalogTree: CatalogGroup[] = [
     ],
   },
   {
+    // Инсталляции ищут отдельно от чаш — держим их самостоятельным разделом.
+    title: "Инсталляции",
+    img: "installyacii",
+    icon: Blocks,
+    categories: ["installyacii", "knopki-dlya-installyacij"],
+  },
+  {
     title: "Унитазы и биде",
+    img: "unitazy",
     icon: Toilet,
     categories: [
       "podvesnye-unitazy",
       "napolnye-otdelnostoyashhie-unitazy",
       "napolnye-pristavnye-unitazy",
       "unitaz-pristavnoj-napolnyj-dlya-montazha-s-sistemoj-installyacii",
-      "dlya-podvesnogo-unitaza",
       "dlya-napolnogo-unitaza",
-      "knopki-dlya-installyacij",
       "yorsh-dlya-unitaza",
       "podvesnye-bide",
       "napolnye-bide",
@@ -89,6 +101,7 @@ export const catalogTree: CatalogGroup[] = [
   },
   {
     title: "Раковины",
+    img: "rakoviny",
     icon: Disc,
     categories: [
       "rakovina-nakladnaya",
@@ -102,21 +115,25 @@ export const catalogTree: CatalogGroup[] = [
   },
   {
     title: "Мебель и зеркала",
+    img: "mebel",
     icon: Frame,
     categories: ["tumby-s-umyvalnikom", "penaly", "zerkala-s-led-podsvetkoj", "shkaf-zerkalo", "zerkala-ekonom"],
   },
   {
     title: "Кухня: мойки",
+    img: "mojki",
     icon: CookingPot,
     categories: ["mojki-iz-kamnya", "mojki-iz-nerzhaveyushhej-stali", "izmelcitel-othodov"],
   },
   {
     title: "Полотенцесушители",
+    img: "polotencesushiteli",
     icon: Flame,
     categories: ["elektricheskie", "vodyanye"],
   },
   {
     title: "Аксессуары",
+    img: "aksessuary",
     icon: Sparkles,
     categories: [
       "kryuchok",
@@ -139,6 +156,7 @@ export const catalogTree: CatalogGroup[] = [
   },
   {
     title: "Инженерное",
+    img: "inzhenernoe",
     icon: Wrench,
     categories: [
       "sifony",

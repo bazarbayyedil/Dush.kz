@@ -1,9 +1,59 @@
 "use client";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { getCategoryMap } from "@/lib/catalog";
 import { useT } from "@/lib/i18n";
+import { assetUrl } from "@/lib/assets";
+import type { LucideIcon } from "lucide-react";
+
+function Tile({
+  href,
+  title,
+  count,
+  img,
+  Icon,
+  label,
+}: {
+  href: string;
+  title: string;
+  count: number;
+  img: string;
+  Icon: LucideIcon;
+  label: string;
+}) {
+  const [broken, setBroken] = useState(false);
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:border-brand hover:shadow-md transition-all h-full"
+    >
+      <div className="relative aspect-[4/3] bg-surface flex items-center justify-center overflow-hidden">
+        {broken ? (
+          <Icon size={30} strokeWidth={1.6} className="text-brand/70" />
+        ) : (
+          <img
+            src={assetUrl("categories", img)}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            onError={() => setBroken(true)}
+            className="w-full h-full object-contain p-3 mix-blend-multiply transition-transform duration-500 group-hover:scale-[1.07]"
+          />
+        )}
+      </div>
+      <div className="px-3.5 py-3">
+        <div className="text-sm font-medium leading-tight group-hover:text-accent transition-colors">
+          {title}
+        </div>
+        <div className="text-xs text-muted-foreground mt-0.5">
+          {count} {label}
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export function CategoryTiles() {
   const catMap = getCategoryMap();
@@ -19,29 +69,24 @@ export function CategoryTiles() {
     <section className="max-w-7xl mx-auto px-4 py-8">
       <h2 className="text-xl md:text-2xl font-bold mb-5">{t("home.categories")}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
-        {groups.map((g, idx) => {
-          const Icon = g.icon;
-          return (
-            <motion.div
-              key={g.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.03, duration: 0.3 }}
-            >
-              <Link
-                href={g.href}
-                className="group flex flex-col gap-2 p-4 rounded-2xl border border-border bg-card hover:border-brand hover:shadow-md transition-all h-full"
-              >
-                <span className="w-11 h-11 rounded-xl bg-brand/10 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white transition-colors">
-                  <Icon size={22} strokeWidth={1.8} />
-                </span>
-                <span className="text-sm font-medium leading-tight mt-1">{g.title}</span>
-                <span className="text-xs text-muted-foreground">{g.count} {t("home.goods_count")}</span>
-              </Link>
-            </motion.div>
-          );
-        })}
+        {groups.map((g, idx) => (
+          <motion.div
+            key={g.title}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: idx * 0.03, duration: 0.3 }}
+          >
+            <Tile
+              href={g.href}
+              title={g.title}
+              count={g.count}
+              img={g.img}
+              Icon={g.icon}
+              label={t("home.goods_count")}
+            />
+          </motion.div>
+        ))}
       </div>
     </section>
   );

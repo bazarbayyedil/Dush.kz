@@ -83,3 +83,43 @@ input[type="range"] {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
   animation: shimmer 1.4s infinite;
 }
+
+/* Живой логотип: человечек заходит под душ и моется. Цикл 5с. */
+.shw-man   { animation: shw-walkin 5s ease-in-out infinite; }
+.shw-body  { animation: shw-sway 5s ease-in-out infinite; transform-origin: 20px 34px; }
+.shw-arm   { animation: shw-wash 5s ease-in-out infinite; transform-origin: 20px 20px; }
+.shw-spray { animation: shw-on 5s ease-in-out infinite; }
+.shw-drop  { animation: shw-fall 0.9s linear infinite; opacity: 0; }
+.shw-drop.b { animation-delay: 0.3s; }
+.shw-drop.c { animation-delay: 0.6s; }
+@keyframes shw-walkin {
+  0% { transform: translateX(-14px); opacity: 0; }
+  12% { opacity: 1; }
+  28% { transform: translateX(0); }
+  100% { transform: translateX(0); }
+}
+@keyframes shw-sway {
+  0%, 30% { transform: rotate(0); }
+  42% { transform: rotate(-3deg); }
+  56% { transform: rotate(3deg); }
+  70% { transform: rotate(-2deg); }
+  84%, 100% { transform: rotate(0); }
+}
+@keyframes shw-wash {
+  0%, 28% { transform: rotate(18deg); }
+  44% { transform: rotate(-10deg); }
+  60% { transform: rotate(12deg); }
+  76% { transform: rotate(-6deg); }
+  90%, 100% { transform: rotate(18deg); }
+}
+@keyframes shw-on { 0%, 26% { opacity: 0; } 32%, 90% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes shw-fall {
+  0% { transform: translateY(0); opacity: 0; }
+  25% { opacity: 0.95; }
+  100% { transform: translateY(14px); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .shw-man, .shw-body, .shw-arm, .shw-spray, .shw-drop { animation: none; }
+  .shw-man { opacity: 1; transform: none; }
+  .shw-spray { opacity: 1; }
+}

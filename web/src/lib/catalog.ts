@@ -22,6 +22,7 @@ export type CatalogItem = {
   size?: string; // габариты ванны «длина×ширина» в см
   length?: number | null; // длина ванны в см — для фильтра
   width_cm?: number | null; // ширина ванны в см — для фильтра
+  is_combo?: boolean; // готовый комплект: цена = сумма позиций минус 15%
 };
 
 export const catalogItems: CatalogItem[] = indexData as CatalogItem[];
@@ -72,6 +73,9 @@ export function filterCatalog(all: CatalogItem[], f: FilterState): CatalogItem[]
     case "name":
       out = [...out].sort((a, b) => a.title.localeCompare(b.title, "ru"));
       break;
+    default:
+      // Если распроданное показывают намеренно, оно всё равно уходит в конец.
+      out = [...out].sort((a, b) => Number(b.in_stock) - Number(a.in_stock));
   }
   return out;
 }

@@ -124,7 +124,9 @@ export function CatalogView() {
       priceMax: sp.get("priceMax") ? Number(sp.get("priceMax")) : undefined,
       widthMin: sp.get("widthMin") ? Number(sp.get("widthMin")) : undefined,
       widthMax: sp.get("widthMax") ? Number(sp.get("widthMax")) : undefined,
-      inStock: sp.get("inStock") === "1",
+      // Распроданное скрыто по умолчанию: каждый четвёртый товар каталога
+      // сейчас без наличия, и вперемешку с доступными он только мешает выбирать.
+      inStock: sp.get("all") !== "1",
       onSale: sp.get("onSale") === "1",
       sort: (sp.get("sort") as FilterState["sort"]) || "popular",
     };
@@ -255,7 +257,6 @@ export function CatalogView() {
     filters.priceMax != null ||
     filters.widthMin != null ||
     filters.widthMax != null ||
-    !!filters.inStock ||
     !!filters.onSale ||
     !!filters.q;
 
@@ -366,7 +367,13 @@ export function CatalogView() {
       </div>
 
       <div className="border-t border-border pt-4 flex flex-col gap-2.5">
-        <Row label={t("cat.only_stock")} count={0} checked={filters.inStock ?? false} onChange={() => update({ inStock: !filters.inStock })} />
+        {/* Снятая галочка добавляет в адрес all=1 — фильтр включён по умолчанию. */}
+        <Row
+          label={t("cat.only_stock")}
+          count={0}
+          checked={filters.inStock ?? true}
+          onChange={() => update({ all: filters.inStock ? "1" : null })}
+        />
         <Row label={t("cat.only_sale")} count={0} checked={filters.onSale ?? false} onChange={() => update({ onSale: !filters.onSale })} />
       </div>
 

@@ -9,9 +9,14 @@ import { T } from "@/components/T";
 import { CatTitle } from "@/components/CatTitle";
 import { ProductGallery } from "./ProductGallery";
 import { AddToCartButton } from "./AddToCartButton";
+import { ComboParts } from "./ComboParts";
 import { BuyOneClickButton } from "./BuyOneClickButton";
 import { FavoriteButton } from "./FavoriteButton";
 import { MobileBuyBar } from "./MobileBuyBar";
+import { DeliveryPromise } from "@/components/DeliveryPromise";
+import { OfficialBadge } from "@/components/OfficialBadge";
+import { productImageUrl } from "@/lib/media";
+import { SITE_URL } from "@/lib/site";
 
 // Ключевые характеристики выбора — показываем первыми, если есть у товара.
 const KEY_ATTRS = [
@@ -41,9 +46,20 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
   const { slug } = await props.params;
   const p = getProduct(slug);
   if (!p) return {};
+  const description = p.description.trim()
+    ? p.description.replace(/\s+/g, " ").slice(0, 160)
+    : `${p.title} — купить в Астане с доставкой. ${p.brand}, оригинал, гарантия.`;
   return {
-    title: `${p.title} — dush.kz`,
-    description: p.description.slice(0, 160),
+    title: `${p.title} — купить в Астане | dush.kz`,
+    description,
+    alternates: { canonical: `/product/${p.slug}` },
+    openGraph: {
+      type: "website",
+      title: p.title,
+      description,
+      url: `${SITE_URL}/product/${p.slug}`,
+      images: p.images[0] ? [{ url: productImageUrl(p.images[0]) }] : undefined,
+    },
   };
 }
 
@@ -66,8 +82,34 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
     ([, v]) => !!v && String(v).trim(),
   );
 
+  // Микроразметка товара: с ней Google показывает цену и наличие прямо в выдаче.
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    image: product.images.map((src) => `${SITE_URL}${productImageUrl(src)}`),
+    description: product.description.replace(/\s+/g, " ").slice(0, 500) || product.title,
+    brand: { "@type": "Brand", name: product.brand },
+    ...(hasSku(product.sku) ? { sku: product.sku, mpn: product.sku } : {}),
+    offers: {
+      "@type": "Offer",
+      url: `${SITE_URL}/product/${product.slug}`,
+      priceCurrency: "KZT",
+      price: product.price ?? 0,
+      availability: product.in_stock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+      seller: { "@type": "Organization", name: "dush.kz" },
+    },
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 pt-6 pb-28 lg:pb-6">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
       <div className="flex items-center gap-2 text-sm text-muted-foreground mb-5 flex-wrap">
         <Link href="/" className="hover:text-foreground"><T k="cat.home" /></Link>
         <span>/</span>
@@ -117,20 +159,17 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
             <FavoriteButton slug={product.slug} />
           </div>
 
-          <div className="mt-8 grid grid-cols-3 gap-3 text-xs text-muted-foreground">
-            <div className="p-3 rounded-lg border border-border">
-              <div className="text-foreground font-medium mb-0.5"><T k="prod.delivery" /></div>
-              <T k="prod.delivery_v" />
-            </div>
-            <div className="p-3 rounded-lg border border-border">
-              <div className="text-foreground font-medium mb-0.5"><T k="prod.warranty" /></div>
-              <T k="prod.warranty_v" />
-            </div>
-            <div className="p-3 rounded-lg border border-border">
-              <div className="text-foreground font-medium mb-0.5"><T k="prod.original" /></div>
-              <T k="prod.original_v" />
-            </div>
+          <div className="mt-5">
+            <OfficialBadge brand={product.brand} />
           </div>
+
+          <DeliveryPromise inStock={product.in_stock} />
+
+          {product.is_combo && (
+            <div className="mt-8">
+              <ComboParts product={product} />
+            </div>
+          )}
 
           {keyFacts.length > 0 && (
             <div className="mt-8 rounded-xl border border-border p-4">

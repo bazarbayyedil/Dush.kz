@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight, PackageCheck } from "lucide-react";
 import type { CatalogItem } from "@/lib/catalog";
 import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
 import { useT } from "@/lib/i18n";
 
-const SHOW = 6; // сколько слайдов показываем в день
+const SHOW = 10; // комплектов ровно столько — крутим все
 
 // Детерминированный ГПСЧ по одному 32-битному seed (mulberry32).
 function rngFrom(seed: number) {
@@ -76,6 +76,7 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
   const s = shown[Math.min(i, n - 1)];
   const sOld = effectiveOldPrice(s.slug, s.price, s.old_price);
   const discount = discountPercent(s.price, sOld);
+  const saved = sOld && s.price ? sOld - s.price : 0;
 
   return (
     <div
@@ -83,31 +84,53 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 min-h-[300px] md:min-h-[380px]">
-        {/* Текст + цена */}
-        <div className="flex flex-col justify-center order-2 md:order-1 p-6 md:p-12">
+      <div className="grid grid-cols-1 md:grid-cols-2 min-h-[260px] md:min-h-[330px]">
+        {/* Текст + цена. pb — место под ряд управления внизу. */}
+        <div className="flex flex-col justify-center order-2 md:order-1 p-5 md:p-8 pb-14 md:pb-16">
           <div className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-accent mb-3">
-            {discount > 0 && (
-              <span className="px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
-                {t("hero.sale")} −{discount}%
+            {s.is_combo ? (
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
+                <PackageCheck size={13} strokeWidth={2.4} />
+                {t("hero.combo")} −{discount}%
               </span>
+            ) : (
+              discount > 0 && (
+                <span className="px-2 py-0.5 rounded-md bg-sale text-sale-foreground font-semibold tracking-normal">
+                  {t("hero.sale")} −{discount}%
+                </span>
+              )
             )}
             <span>{s.brand}</span>
           </div>
-          <h2 className="text-xl md:text-3xl font-bold leading-tight max-w-md line-clamp-3">{s.title}</h2>
+          {/* Ровно 2 строки под заголовок при любой длине — иначе высота слайда
+              скачет и страница дёргается при перелистывании. */}
+          <h2 className="text-lg md:text-2xl font-bold leading-tight max-w-md line-clamp-2 h-[2.9rem] md:h-[3.9rem] overflow-hidden">
+            {s.title}
+          </h2>
 
-          <div className="mt-4 flex items-end gap-3">
-            <span className="text-3xl md:text-4xl font-bold text-accent">{formatPrice(s.price)}</span>
+          <div className="mt-3 flex items-end gap-3">
+            <span className="text-2xl md:text-[32px] font-bold text-accent leading-none">{formatPrice(s.price)}</span>
             {sOld && sOld > (s.price ?? 0) && (
-              <span className="mb-1 text-base md:text-lg text-muted-foreground line-through">
+              <span className="text-sm md:text-base text-muted-foreground line-through">
                 {formatPrice(sOld)}
               </span>
             )}
           </div>
 
+          {/* Слот выгоды резервируем всегда — со скидкой пилюля, без неё пусто,
+              высота слайда остаётся одинаковой. */}
+          <div className="mt-2 min-h-[28px]">
+            {saved > 0 && (
+              <div className="inline-flex items-center gap-1.5 w-fit px-2.5 py-1 rounded-lg bg-sale/10 text-sale text-[13px] font-semibold">
+                <PackageCheck size={14} strokeWidth={2.4} />
+                {t("hero.saving")} {formatPrice(saved)}
+              </div>
+            )}
+          </div>
+
           <Link
             href={`/product/${s.slug}`}
-            className="mt-6 inline-flex items-center gap-2 px-6 h-11 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent-hover transition-colors w-fit"
+            className="mt-5 inline-flex items-center gap-2 px-5 h-10 bg-accent text-accent-foreground rounded-xl font-medium hover:bg-accent-hover transition-colors w-fit"
           >
             {t("hero.cta")} <ArrowRight size={18} />
           </Link>
@@ -116,47 +139,50 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
         {/* Фото товара — высота ограничена, чтобы все слайды были одного размера */}
         <Link
           href={`/product/${s.slug}`}
-          className="order-1 md:order-2 flex items-center justify-center p-4 md:p-8"
+          className="order-1 md:order-2 flex items-center justify-center p-4 md:p-6"
         >
           {s.image && (
             <img
               src={productImageUrl(s.image)}
               alt={s.title}
-              className="h-44 md:h-[300px] w-auto max-w-full object-contain mix-blend-multiply"
+              className="h-40 md:h-[250px] w-auto max-w-full object-contain mix-blend-multiply"
               onError={(event) => event.currentTarget.remove()}
             />
           )}
         </Link>
       </div>
 
+      {/* Управление в нижнем углу: по бокам стрелки перекрывали заголовок,
+          слайдер стал у́же после появления промо-блока рядом. */}
       {n > 1 && (
-        <>
-          <button
-            onClick={() => go(-1)}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
-            aria-label="Назад"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={() => go(1)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/80 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
-            aria-label="Вперёд"
-          >
-            <ChevronRight size={20} />
-          </button>
-
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <div className="absolute bottom-3 md:bottom-4 inset-x-4 flex items-center gap-3">
+          <div className="flex gap-2">
             {shown.map((_, idx) => (
               <button
                 key={idx}
                 onClick={() => setI(idx)}
                 aria-label={`Слайд ${idx + 1}`}
-                className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-accent" : "w-2 bg-foreground/25"}`}
+                className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-accent" : "w-2 bg-foreground/25 hover:bg-foreground/40"}`}
               />
             ))}
           </div>
-        </>
+          <div className="ml-auto flex gap-2">
+            <button
+              onClick={() => go(-1)}
+              className="w-9 h-9 rounded-full bg-white/85 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
+              aria-label="Назад"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              onClick={() => go(1)}
+              className="w-9 h-9 rounded-full bg-white/85 hover:bg-white border border-border flex items-center justify-center backdrop-blur transition-colors"
+              aria-label="Вперёд"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

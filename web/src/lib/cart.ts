@@ -19,6 +19,7 @@ type CartState = {
   add: (item: Omit<CartItem, "qty">, qty?: number) => void;
   remove: (slug: string) => void;
   setQty: (slug: string, qty: number) => void;
+  qtyOf: (slug: string) => number;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -46,12 +47,16 @@ export const useCart = create<CartState>()(
       },
       remove: (slug) =>
         set((s) => ({ items: s.items.filter((i) => i.slug !== slug) })),
+      // Минус на единице удаляет позицию: иначе товар залипал в корзине
+      // и убрать его можно было только корзиной-иконкой.
       setQty: (slug, qty) =>
         set((s) => ({
-          items: s.items
-            .map((i) => (i.slug === slug ? { ...i, qty: Math.max(1, qty) } : i))
-            .filter((i) => i.qty > 0),
+          items:
+            qty <= 0
+              ? s.items.filter((i) => i.slug !== slug)
+              : s.items.map((i) => (i.slug === slug ? { ...i, qty } : i)),
         })),
+      qtyOf: (slug) => get().items.find((i) => i.slug === slug)?.qty ?? 0,
       clear: () => set({ items: [] }),
       open: () => set({ isOpen: true }),
       close: () => set({ isOpen: false }),

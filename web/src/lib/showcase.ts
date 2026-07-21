@@ -126,10 +126,13 @@ export const heroPicks: CatalogItem[] = HERO_SLUGS.map(bySlugInStock).filter(
   (p): p is CatalogItem => !!p,
 );
 
-// Полный пул для hero — из него слайдер каждый день детерминированно берёт 6.
-export const heroPool: CatalogItem[] = HERO_SLUGS.map(bySlugInStock).filter(
-  (p): p is CatalogItem => !!p,
-);
+export const comboItems: CatalogItem[] = catalogItems.filter((p) => p.is_combo && p.price);
+
+const curatedHero = HERO_SLUGS.map(bySlugInStock).filter((p): p is CatalogItem => !!p);
+
+// Комплекты идут первыми (у них видна выгода), дальше — отобранные вручную
+// позиции из HERO_SLUGS. Состав карусели правится там, а не автоматикой.
+export const heroPool: CatalogItem[] = [...comboItems, ...curatedHero];
 
 // Инсталляции и готовые комплекты (с унитазом) — без «ванн в комплекте с ножками»
 export const installations = dedupe(

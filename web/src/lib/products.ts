@@ -18,6 +18,8 @@ export type Product = {
   images: string[];
   attrs: Record<string, string>;
   description: string;
+  is_combo?: boolean;
+  combo_parts?: { slug: string; title: string; price: number; sku: string }[];
 };
 
 export const products: Product[] = productsData as Product[];

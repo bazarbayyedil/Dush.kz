@@ -1,18 +1,29 @@
 "use client";
 import Link from "next/link";
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, FileCheck2, ShieldCheck, Wrench } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { assetUrl } from "@/lib/assets";
 
-// display — как показываем, brand — точное имя в данных для фильтра
-const BRANDS: { display: string; brand: string; style?: string }[] = [
-  { display: "GROHE", brand: "Grohe", style: "font-bold tracking-[0.25em]" },
-  { display: "hansgrohe", brand: "Hansgrohe", style: "font-semibold tracking-tight" },
-  { display: "JACOB DELAFON", brand: "Jacob Delafon", style: "font-medium tracking-[0.15em] text-[15px]" },
-  { display: "LEMARK", brand: "LE MARK", style: "font-bold tracking-[0.2em]" },
-  { display: "FRAP", brand: "Frap", style: "font-semibold tracking-[0.3em]" },
-  { display: "BRAVAT", brand: "BRAVAT", style: "font-semibold tracking-[0.3em]" },
-  { display: "CERSANIT", brand: "CERSANIT", style: "font-semibold tracking-[0.2em]" },
-  { display: "GAPPO", brand: "Gappo", style: "font-semibold tracking-[0.25em]" },
+// Чем подкреплён статус официального поставщика — то, что покупатель может проверить.
+const GUARANTEES = [
+  { icon: ShieldCheck, title: "official.warranty_t", text: "official.warranty_s" },
+  { icon: BadgeCheck, title: "official.original_t", text: "official.original_s" },
+  { icon: Wrench, title: "official.service_t", text: "official.service_s" },
+  { icon: FileCheck2, title: "official.docs_t", text: "official.docs_s" },
+] as const;
+
+// logo — файл в манифесте (brands), brand — точное имя в данных для фильтра
+// wide — длинный вордмарк (Jacob Delafon), занимает две ячейки, чтобы буквы были
+// той же высоты, что у остальных.
+const BRANDS: { logo: string; label: string; brand: string; wide?: boolean }[] = [
+  { logo: "grohe", label: "GROHE", brand: "Grohe" },
+  { logo: "hansgrohe", label: "hansgrohe", brand: "Hansgrohe" },
+  { logo: "jacob-delafon", label: "Jacob Delafon", brand: "Jacob Delafon", wide: true },
+  { logo: "lemark", label: "LEMARK", brand: "LE MARK" },
+  { logo: "frap", label: "FRAP", brand: "Frap" },
+  { logo: "bravat", label: "BRAVAT", brand: "BRAVAT" },
+  { logo: "cersanit", label: "CERSANIT", brand: "CERSANIT" },
+  { logo: "gappo", label: "GAPPO", brand: "Gappo" },
 ];
 
 export function BrandStrip() {
@@ -35,16 +46,34 @@ export function BrandStrip() {
             <Link
               key={b.brand}
               href={`/catalog?brand=${encodeURIComponent(b.brand)}`}
-              className="group h-20 rounded-2xl border border-border bg-white flex items-center justify-center px-3 text-center transition-all hover:border-brand hover:shadow-md"
-              aria-label={b.display}
+              className={`group h-20 rounded-2xl border border-border bg-white flex items-center justify-center px-4 transition-all hover:border-brand hover:shadow-md ${
+                b.wide ? "col-span-2 sm:col-span-1 lg:col-span-2" : ""
+              }`}
+              aria-label={b.label}
             >
-              <span
-                className={`text-neutral-500 group-hover:text-accent transition-colors uppercase ${b.style ?? "font-semibold tracking-wide"}`}
-                style={{ fontSize: b.style?.includes("text-[") ? undefined : "17px" }}
-              >
-                {b.display}
-              </span>
+              {/* Логотипы в фирменных цветах, приведены к единой высоте —
+                  object-contain держит их на одной оптической линии. */}
+              <img
+                src={assetUrl("brands", b.logo)}
+                alt={b.label}
+                className="max-h-8 w-auto max-w-full object-contain transition-transform duration-200 group-hover:scale-105"
+              />
             </Link>
+          ))}
+        </div>
+
+        {/* Почему «официальный» — это не просто слово: четыре проверяемых обещания. */}
+        <div className="mt-7 pt-7 border-t border-border grid grid-cols-2 lg:grid-cols-4 gap-5">
+          {GUARANTEES.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="flex gap-3">
+              <span className="w-9 h-9 shrink-0 rounded-xl bg-brand/10 text-accent grid place-items-center">
+                <Icon size={17} strokeWidth={2} />
+              </span>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold leading-snug">{t(title)}</div>
+                <div className="text-xs text-muted-foreground leading-snug mt-0.5">{t(text)}</div>
+              </div>
+            </div>
           ))}
         </div>
       </div>
