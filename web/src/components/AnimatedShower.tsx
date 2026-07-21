@@ -1,36 +1,72 @@
-/** Живая часть логотипа: человечек заходит под душ и моется.
- *  Рамки кабинки нет намеренно — она уже есть в основном логотипе рядом.
- *  Анимация на чистом CSS (см. globals.css), уважает prefers-reduced-motion. */
+"use client";
+import { useEffect, useRef } from "react";
+
+/** Анимированная кабинка для эмблемы логотипа: душевой бокс, внутри человечек
+ *  лежит в ванне, рука свисает, сверху капли тропического душа.
+ *  Капли — на JS (Web Animations API), рука и дыхание — на CSS (globals.css). */
 export function AnimatedShower({ className = "" }: { className?: string }) {
+  const ref = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const svg = ref.current;
+    if (!svg) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const anims = Array.from(svg.querySelectorAll<SVGLineElement>(".bath-drop")).map((drop, i) =>
+      drop.animate(
+        [
+          { transform: "translateY(0)", opacity: 0 },
+          { opacity: 0.95, offset: 0.15 },
+          { transform: "translateY(9px)", opacity: 0 },
+        ],
+        { duration: 1100, iterations: Infinity, delay: i * 240, easing: "linear" },
+      ),
+    );
+    return () => anims.forEach((a) => a.cancel());
+  }, []);
+
+  const drops = [18, 24, 30];
   return (
     <svg
-      viewBox="0 0 40 46"
+      ref={ref}
+      viewBox="0 0 46 50"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden
       className={className}
       style={{ color: "var(--brand)" }}
     >
-      {/* лейка на кронштейне */}
-      <path d="M6 4 H15 M15 4 V7" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" strokeLinejoin="round" />
-      <ellipse cx={15} cy={8.5} rx={5} ry={2.2} fill="currentColor" />
-
-      {/* струи воды */}
-      <g className="shw-spray">
-        <line className="shw-drop" x1={12} y1={11} x2={12} y2={14.5} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
-        <line className="shw-drop b" x1={15} y1={11} x2={15} y2={14.5} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
-        <line className="shw-drop c" x1={18} y1={11} x2={18} y2={14.5} stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      {/* душевой бокс — рамка кабинки */}
+      <rect x={3} y={3} width={40} height={44} rx={6} stroke="currentColor" strokeWidth={2.6} fill="none" />
+      {/* стойка и лейка тропического душа внутри */}
+      <path d="M12 10 H16" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+      <rect x={16} y={9} width={16} height={3.4} rx={1.6} fill="currentColor" />
+      {/* капли */}
+      <g>
+        {drops.map((x) => (
+          <line
+            key={x}
+            className="bath-drop"
+            x1={x} y1={14} x2={x} y2={17}
+            stroke="currentColor" strokeWidth={1.6} strokeLinecap="round"
+          />
+        ))}
       </g>
-
-      {/* человечек под душем */}
-      <g className="shw-man">
-        <g className="shw-body">
-          <circle cx={20} cy={20} r={3.2} fill="currentColor" />
-          <path d="M20 23.5 V33" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" />
-          <path d="M20 33 L16 41" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" />
-          <path d="M20 33 L24 41" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" />
-          <path d="M20 26.5 L15 30" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" />
-          <path className="shw-arm" d="M20 26.5 L23.5 21" stroke="currentColor" strokeWidth={2.6} strokeLinecap="round" />
+      {/* ванна на дне бокса */}
+      <path
+        d="M8 34 Q8 30 11 30 Q12.5 30 13 32 L13 37 Q13 40 16 40 L34 40 Q39 40 39 36 L39 34 Q39 32 37 32"
+        stroke="currentColor" strokeWidth={2} fill="none" strokeLinecap="round"
+      />
+      {/* человечек лёжа: голова слева, колени, рука свисает */}
+      <g>
+        <circle cx={12} cy={28} r={2.3} fill="currentColor" />
+        <path d="M14.5 31 Q20 33.5 25 34" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" />
+        <path d="M25 34 L28 29.5 L31 34" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M26.5 34 L30 30 L33.5 34" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round" />
+        <rect className="bath-chest" x={16} y={30.5} width={5} height={1.8} rx={0.9} fill="currentColor" style={{ transformOrigin: "center" }} />
+        {/* рука свисает через передний край ванны */}
+        <g className="bath-arm" style={{ transformOrigin: "16px 36px" }}>
+          <path d="M15 31 Q16.5 35 16.5 38 L16.5 43" stroke="currentColor" strokeWidth={2} strokeLinecap="round" />
+          <circle cx={16.5} cy={44} r={1.2} fill="currentColor" />
         </g>
       </g>
     </svg>

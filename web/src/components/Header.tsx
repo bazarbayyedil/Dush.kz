@@ -10,7 +10,6 @@ import { LangSwitch } from "./LangSwitch";
 import { SearchBar } from "./SearchBar";
 import { MegaMenu } from "./MegaMenu";
 import { MobileCatalog } from "./MobileCatalog";
-import { AnimatedShower } from "./AnimatedShower";
 
 export function Header() {
   const cartCount = useCart((s) => s.count());
@@ -54,9 +53,8 @@ export function Header() {
             <Menu size={22} />
           </button>
 
-          <Link href="/" className="shrink-0 flex items-center gap-1.5" aria-label="dush.kz — на главную">
+          <Link href="/" className="shrink-0" aria-label="dush.kz — на главную">
             <img src="/logo-teal.svg" alt="dush.kz — сантехника" className="h-9 md:h-10 w-auto" />
-            <AnimatedShower className="h-8 md:h-9 w-auto" />
           </Link>
 
           {/* Кнопка Каталог (desktop) */}
