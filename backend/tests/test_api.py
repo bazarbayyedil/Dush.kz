@@ -27,6 +27,5 @@ def test_order_rejects_unknown_product(client):
     assert response.status_code == 422
 
 
-def test_admin_orders_require_token(client):
+def test_admin_orders_require_authentication(client):
     assert client.get("/api/v1/admin/orders").status_code == 401
-    assert client.get("/api/v1/admin/orders", headers={"Authorization": "Bearer test-admin-token"}).status_code == 200

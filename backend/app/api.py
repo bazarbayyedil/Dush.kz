@@ -1,11 +1,9 @@
-import secrets
 from decimal import Decimal
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Query, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session
 
-from .config import get_settings
 from .database import get_db
 from .models import Order, OrderItem, Product
 from .schemas import (
@@ -13,11 +11,11 @@ from .schemas import (
     FacetItem,
     OrderCreate,
     OrderCreated,
-    OrderView,
     ProductDetail,
     ProductList,
     ProductSummary,
 )
+from .telegram import build_message, notify_order
 
 router = APIRouter(prefix="/api/v1")
 
@@ -137,7 +135,11 @@ def catalog_facets(db: Session = Depends(get_db)) -> CatalogFacets:
 
 
 @router.post("/orders", response_model=OrderCreated, status_code=status.HTTP_201_CREATED)
-def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> OrderCreated:
+def create_order(
+    payload: OrderCreate,
+    background: BackgroundTasks,
+    db: Session = Depends(get_db),
+) -> OrderCreated:
     quantities: dict[str, int] = {}
     for item in payload.items:
         quantities[item.slug] = quantities.get(item.slug, 0) + item.quantity
@@ -152,6 +154,8 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> OrderCr
         phone=payload.phone,
         city=payload.city,
         comment=payload.comment,
+        shipping=payload.shipping,
+        payment_method=payload.payment_method,
         total=Decimal("0"),
     )
     for slug, quantity in quantities.items():
@@ -171,16 +175,10 @@ def create_order(payload: OrderCreate, db: Session = Depends(get_db)) -> OrderCr
         )
     db.add(order)
     db.commit()
+
+    # Текст собираем сейчас, пока данные под рукой; отправку — в фон, чтобы
+    # ответ клиенту не ждал Telegram.
+    background.add_task(notify_order, build_message(order))
     return OrderCreated(id=order.id, status=order.status, total=order.total)
 
 
-def require_admin(authorization: str | None = Header(default=None)) -> None:
-    expected = get_settings().admin_token
-    supplied = authorization.removeprefix("Bearer ") if authorization else ""
-    if not expected or not secrets.compare_digest(supplied, expected):
-        raise HTTPException(status_code=401, detail="Unauthorized")
-
-
-@router.get("/admin/orders", response_model=list[OrderView], dependencies=[Depends(require_admin)])
-def list_orders(db: Session = Depends(get_db)) -> list[Order]:
-    return list(db.scalars(select(Order).order_by(Order.created_at.desc()).limit(100)).all())

@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import Literal
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -58,6 +59,9 @@ class OrderCreate(BaseModel):
     phone: str = Field(min_length=10, max_length=32)
     city: str = Field(default="", max_length=80)
     comment: str = Field(default="", max_length=500)
+    shipping: Literal["delivery", "pickup"] = "delivery"
+    # cash/transfer оставлены для совместимости; сайт шлёт только prepaid.
+    payment_method: Literal["prepaid", "cash", "transfer"] = "prepaid"
     items: list[OrderItemCreate] = Field(min_length=1, max_length=50)
 
     @field_validator("customer_name", "phone", "city", "comment")
