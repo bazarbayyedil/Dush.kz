@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, ShoppingCart, PackageCheck } from "lucide-react";
-import { CatalogItem } from "@/lib/catalog";
+import { CatalogItem, itemSize } from "@/lib/catalog";
 import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { productImageUrl } from "@/lib/media";
@@ -21,6 +21,7 @@ export function ProductCard({ product }: { product: CatalogItem }) {
   const oldPrice = effectiveOldPrice(product.slug, product.price, product.old_price);
   const discount = discountPercent(product.price, oldPrice);
   const isFav = hydrated && favSlugs.includes(product.slug);
+  const size = itemSize(product);
 
   const handleAdd = () => {
     add({
@@ -89,9 +90,9 @@ export function ProductCard({ product }: { product: CatalogItem }) {
       <div className="p-3.5 flex flex-col flex-1 gap-1.5">
         <div className="flex items-center gap-2 text-[11px] text-muted-foreground uppercase tracking-wide">
           <span className="truncate">{product.brand}</span>
-          {product.size && (
+          {size && (
             <span className="ml-auto shrink-0 normal-case tabular-nums font-medium text-foreground/70">
-              {product.size} см
+              {size} см
             </span>
           )}
         </div>

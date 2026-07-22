@@ -20,6 +20,7 @@ export type Product = {
   description: string;
   is_combo?: boolean;
   combo_parts?: { slug: string; title: string; price: number; sku: string }[];
+  dims?: { L: number; W: number }; // выверенные габариты в мм
 };
 
 export const products: Product[] = productsData as Product[];

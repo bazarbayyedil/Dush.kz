@@ -13,6 +13,7 @@ const OFFICIAL_BRANDS = new Set([
   "Gappo",
   "BRAVAT",
   "CERSANIT",
+  "1 Марка",
 ]);
 
 export function isOfficial(brand: string): boolean {

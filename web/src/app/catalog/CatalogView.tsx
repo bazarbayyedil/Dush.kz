@@ -14,7 +14,9 @@ import {
   getAllLengths,
   getAllWidthsCm,
   getLengthCategories,
+  getMountCategories,
   getWidthRange,
+  type CatalogItem,
   type FilterState,
 } from "@/lib/catalog";
 import { catalogTree, matchGroupTitle } from "@/lib/catalogTree";
@@ -24,6 +26,24 @@ import { useCatTitle, useGroupTitle } from "@/lib/categories-kk";
 import { ProductCard } from "@/components/ProductCard";
 
 type FacetItem = { value: string; label: string; count: number };
+type FacetKey = "brand" | "category" | "color" | "material" | "length" | "widthCm" | "mount";
+
+function facetValue(p: CatalogItem, key: FacetKey): string {
+  switch (key) {
+    case "brand":
+      return p.brand;
+    case "category":
+      return p.category;
+    case "length":
+      return p.length != null ? String(p.length) : "";
+    case "widthCm":
+      return p.width_cm != null ? String(p.width_cm) : "";
+    case "mount":
+      return p.mount ?? "";
+    default:
+      return p[key] ?? "";
+  }
+}
 
 function Row({ label, count, checked, onChange }: { label: string; count: number; checked: boolean; onChange: () => void }) {
   return (
@@ -109,6 +129,7 @@ export function CatalogView() {
   const lengths = useMemo(() => getAllLengths(), []);
   const widthsCm = useMemo(() => getAllWidthsCm(), []);
   const lengthCats = useMemo(() => getLengthCategories(), []);
+  const mountCats = useMemo(() => getMountCategories(), []);
   const widthRange = useMemo(() => getWidthRange(), []);
 
   const filters: FilterState = useMemo(() => {
@@ -120,6 +141,7 @@ export function CatalogView() {
       material: sp.getAll("material"),
       length: sp.getAll("length"),
       widthCm: sp.getAll("widthCm"),
+      mount: sp.getAll("mount"),
       priceMin: sp.get("priceMin") ? Number(sp.get("priceMin")) : undefined,
       priceMax: sp.get("priceMax") ? Number(sp.get("priceMax")) : undefined,
       widthMin: sp.get("widthMin") ? Number(sp.get("widthMin")) : undefined,
@@ -139,24 +161,11 @@ export function CatalogView() {
   // всеми ОСТАЛЬНЫМИ фильтрами. Свои отметки секцию не сужают — чтобы можно
   // было довыбрать второй бренд/цвет внутри секции.
   const facetCounts = useMemo(() => {
-    const build = (key: "brand" | "category" | "color" | "material" | "length" | "widthCm") => {
+    const build = (key: FacetKey) => {
       const base = filterCatalog(catalogItems, { ...filters, [key]: undefined });
       const m = new Map<string, number>();
       for (const p of base) {
-        const v =
-          key === "brand"
-            ? p.brand
-            : key === "category"
-              ? p.category
-              : key === "length"
-                ? p.length != null
-                  ? String(p.length)
-                  : ""
-                : key === "widthCm"
-                  ? p.width_cm != null
-                    ? String(p.width_cm)
-                    : ""
-                  : p[key];
+        const v = facetValue(p, key);
         if (v) m.set(v, (m.get(v) ?? 0) + 1);
       }
       return m;
@@ -168,6 +177,7 @@ export function CatalogView() {
       material: build("material"),
       length: build("length"),
       widthCm: build("widthCm"),
+      mount: build("mount"),
     };
   }, [filters]);
 
@@ -235,10 +245,7 @@ export function CatalogView() {
     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  const toggleArray = (
-    key: "brand" | "category" | "color" | "material" | "length" | "widthCm",
-    value: string,
-  ) => {
+  const toggleArray = (key: FacetKey, value: string) => {
     const cur = filters[key] || [];
     const next = cur.includes(value) ? cur.filter((v) => v !== value) : [...cur, value];
     update({ [key]: next });
@@ -253,6 +260,7 @@ export function CatalogView() {
     (filters.material?.length ?? 0) > 0 ||
     (filters.length?.length ?? 0) > 0 ||
     (filters.widthCm?.length ?? 0) > 0 ||
+    (filters.mount?.length ?? 0) > 0 ||
     filters.priceMin != null ||
     filters.priceMax != null ||
     filters.widthMin != null ||
@@ -267,6 +275,16 @@ export function CatalogView() {
     (filters.widthCm?.length ?? 0) > 0 ||
     (filters.category ?? []).some((c) => lengthCats.has(c)) ||
     /ванн/i.test(filters.q ?? "");
+
+  // Тип монтажа спрашивают только про смесители и душевые системы.
+  const showMount =
+    (filters.mount?.length ?? 0) > 0 ||
+    (filters.category ?? []).some((c) => mountCats.has(c));
+
+  const mountItems: FacetItem[] = [
+    { value: "hidden", label: t("cat.mount_hidden"), count: facetCounts.mount.get("hidden") ?? 0 },
+    { value: "open", label: t("cat.mount_open"), count: facetCounts.mount.get("open") ?? 0 },
+  ].filter((it) => it.count > 0 || (filters.mount ?? []).includes(it.value));
 
   const FilterPanel = (
     <div className="space-y-5 text-sm">
@@ -287,6 +305,14 @@ export function CatalogView() {
         selected={filters.category ?? []}
         onToggle={(v) => toggleArray("category", v)}
       />
+      {showMount && (
+        <FacetSection
+          title={t("cat.mount")}
+          items={mountItems}
+          selected={filters.mount ?? []}
+          onToggle={(v) => toggleArray("mount", v)}
+        />
+      )}
       {showDims && (
         <>
           <FacetSection
@@ -324,26 +350,30 @@ export function CatalogView() {
         onToggle={(v) => toggleArray("material", v)}
       />
 
-      <div className="border-t border-border pt-4">
-        <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{t("cat.width")}</div>
-        <div className="flex items-center gap-2">
-          <input
-            type="number"
-            placeholder={String(widthRange.min)}
-            value={filters.widthMin ?? ""}
-            onChange={(e) => update({ widthMin: e.target.value ? Number(e.target.value) : null })}
-            className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:border-accent"
-          />
-          <span className="text-muted-foreground">—</span>
-          <input
-            type="number"
-            placeholder={String(widthRange.max)}
-            value={filters.widthMax ?? ""}
-            onChange={(e) => update({ widthMax: e.target.value ? Number(e.target.value) : null })}
-            className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:border-accent"
-          />
+      {/* В ваннах ширину выбирают галочками выше — числовой диапазон в мм там
+          только путал, поэтому показываем его в остальных разделах. */}
+      {!showDims && (
+        <div className="border-t border-border pt-4">
+          <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{t("cat.width")}</div>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              placeholder={String(widthRange.min)}
+              value={filters.widthMin ?? ""}
+              onChange={(e) => update({ widthMin: e.target.value ? Number(e.target.value) : null })}
+              className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:border-accent"
+            />
+            <span className="text-muted-foreground">—</span>
+            <input
+              type="number"
+              placeholder={String(widthRange.max)}
+              value={filters.widthMax ?? ""}
+              onChange={(e) => update({ widthMax: e.target.value ? Number(e.target.value) : null })}
+              className="w-full px-3 py-2 rounded-xl border border-border bg-white text-sm focus:outline-none focus:border-accent"
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="border-t border-border pt-4">
         <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground mb-2.5">{t("cat.price")}</div>

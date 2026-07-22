@@ -45,10 +45,14 @@ export function HeroSlider({ items }: { items: CatalogItem[] }) {
     setDay(Math.floor((Date.now() + 5 * 3600_000) / 86400_000));
   }, []);
 
-  const shown = useMemo(
-    () => (day === null ? items.slice(0, SHOW) : pickForDay(items, SHOW, day)),
-    [items, day],
-  );
+  // Комплекты закреплены в начале и не участвуют в ротации — промо всегда
+  // первый слайд. Крутим только обычные товары.
+  const shown = useMemo(() => {
+    const pinned = items.filter((p) => p.is_combo);
+    const rest = items.filter((p) => !p.is_combo);
+    const rotate = Math.max(SHOW - pinned.length, 0);
+    return [...pinned, ...(day === null ? rest.slice(0, rotate) : pickForDay(rest, rotate, day))];
+  }, [items, day]);
   useEffect(() => setI(0), [day]);
 
   const n = shown.length;

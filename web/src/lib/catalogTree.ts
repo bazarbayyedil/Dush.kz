@@ -86,7 +86,6 @@ export const catalogTree: CatalogGroup[] = [
     categories: [
       "podvesnye-unitazy",
       "napolnye-otdelnostoyashhie-unitazy",
-      "napolnye-pristavnye-unitazy",
       "unitaz-pristavnoj-napolnyj-dlya-montazha-s-sistemoj-installyacii",
       "dlya-napolnogo-unitaza",
       "yorsh-dlya-unitaza",

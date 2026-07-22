@@ -19,6 +19,12 @@ cd "$release_dir/backend"
 "$root/shared/venv/bin/python" scripts/migrate_cms.py
 "$root/shared/venv/bin/python" scripts/import_catalog.py "$release_dir/catalog/products.json"
 
+# Сборочная директория «Опубликовать» должна знать ту же вёрстку, что и релиз.
+if [ -d "$release_dir/web-src/src" ]; then
+  rsync -a --delete "$release_dir/web-src/src/" "$root/shared/builder/src/"
+  rsync -a "$release_dir/web-src/public/" "$root/shared/builder/public/"
+fi
+
 ln -sfn "$release_dir" "$root/current"
 sudo systemctl restart dush-api
 sudo nginx -t

@@ -24,6 +24,7 @@ const BRANDS: { logo: string; label: string; brand: string; wide?: boolean }[] =
   { logo: "bravat", label: "BRAVAT", brand: "BRAVAT" },
   { logo: "cersanit", label: "CERSANIT", brand: "CERSANIT" },
   { logo: "gappo", label: "GAPPO", brand: "Gappo" },
+  { logo: "1marka", label: "1MARKA", brand: "1 Марка" },
 ];
 
 export function BrandStrip() {

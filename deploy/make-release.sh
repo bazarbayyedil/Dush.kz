@@ -25,6 +25,13 @@ cp "$root/web/src/data/products-index.json" "$stage/catalog/products-index.json"
 # то есть шрифты, и сайт на проде рендерился системным начертанием.
 rsync -a --exclude '/products/' --exclude '/media' "$root/web/out/" "$stage/web-out/"
 
+# Исходники витрины: по ним кнопка «Опубликовать» пересобирает сайт из базы.
+# Без них сборочная директория отстаёт от релиза и публикация откатывает вёрстку.
+mkdir -p "$stage/web-src"
+rsync -a "$root/web/src" "$stage/web-src/"
+# Шаблон якорится от корня передачи, а он здесь — сама папка public.
+rsync -a --exclude '/public/products/' "$root/web/public" "$stage/web-src/"
+
 # COPYFILE_DISABLE убирает ресурсные вилки macOS, иначе tar на сервере ругается.
-COPYFILE_DISABLE=1 tar czf "$out" -C "$stage" backend catalog web-out
+COPYFILE_DISABLE=1 tar czf "$out" -C "$stage" backend catalog web-out web-src
 ls -lh "$out"

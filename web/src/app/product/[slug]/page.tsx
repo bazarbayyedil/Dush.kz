@@ -12,6 +12,7 @@ import { AddToCartButton } from "./AddToCartButton";
 import { ComboParts } from "./ComboParts";
 import { BuyOneClickButton } from "./BuyOneClickButton";
 import { FavoriteButton } from "./FavoriteButton";
+import { BuyTogether } from "./BuyTogether";
 import { MobileBuyBar } from "./MobileBuyBar";
 import { DeliveryPromise } from "@/components/DeliveryPromise";
 import { OfficialBadge } from "@/components/OfficialBadge";
@@ -75,7 +76,7 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
     .filter((p) => p.slug !== product.slug && p.category === product.category)
     .slice(0, 4);
 
-  const withYou = crossSell(product.category, product.slug, 4);
+  const { required: mustHave, optional: withYou } = crossSell(product.slug);
 
   const attrEntries = Object.entries(product.attrs).filter(([k]) => !!k);
   const keyFacts = KEY_ATTRS.map((k) => [k, product.attrs[k]] as const).filter(
@@ -132,6 +133,14 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
             {hasSku(product.sku) && (
               <span className="text-muted-foreground"><T k="prod.sku" />: <span className="text-foreground">{product.sku}</span></span>
             )}
+            {product.dims && (
+              <span className="text-muted-foreground">
+                <T k="prod.size" />:{" "}
+                <span className="text-foreground tabular-nums">
+                  {Math.round(product.dims.L / 10)}×{Math.round(product.dims.W / 10)} см
+                </span>
+              </span>
+            )}
             {product.in_stock && (
               <span className="inline-flex items-center gap-1 text-success">
                 <span className="w-1.5 h-1.5 rounded-full bg-success" /> <T k="card.in_stock" />
@@ -164,6 +173,19 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
           </div>
 
           <DeliveryPromise inStock={product.in_stock} />
+
+          {product.in_stock && mustHave.length > 0 && (
+            <BuyTogether
+              base={{
+                slug: product.slug,
+                sku: product.sku,
+                title: product.title,
+                price: product.price ?? 0,
+                image: product.images[0] ?? "",
+              }}
+              items={mustHave}
+            />
+          )}
 
           {product.is_combo && (
             <div className="mt-8">
@@ -201,22 +223,28 @@ export default async function ProductPage(props: { params: Promise<{ slug: strin
         </div>
       </div>
 
+      {withYou.length > 0 && (
+        <section className="mt-16">
+          <h2 className="text-2xl font-semibold mb-6"><T k="prod.with_this" /></h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            {withYou.map((s) => (
+              <div key={s.item.slug} className="flex flex-col">
+                {/* Подпись объясняет, почему именно эта позиция рядом с товаром. */}
+                <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-accent">
+                  <T k={s.need} />
+                </div>
+                <ProductCard product={s.item} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       {product.description && (
         <section className="mt-12 max-w-3xl">
           <h2 className="text-xl font-semibold mb-3"><T k="prod.desc" /></h2>
           <div className="text-sm text-muted-foreground whitespace-pre-line leading-relaxed">
             {product.description.slice(0, 2000)}
-          </div>
-        </section>
-      )}
-
-      {withYou.length > 0 && (
-        <section className="mt-16">
-          <h2 className="text-2xl font-semibold mb-6"><T k="prod.with_this" /></h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {withYou.map((p) => (
-              <ProductCard key={p.slug} product={p} />
-            ))}
           </div>
         </section>
       )}

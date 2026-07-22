@@ -16,6 +16,14 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 _cat_map_file = ROOT / "parser/categories.json"
 CATEGORY_TITLES = json.loads(_cat_map_file.read_text()) if _cat_map_file.exists() else {}
 
+# Категории поставщика, которые покупатель не различает: приставной унитаз и
+# отдельностоящий лежат на полу и выбираются вместе.
+CATEGORY_MERGE = {"napolnye-pristavnye-unitazy": "napolnye-otdelnostoyashhie-unitazy"}
+CATEGORY_RETITLE = {"napolnye-otdelnostoyashhie-unitazy": "Напольные унитазы"}
+
+# Имя бренда у поставщика со страной и лишним пробелом — на витрине показываем чистое.
+BRAND_RENAME = {"1 Марка ( Россия)": "1 Марка"}
+
 # Официальные фото с сайтов производителей: порядок задан вручную (студийное
 # фото первым), сортировка по размеру файла его бы сломала.
 _photos_file = ROOT / "parser/photos-clean.json"
@@ -156,13 +164,15 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
             if k and k.strip().lower() not in NOISE_ATTRS and k.strip().lower() != "артикул"
             and k.strip()[:1].isupper()
         }
+        category = CATEGORY_MERGE.get(category, category)
         all_products.append({
             "slug": p["slug"],
             "sku": p.get("sku") or "",
             "title": p["title"],
-            "brand": p.get("brand") or "Без бренда",
+            "brand": BRAND_RENAME.get(p.get("brand"), p.get("brand")) or "Без бренда",
             "category": category,
-            "category_title": CATEGORY_TITLES.get(category, category.replace("-", " ").capitalize()),
+            "category_title": CATEGORY_RETITLE.get(category)
+            or CATEGORY_TITLES.get(category, category.replace("-", " ").capitalize()),
             "price": p.get("price"),
             "old_price": p.get("old_price"),
             "in_stock": p.get("in_stock", False),
@@ -252,6 +262,31 @@ def facet_width_cm(attrs: dict, title: str, category: str):
     return bath_dims(attrs, title, category)[1]
 
 
+# Скрытый монтаж — первый вопрос при выборе смесителя или душевой системы:
+# встраиваемую часть закладывают в стену до отделки. Различаем только там, где
+# бывает и то и другое; для леек и шлангов признак смысла не имеет.
+MOUNT_CATS = {
+    "dlya-umyvalnikov", "dlya-vanny", "dlya-kukhni",
+    "dlya-kukhni-s-podklyucheniem-k-filtru-vody",
+    "vysokij-smesitel-dlya-rakoviny-chashi", "dlya-dusha", "dlya-bide",
+    "dlya-kukhni-s-vydvizhnym-izlivom", "dlya-kukhni-s-gibkim-izlivom",
+    "dlya-vanny-i-dusha", "dushevaya-sistema", "gigienicheskij-dush",
+    "dushevaya-stojka-shtanga-dlya-dusha",
+    "dushevoj-garnitur-shtangalejka-bez-smesitelya",
+}
+HIDDEN_RX = re.compile(r"встраива|скрыт\w*\s+м[оа]нтаж|скрытого монтажа|внутренн\w+\s+част", re.I)
+
+
+def facet_mount(attrs: dict, title: str, category: str) -> str:
+    if category not in MOUNT_CATS:
+        return ""
+    extra = " ".join(
+        f"{k} {v}" for k, v in (attrs or {}).items()
+        if "монтаж" in k.lower() or "установ" in k.lower()
+    )
+    return "hidden" if HIDDEN_RX.search(f"{title} {extra}") else "open"
+
+
 # Тонкий индекс для клиента (каталог + поиск): без attrs/description и без
 # лишних фото — только то, что нужно карточке и фильтрам. Полные данные
 # (products.json) читаются только на серверной странице товара.
@@ -274,6 +309,7 @@ index = [{
     "size": facet_size(p.get("attrs") or {}, p["title"], p["category"]),
     "length": facet_length(p.get("attrs") or {}, p["title"], p["category"]),
     "width_cm": facet_width_cm(p.get("attrs") or {}, p["title"], p["category"]),
+    "mount": facet_mount(p.get("attrs") or {}, p["title"], p["category"]),
     **({"dimL": p["dims"]["L"], "dimW": p["dims"]["W"]} if p.get("dims") else {}),
 } for p in all_products]
 idx_out = DATA_DIR / "products-index.json"

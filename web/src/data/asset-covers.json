@@ -1,29 +1,30 @@
 {
- "brands": {
-  "bravat": "bravat-cc42c7c7.png",
-  "cersanit": "cersanit-bd35fac0.png",
-  "frap": "frap-b4d4074f.png",
-  "gappo": "gappo-eb9ebda9.png",
-  "grohe": "grohe-30186c7f.png",
-  "hansgrohe": "hansgrohe-3971f69f.png",
-  "jacob-delafon": "jacob-delafon-578ff963.png",
-  "lemark": "lemark-162676cd.png"
- },
- "categories": {
-  "aksessuary": "aksessuary-723d3d1b.jpg",
-  "dush": "dush-5cf0530c.jpg",
-  "installyacii": "installyacii-f0e7b7cb.jpg",
-  "inzhenernoe": "inzhenernoe-25c1cdac.jpg",
-  "kabiny": "kabiny-d1d44104.jpg",
-  "mebel": "mebel-1ac67db3.jpg",
-  "mojki": "mojki-1cade68b.jpg",
-  "polotencesushiteli": "polotencesushiteli-6f70a556.jpg",
-  "rakoviny": "rakoviny-9475b4a7.jpg",
-  "smesiteli": "smesiteli-366c1a35.jpg",
-  "unitazy": "unitazy-deb5c15c.jpg",
-  "vanny": "vanny-8fc87b5b.jpg"
- },
- "promo": {
-  "delivery": "delivery-365984ab.jpg"
- }
+  "brands": {
+    "bravat": "bravat-cc42c7c7.png",
+    "cersanit": "cersanit-bd35fac0.png",
+    "frap": "frap-b4d4074f.png",
+    "gappo": "gappo-eb9ebda9.png",
+    "grohe": "grohe-30186c7f.png",
+    "hansgrohe": "hansgrohe-3971f69f.png",
+    "jacob-delafon": "jacob-delafon-578ff963.png",
+    "lemark": "lemark-162676cd.png",
+    "1marka": "1marka-32003bf4.png"
+  },
+  "categories": {
+    "aksessuary": "aksessuary-723d3d1b.jpg",
+    "dush": "dush-5cf0530c.jpg",
+    "installyacii": "installyacii-f0e7b7cb.jpg",
+    "inzhenernoe": "inzhenernoe-25c1cdac.jpg",
+    "kabiny": "kabiny-d1d44104.jpg",
+    "mebel": "mebel-1ac67db3.jpg",
+    "mojki": "mojki-1cade68b.jpg",
+    "polotencesushiteli": "polotencesushiteli-6f70a556.jpg",
+    "rakoviny": "rakoviny-9475b4a7.jpg",
+    "smesiteli": "smesiteli-366c1a35.jpg",
+    "unitazy": "unitazy-deb5c15c.jpg",
+    "vanny": "vanny-8fc87b5b.jpg"
+  },
+  "promo": {
+    "delivery": "delivery-365984ab.jpg"
+  }
 }

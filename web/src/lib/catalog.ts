@@ -22,8 +22,22 @@ export type CatalogItem = {
   size?: string; // габариты ванны «длина×ширина» в см
   length?: number | null; // длина ванны в см — для фильтра
   width_cm?: number | null; // ширина ванны в см — для фильтра
+  dimL?: number; // выверенные габариты в мм — для подписи размера в карточке
+  dimW?: number;
+  mount?: string; // "hidden" | "open" — тип монтажа смесителя/душевой системы
   is_combo?: boolean; // готовый комплект: цена = сумма позиций минус 15%
 };
+
+// Подпись размера рядом с названием: у ванн уже посчитаны см, у остальных
+// (тумбы, унитазы, зеркала) переводим выверенные миллиметры в сантиметры.
+export function itemSize(p: CatalogItem): string | null {
+  if (p.size) return p.size;
+  if (!p.dimL || !p.dimW) return null;
+  // У зеркал вторая величина — толщина в пару сантиметров, «80×3» читается как
+  // размер полотна и путает. Показываем только ширину.
+  if (p.dimW / p.dimL < 0.2) return `${Math.round(p.dimL / 10)}`;
+  return `${Math.round(p.dimL / 10)}×${Math.round(p.dimW / 10)}`;
+}
 
 export const catalogItems: CatalogItem[] = indexData as CatalogItem[];
 
@@ -35,6 +49,7 @@ export type FilterState = {
   material?: string[];
   length?: string[]; // выбранные длины ванн в см
   widthCm?: string[]; // выбранные ширины ванн в см
+  mount?: string[]; // тип монтажа: hidden / open
   priceMin?: number;
   priceMax?: number;
   widthMin?: number;
@@ -56,6 +71,7 @@ export function filterCatalog(all: CatalogItem[], f: FilterState): CatalogItem[]
   if (f.length?.length) out = out.filter((p) => p.length != null && f.length!.includes(String(p.length)));
   if (f.widthCm?.length)
     out = out.filter((p) => p.width_cm != null && f.widthCm!.includes(String(p.width_cm)));
+  if (f.mount?.length) out = out.filter((p) => p.mount && f.mount!.includes(p.mount));
   if (f.priceMin != null) out = out.filter((p) => (p.price ?? 0) >= f.priceMin!);
   if (f.priceMax != null) out = out.filter((p) => (p.price ?? 0) <= f.priceMax!);
   if (f.widthMin != null) out = out.filter((p) => p.width != null && p.width >= f.widthMin!);
@@ -110,6 +126,17 @@ export function getLengthCategories(): Set<string> {
   const s = new Set<string>();
   for (const p of catalogItems) if (p.length != null) s.add(p.category);
   _lenCats = s;
+  return s;
+}
+
+// Категории, где различаем скрытый и наружный монтаж (смесители, душевые
+// системы) — фасет показываем только в них.
+let _mountCats: Set<string> | null = null;
+export function getMountCategories(): Set<string> {
+  if (_mountCats) return _mountCats;
+  const s = new Set<string>();
+  for (const p of catalogItems) if (p.mount) s.add(p.category);
+  _mountCats = s;
   return s;
 }
 
