@@ -57,7 +57,7 @@ export const catalogTree: CatalogGroup[] = [
     title: "Кабины и ограждения",
     img: "kabiny",
     icon: SquareStack,
-    categories: ["dushevye-kabiny", "dushevye-ograzhdeniya", "shtorki-steklyannye"],
+    categories: ["dushevye-kabiny", "dushevye-ograzhdeniya", "shtorki-steklyannye", "dushevye-poddony"],
   },
   {
     title: "Ванны",
@@ -70,6 +70,7 @@ export const catalogTree: CatalogGroup[] = [
       "mramornye-vanny",
       "chugunnye-vanny",
       "poruchen-dlya-vanny",
+      "komplektuyushhie-dlya-vann",
     ],
   },
   {
@@ -109,6 +110,7 @@ export const catalogTree: CatalogGroup[] = [
       "rakovina-vstraivaemaya-v-stoleshnicu",
       "rakoviny-na-stiralnuyu-mashinu",
       "rakovina-napolnaya",
+      "rakoviny-mebelnye",
       "dlya-podvesnoj-rakoviny",
     ],
   },

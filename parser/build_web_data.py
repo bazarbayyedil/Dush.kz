@@ -322,3 +322,8 @@ for p in all_products:
     cats[p["category_title"]] = cats.get(p["category_title"], 0) + 1
 for c, n in sorted(cats.items(), key=lambda x: -x[1]):
     print(f"  {n:4}  {c}")
+
+# Товары из прайсов (1Марка/Домино/МАРКО) живут в additions.json и подмешиваются
+# после пересборки — иначе каждый прогон парсера стирал бы их.
+import subprocess
+subprocess.run(['python3', str(ROOT / 'parser/apply_additions.py')], check=False)
