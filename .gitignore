@@ -40,3 +40,7 @@ state.json
 Thumbs.db
 .idea/
 *.swp
+# генерится prebuild/релизом — в репо не нужно
+web/public/catalog-index.json
+web/public/merchant-feed.xml
+web/public/media

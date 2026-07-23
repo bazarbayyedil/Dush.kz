@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { ChevronLeft, ChevronRight, ArrowRight, PackageCheck } from "lucide-react";
-import type { CatalogItem } from "@/lib/catalog";
+import type { CatalogItem } from "@/lib/catalog-core";
 import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { productImageUrl } from "@/lib/media";
 import { useT } from "@/lib/i18n";

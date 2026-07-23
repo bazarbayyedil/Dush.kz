@@ -15,6 +15,10 @@ if [ ! -d "$root/web/out" ]; then
   exit 1
 fi
 
+# Товарный фид Merchant Center — из свежего каталога
+python3 "$root/parser/generate_feed.py"
+cp "$root/web/public/merchant-feed.xml" "$root/web/out/merchant-feed.xml"
+
 mkdir -p "$stage/catalog"
 rsync -a --exclude '__pycache__' --exclude '*.egg-info' "$root/backend" "$stage/"
 # Публикация на сервере накладывает правки панели этим скриптом.

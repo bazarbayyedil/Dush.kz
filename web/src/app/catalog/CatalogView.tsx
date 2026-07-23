@@ -4,21 +4,22 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { SlidersHorizontal, X, Check, Plus, Minus } from "lucide-react";
 import {
-  catalogItems,
   filterCatalog,
-  getAllBrands,
-  getAllCategories,
-  getPriceRange,
-  getAllColors,
-  getAllMaterials,
-  getAllLengths,
-  getAllWidthsCm,
-  getLengthCategories,
-  getMountCategories,
-  getWidthRange,
+  allBrands,
+  allCategories,
+  priceRange as priceRangeOf,
+  allColors,
+  allMaterials,
+  allLengths,
+  allWidthsCm,
+  lengthCategories,
+  mountCategories,
+  widthRange as widthRangeOf,
   type CatalogItem,
   type FilterState,
-} from "@/lib/catalog";
+} from "@/lib/catalog-core";
+import { useCatalog } from "@/lib/useCatalog";
+import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 import { catalogTree, matchGroupTitle } from "@/lib/catalogTree";
 import { formatPrice } from "@/lib/format";
 import { useT, useLangHydrated } from "@/lib/i18n";
@@ -109,6 +110,7 @@ function FacetSection({
 }
 
 const PAGE_SIZE = 48;
+const EMPTY: CatalogItem[] = [];
 
 export function CatalogView() {
   const sp = useSearchParams();
@@ -121,16 +123,18 @@ export function CatalogView() {
   const [mobileFilters, setMobileFilters] = useState(false);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-  const brands = useMemo(() => getAllBrands(), []);
-  const cats = useMemo(() => getAllCategories(), []);
-  const priceRange = useMemo(() => getPriceRange(), []);
-  const colors = useMemo(() => getAllColors().filter((c) => c.count >= 5).slice(0, 16), []);
-  const materials = useMemo(() => getAllMaterials().filter((m) => m.count >= 5).slice(0, 14), []);
-  const lengths = useMemo(() => getAllLengths(), []);
-  const widthsCm = useMemo(() => getAllWidthsCm(), []);
-  const lengthCats = useMemo(() => getLengthCategories(), []);
-  const mountCats = useMemo(() => getMountCategories(), []);
-  const widthRange = useMemo(() => getWidthRange(), []);
+  // Индекс приезжает лениво: до загрузки показываем скелетоны.
+  const catalogItems = useCatalog() ?? EMPTY;
+  const brands = useMemo(() => allBrands(catalogItems), [catalogItems]);
+  const cats = useMemo(() => allCategories(catalogItems), [catalogItems]);
+  const priceRange = useMemo(() => priceRangeOf(catalogItems), [catalogItems]);
+  const colors = useMemo(() => allColors(catalogItems).filter((c) => c.count >= 5).slice(0, 16), [catalogItems]);
+  const materials = useMemo(() => allMaterials(catalogItems).filter((m) => m.count >= 5).slice(0, 14), [catalogItems]);
+  const lengths = useMemo(() => allLengths(catalogItems), [catalogItems]);
+  const widthsCm = useMemo(() => allWidthsCm(catalogItems), [catalogItems]);
+  const lengthCats = useMemo(() => lengthCategories(catalogItems), [catalogItems]);
+  const mountCats = useMemo(() => mountCategories(catalogItems), [catalogItems]);
+  const widthRange = useMemo(() => widthRangeOf(catalogItems), [catalogItems]);
 
   const filters: FilterState = useMemo(() => {
     return {
@@ -154,7 +158,7 @@ export function CatalogView() {
     };
   }, [sp]);
 
-  const filtered = useMemo(() => filterCatalog(catalogItems, filters), [filters]);
+  const filtered = useMemo(() => filterCatalog(catalogItems, filters), [catalogItems, filters]);
   const visibleProducts = filtered.slice(0, visibleCount);
 
   // Зависимые счётчики фасетов: каждая секция считается по выборке, суженной
@@ -179,7 +183,7 @@ export function CatalogView() {
       widthCm: build("widthCm"),
       mount: build("mount"),
     };
-  }, [filters]);
+  }, [catalogItems, filters]);
 
   // Пункты секции с живыми счётчиками: нули прячем (кроме уже отмеченных).
   const dynItems = (
@@ -499,7 +503,13 @@ export function CatalogView() {
         </aside>
 
         <div>
-          {filtered.length === 0 ? (
+          {catalogItems === EMPTY ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-16 text-center">
               <div className="text-muted-foreground">{t("cat.nothing")}</div>
               <button onClick={clearAll} className="mt-3 px-4 py-2 text-sm text-accent hover:underline">

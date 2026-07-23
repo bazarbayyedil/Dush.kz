@@ -1,9 +1,8 @@
 "use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { useState } from "react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
-import { getCategoryMap } from "@/lib/catalog";
+import { getCategoryMap } from "@/lib/catalog-meta";
 import { useT } from "@/lib/i18n";
 import { assetUrl } from "@/lib/assets";
 import type { LucideIcon } from "lucide-react";
@@ -70,13 +69,7 @@ export function CategoryTiles() {
       <h2 className="text-xl md:text-2xl font-bold mb-5">{t("home.categories")}</h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
         {groups.map((g, idx) => (
-          <motion.div
-            key={g.title}
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.03, duration: 0.3 }}
-          >
+          <div key={g.title} className="anim-rise" style={{ animationDelay: `${idx * 30}ms` }}>
             <Tile
               href={g.href}
               title={g.title}
@@ -85,7 +78,7 @@ export function CategoryTiles() {
               Icon={g.icon}
               label={t("home.goods_count")}
             />
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

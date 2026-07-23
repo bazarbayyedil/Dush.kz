@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
-import { getCategoryMap } from "@/lib/catalog";
+import { getCategoryMap } from "@/lib/catalog-meta";
 
 // Горизонтальный ряд разделов — быстрый вход в каталог в первом экране мобайла.
 export function CategoryChips() {

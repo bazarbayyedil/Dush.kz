@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { catalogItems } from "@/lib/catalog";
+import { loadCatalog, useCatalog } from "@/lib/useCatalog";
 import { searchProducts } from "@/lib/search";
 import { formatPrice } from "@/lib/format";
 import { ymGoal } from "@/lib/metrika";
@@ -21,12 +21,17 @@ export function SearchBar({ className = "" }: { className?: string }) {
 
   // Debounce запроса, чтобы не гонять поиск по каталогу на каждое нажатие
   const [debouncedQ, setDebouncedQ] = useState("");
+  // Индекс тяжёлый — начинаем качать его при фокусе, а не на каждой странице
+  const catalogItems = useCatalog(false);
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQ(q), 150);
     return () => clearTimeout(t);
   }, [q]);
 
-  const suggestions = debouncedQ.trim().length >= 2 ? searchProducts(catalogItems, debouncedQ).slice(0, 6) : [];
+  const suggestions =
+    catalogItems && debouncedQ.trim().length >= 2
+      ? searchProducts(catalogItems, debouncedQ).slice(0, 6)
+      : [];
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -85,7 +90,10 @@ export function SearchBar({ className = "" }: { className?: string }) {
             setOpen(true);
             setActive(-1);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true);
+            void loadCatalog();
+          }}
           onKeyDown={onKeyDown}
           placeholder={t("search.placeholder")}
           className="flex-1 px-3 h-full text-sm bg-transparent focus:outline-none"

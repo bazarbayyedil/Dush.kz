@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { CatalogItem } from "@/lib/catalog";
+import { CatalogItem } from "@/lib/catalog-core";
 import { ProductCard } from "./ProductCard";
 
 export function ProductCarousel({

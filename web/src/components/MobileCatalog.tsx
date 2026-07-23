@@ -2,12 +2,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, X } from "lucide-react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
 import { useCatTitle, useGroupTitle } from "@/lib/categories-kk";
 import { useT } from "@/lib/i18n";
-import { getCategoryMap } from "@/lib/catalog";
+import { getCategoryMap } from "@/lib/catalog-meta";
 
 export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [expanded, setExpanded] = useState<number | null>(0);
@@ -23,23 +22,11 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
   if (!mounted) return null;
 
   return createPortal(
-    <AnimatePresence>
+    <>
       {open && (
         <div className="fixed inset-0 z-[60] md:hidden">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-black/40"
-            onClick={onClose}
-          />
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "tween", duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-y-0 left-0 w-[88%] max-w-sm bg-white flex flex-col"
-          >
+          <div className="absolute inset-0 bg-black/40 anim-fade" onClick={onClose} />
+          <div className="absolute inset-y-0 left-0 w-[88%] max-w-sm bg-white flex flex-col anim-slide-in">
             <header className="flex items-center justify-between px-4 h-14 border-b border-border shrink-0">
               <span className="font-semibold">{t("nav.catalog")}</span>
               <button onClick={onClose} className="p-2 rounded-lg hover:bg-muted" aria-label={t("common.close")}>
@@ -63,15 +50,8 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                       <span className="flex-1 font-medium">{grp(g.title)}</span>
                       <ChevronDown size={18} className={`text-muted-foreground transition-transform ${isOpen ? "rotate-180" : ""}`} />
                     </button>
-                    <AnimatePresence initial={false}>
-                      {isOpen && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: "auto", opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.2 }}
-                          className="overflow-hidden bg-surface"
-                        >
+                    {isOpen && (
+                        <div className="overflow-hidden bg-surface anim-expand">
                           <div className="px-4 pb-3 pt-1 flex flex-col">
                             {subs.length > 1 && (
                               <Link
@@ -95,17 +75,16 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                               </Link>
                             ))}
                           </div>
-                        </motion.div>
+                        </div>
                       )}
-                    </AnimatePresence>
                   </div>
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
-    </AnimatePresence>,
+    </>,
     document.body,
   );
 }

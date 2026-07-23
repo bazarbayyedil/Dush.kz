@@ -2,15 +2,16 @@
 import Link from "next/link";
 import { Heart } from "lucide-react";
 import { useFavorites, useHydrated } from "@/lib/cart";
-import { catalogItems } from "@/lib/catalog";
+import { useCatalog } from "@/lib/useCatalog";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductCardSkeleton } from "@/components/ProductCardSkeleton";
 
 export default function FavoritesPage() {
   const slugs = useFavorites((s) => s.slugs);
   const hydrated = useHydrated();
+  const catalogItems = useCatalog();
 
-  const items = catalogItems.filter((p) => slugs.includes(p.slug));
+  const items = (catalogItems ?? []).filter((p) => slugs.includes(p.slug));
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
@@ -23,7 +24,7 @@ export default function FavoritesPage() {
         <Heart className="text-sale" /> Избранное
       </h1>
 
-      {!hydrated ? (
+      {!hydrated || !catalogItems ? (
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <ProductCardSkeleton key={i} />

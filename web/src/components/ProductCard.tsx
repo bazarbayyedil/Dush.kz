@@ -1,8 +1,7 @@
 "use client";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Heart, ShoppingCart, PackageCheck } from "lucide-react";
-import { CatalogItem, itemSize } from "@/lib/catalog";
+import { CatalogItem, itemSize } from "@/lib/catalog-core";
 import { formatPrice, discountPercent, effectiveOldPrice } from "@/lib/format";
 import { useCart, useFavorites, useHydrated } from "@/lib/cart";
 import { productImageUrl } from "@/lib/media";
@@ -34,10 +33,8 @@ export function ProductCard({ product }: { product: CatalogItem }) {
   };
 
   return (
-    <motion.div
-      whileHover={{ y: -4 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      className="group relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.18)] hover:border-border transition-shadow"
+    <div
+      className="group relative flex flex-col rounded-2xl border border-border bg-card overflow-hidden transition-[transform,box-shadow] duration-200 hover:-translate-y-1 hover:shadow-[0_12px_32px_-12px_rgba(15,23,42,0.18)]"
     >
       {/* Бейдж скидки / комплекта */}
       {(discount > 0 || product.is_combo) && (
@@ -136,6 +133,6 @@ export function ProductCard({ product }: { product: CatalogItem }) {
           </button>
         )}
       </div>
-    </motion.div>
+    </div>
   );
 }

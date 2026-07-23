@@ -94,3 +94,19 @@ input[type="range"] {
 @media (prefers-reduced-motion: reduce) {
   .bath-arm, .bath-chest { animation: none; }
 }
+
+/* Лёгкие замены framer-motion: вход мегаменю и плиток */
+@keyframes anim-fade { from { opacity: 0 } to { opacity: 1 } }
+@keyframes anim-drop { from { opacity: 0; transform: translateY(-12px) } to { opacity: 1; transform: none } }
+@keyframes anim-rise { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+.anim-fade { animation: anim-fade 0.2s ease-out both }
+.anim-drop { animation: anim-drop 0.22s cubic-bezier(0.22, 1, 0.36, 1) both }
+.anim-rise { animation: anim-rise 0.3s ease-out both }
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade, .anim-drop, .anim-rise { animation: none }
+}
+@keyframes anim-slide-in { from { transform: translateX(-100%) } to { transform: none } }
+.anim-slide-in { animation: anim-slide-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both }
+@keyframes anim-expand { from { opacity: 0; transform: translateY(-4px) } to { opacity: 1; transform: none } }
+.anim-expand { animation: anim-expand 0.18s ease-out both }
+@media (prefers-reduced-motion: reduce) { .anim-slide-in, .anim-expand { animation: none } }

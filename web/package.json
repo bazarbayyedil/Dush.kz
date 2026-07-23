@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "prebuild": "node scripts/gen-meta.mjs",
+    "predev": "node scripts/gen-meta.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.42.2",

@@ -2,10 +2,9 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import { catalogTree, groupHref } from "@/lib/catalogTree";
-import { getCategoryMap, sampleByCategories } from "@/lib/catalog";
+import { getCategoryMap, previewByCategories } from "@/lib/catalog-meta";
 import { formatPrice } from "@/lib/format";
 import { useCatTitle, useGroupTitle } from "@/lib/categories-kk";
 import { useT } from "@/lib/i18n";
@@ -39,7 +38,7 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
   const subs = group.categories
     .map((slug) => ({ slug, ...(catMap[slug] ?? { title: slug, count: 0 }) }))
     .filter((s) => s.count > 0);
-  const preview = sampleByCategories(group.categories, 3);
+  const preview = previewByCategories(group.categories, 3);
 
   // Без AnimatePresence: на framer-motion 12 + React 19 выход отрабатывает
   // ненадёжно и панель залипает открытой. Обычный условный рендер гарантирует
@@ -50,21 +49,13 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
     <>
       {mounted &&
         createPortal(
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 top-[var(--header-h,64px)] bg-black/40 z-30"
+          <div
+            className="fixed inset-0 top-[var(--header-h,64px)] bg-black/40 z-30 anim-fade"
             onClick={onClose}
           />,
           document.body,
         )}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute left-0 right-0 top-full z-50"
-      >
+      <div className="absolute left-0 right-0 top-full z-50 anim-drop">
             <div className="max-w-7xl mx-auto px-4">
               <div className="bg-white rounded-b-2xl shadow-2xl border border-border border-t-0 overflow-hidden grid grid-cols-1 md:grid-cols-[280px_1fr]">
                 {/* Разделы */}
@@ -161,7 +152,7 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                 </div>
               </div>
             </div>
-      </motion.div>
+      </div>
     </>
   );
 }
