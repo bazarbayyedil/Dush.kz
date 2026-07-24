@@ -67,9 +67,9 @@ export function HomeClient({ data }: { data: HomeData }) {
       {bestDeals.length > 0 && (
         <ProductCarousel title={t("home.best_deals")} items={bestDeals} href="/catalog?onSale=1" accent />
       )}
-      <ProductCarousel title={t("home.installations")} items={installations} href="/catalog?category=knopki-dlya-installyacij" />
-      <ProductCarousel title={t("home.top_faucets")} items={topFaucets} href="/catalog?category=dlya-umyvalnikov" />
-      <ProductCarousel title={t("home.premium_baths")} items={premiumBaths} href="/catalog?category=akrilovye-vanny" />
+      <ProductCarousel title={t("home.installations")} items={installations} href="/catalog/knopki-dlya-installyacij" />
+      <ProductCarousel title={t("home.top_faucets")} items={topFaucets} href="/catalog/dlya-umyvalnikov" />
+      <ProductCarousel title={t("home.premium_baths")} items={premiumBaths} href="/catalog/akrilovye-vanny" />
     </div>
   );
 }

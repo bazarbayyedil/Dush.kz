@@ -24,6 +24,19 @@ CATEGORY_RETITLE = {"napolnye-otdelnostoyashhie-unitazy": "Напольные у
 # Имя бренда у поставщика со страной и лишним пробелом — на витрине показываем чистое.
 BRAND_RENAME = {"1 Марка ( Россия)": "1 Марка"}
 
+# Акции по брендам: множитель к цене, прежняя цена уходит в old_price.
+_rules_file = ROOT / "parser/price-rules.json"
+PRICE_RULES = json.loads(_rules_file.read_text()) if _rules_file.exists() else {}
+
+
+def apply_price_rule(brand, price, old_price):
+    mult = PRICE_RULES.get(brand)
+    if not mult or not price:
+        return price, old_price
+    new_price = int(round(price * mult / 100.0) * 100)
+    new_old = max(price, old_price or 0)
+    return new_price, (new_old if new_old > new_price else old_price)
+
 # Официальные фото с сайтов производителей: порядок задан вручную (студийное
 # фото первым), сортировка по размеру файла его бы сломала.
 _photos_file = ROOT / "parser/photos-clean.json"
@@ -165,16 +178,18 @@ for jf in sorted(PARSE_DIR.glob("*.json")):
             and k.strip()[:1].isupper()
         }
         category = CATEGORY_MERGE.get(category, category)
+        _brand = BRAND_RENAME.get(p.get("brand"), p.get("brand")) or "Без бренда"
+        _price, _old = apply_price_rule(_brand, p.get("price"), p.get("old_price"))
         all_products.append({
             "slug": p["slug"],
             "sku": p.get("sku") or "",
             "title": p["title"],
-            "brand": BRAND_RENAME.get(p.get("brand"), p.get("brand")) or "Без бренда",
+            "brand": _brand,
             "category": category,
             "category_title": CATEGORY_RETITLE.get(category)
             or CATEGORY_TITLES.get(category, category.replace("-", " ").capitalize()),
-            "price": p.get("price"),
-            "old_price": p.get("old_price"),
+            "price": _price,
+            "old_price": _old,
             "in_stock": p.get("in_stock", False),
             "on_sale": p.get("on_sale", False),
             "images": images_web,

@@ -112,7 +112,7 @@ function FacetSection({
 const PAGE_SIZE = 48;
 const EMPTY: CatalogItem[] = [];
 
-export function CatalogView() {
+export function CatalogView({ fixedCategory, headless = false }: { fixedCategory?: string; headless?: boolean } = {}) {
   const sp = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -140,7 +140,9 @@ export function CatalogView() {
     return {
       q: sp.get("q") || undefined,
       brand: sp.getAll("brand"),
-      category: sp.getAll("category"),
+      // На страницах /catalog/<категория> категория зашита в путь;
+      // параметры из адреса могут только сузить её подкатегориями.
+      category: sp.getAll("category").length ? sp.getAll("category") : fixedCategory ? [fixedCategory] : [],
       color: sp.getAll("color"),
       material: sp.getAll("material"),
       length: sp.getAll("length"),
@@ -433,15 +435,17 @@ export function CatalogView() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-        <Link href="/" className="hover:text-foreground">{t("cat.home")}</Link>
-        <span>/</span>
-        <span className="text-foreground">{pageTitle}</span>
-      </div>
+      {!headless && (
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+          <Link href="/" className="hover:text-foreground">{t("cat.home")}</Link>
+          <span>/</span>
+          <span className="text-foreground">{pageTitle}</span>
+        </div>
+      )}
 
       <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
         <div>
-          <h1 className="text-2xl md:text-3xl font-bold">{pageTitle}</h1>
+          {!headless && <h1 className="text-2xl md:text-3xl font-bold">{pageTitle}</h1>}
           <div className="text-sm text-muted-foreground mt-1">
             {filtered.length} {lang === "kk" ? "тауар" : plural(filtered.length, "товар", "товара", "товаров")}
           </div>

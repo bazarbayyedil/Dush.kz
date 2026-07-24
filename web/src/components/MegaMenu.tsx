@@ -106,7 +106,7 @@ export function MegaMenu({ open, onClose }: { open: boolean; onClose: () => void
                     {subs.map((s) => (
                       <Link
                         key={s.slug}
-                        href={`/catalog?category=${s.slug}`}
+                        href={`/catalog/${s.slug}`}
                         onClick={onClose}
                         className="group flex items-baseline gap-2 py-1 text-sm hover:text-accent"
                       >

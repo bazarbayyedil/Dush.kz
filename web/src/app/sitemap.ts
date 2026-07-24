@@ -12,15 +12,14 @@ const LEGAL_PAGES = ["/offer", "/privacy"];
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
-  // Только одиночные категории: ссылки на целые разделы содержат несколько
-  // параметров, а амперсанд в <loc> ломает разбор XML у поисковиков.
+  // Выделенные страницы категорий /catalog/<slug> — с серверным title и H1.
   const categories = [...new Set(catalogTree.flatMap((group) => group.categories))];
 
   return [
     { url: SITE_URL, lastModified: now, changeFrequency: "daily", priority: 1 },
     { url: `${SITE_URL}/catalog`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
     ...categories.map((slug) => ({
-      url: `${SITE_URL}/catalog?category=${encodeURIComponent(slug)}`,
+      url: `${SITE_URL}/catalog/${slug}`,
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,

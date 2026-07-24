@@ -66,7 +66,7 @@ export function MobileCatalog({ open, onClose }: { open: boolean; onClose: () =>
                             {subs.map((s) => (
                               <Link
                                 key={s.slug}
-                                href={`/catalog?category=${s.slug}`}
+                                href={`/catalog/${s.slug}`}
                                 onClick={onClose}
                                 className="flex items-center justify-between py-2 text-sm text-foreground/90"
                               >
