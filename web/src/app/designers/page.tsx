@@ -4,9 +4,9 @@ import {
   BadgePercent,
   Boxes,
   Clock4,
+  Headset,
   MessageCircle,
   Phone,
-  Ruler,
   Truck,
   UserRound,
 } from "lucide-react";
@@ -15,10 +15,10 @@ import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/lib/contacts";
 import { productImageUrl } from "@/lib/media";
 
 const HERO_PHOTOS = [
-  "/products/dusevaa-sistema-abber-daheim-af-8217-b-skrytogo-montaza-s-izlivom-cernaa-matovaa/2.jpg",
-  "/products/smesitel-dla-rakoviny-110-s-donnym-klapanom-cernyj-hansgrohe-metropol-32507670/3.jpg",
-  "/products/tumba-pod-rakovinu-grunge-loft-70n-2d-dub-votan-1-marka/1.jpg",
-  "/products/vanna-akrilovaa-otdel-nostoasaa-harmony-t-1700-black/1.jpg",
+  "/products/dusevaa-sistema-grohe-euphoria-260-so-smesitelem-hrom-27473001/5.jpg",
+  "/products/vanna-otdel-nostoasaa-akrilovaa-rein-9211-1700-750-580-mm/1.jpg",
+  "/products/dusevaa-sistema-grohe-euphoria-smartcontrol-310-duo-s-termostatom-hrom-26507000/6.jpg",
+  "/products/vanna-otdel-nostoasaa-icon-170-75-1marka/1.jpg",
 ];
 
 const WA_DESIGNER = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
@@ -54,9 +54,9 @@ const PERKS = [
     text: "По Астане — бесплатно за 24 часа, по Казахстану — до двери. Привезём к приезду бригады, не заставим клиента ждать.",
   },
   {
-    icon: Ruler,
-    title: "Размеры и характеристики",
-    text: "У каждого товара — габариты, цвет, материал и тип монтажа. Легко проверить посадку в санузел прямо из карточки.",
+    icon: Headset,
+    title: "Профессиональная консультация",
+    text: "Подскажем по совместимости инсталляций, смесителей и трапов, посадке по габаритам и подводке — до того, как бригада начнёт монтаж.",
   },
   {
     icon: Clock4,

@@ -1,14 +1,14 @@
 "use client";
 import Link from "next/link";
-import { ArrowRight, BadgePercent, Boxes, Truck, UserRound } from "lucide-react";
+import { ArrowRight, BadgePercent, Boxes, Headset, Truck, UserRound } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { productImageUrl } from "@/lib/media";
 
 const PHOTOS = [
-  "/products/dusevaa-sistema-abber-daheim-af-8217-b-skrytogo-montaza-s-izlivom-cernaa-matovaa/2.jpg",
-  "/products/smesitel-dla-rakoviny-110-s-donnym-klapanom-cernyj-hansgrohe-metropol-32507670/3.jpg",
-  "/products/tumba-pod-rakovinu-grunge-loft-70n-2d-dub-votan-1-marka/1.jpg",
-  "/products/vanna-akrilovaa-otdel-nostoasaa-harmony-t-1700-black/1.jpg",
+  "/products/dusevaa-sistema-grohe-euphoria-260-so-smesitelem-hrom-27473001/5.jpg",
+  "/products/vanna-otdel-nostoasaa-akrilovaa-rein-9211-1700-750-580-mm/1.jpg",
+  "/products/dusevaa-sistema-grohe-euphoria-smartcontrol-310-duo-s-termostatom-hrom-26507000/6.jpg",
+  "/products/vanna-otdel-nostoasaa-icon-170-75-1marka/1.jpg",
 ];
 
 /** Промо партнёрки для дизайнеров на главной. */
@@ -18,6 +18,7 @@ export function DesignerPromo() {
     { icon: UserRound, text: t("promo.designers_p1") },
     { icon: Boxes, text: t("promo.designers_p2") },
     { icon: Truck, text: t("promo.designers_p3") },
+    { icon: Headset, text: t("promo.designers_p4") },
   ];
 
   return (
