@@ -14,12 +14,8 @@ import { SITE_URL } from "@/lib/site";
 import { DESIGNER_PHONE_DISPLAY, DESIGNER_WHATSAPP_NUMBER } from "@/lib/contacts";
 import { productImageUrl } from "@/lib/media";
 
-const HERO_PHOTOS = [
-  "/products/dusevaa-sistema-grohe-euphoria-260-so-smesitelem-hrom-27473001/5.jpg",
-  "/products/vanna-otdel-nostoasaa-akrilovaa-rein-9211-1700-750-580-mm/1.jpg",
-  "/products/dusevaa-sistema-grohe-euphoria-smartcontrol-310-duo-s-termostatom-hrom-26507000/6.jpg",
-  "/products/vanna-otdel-nostoasaa-icon-170-75-1marka/1.jpg",
-];
+const HERO_PHOTO =
+  "/products/vanna-iz-iskusstvennogo-kamna-abber-frankfurt-am-9941-g-seraa/3.jpg";
 
 const WA_DESIGNER = `https://wa.me/${DESIGNER_WHATSAPP_NUMBER}?text=${encodeURIComponent(
   "Здравствуйте! Я дизайнер, хочу сотрудничать с dush.kz",
@@ -112,17 +108,14 @@ export default function DesignersPage() {
               </a>
             </div>
           </div>
-          <div className="hidden lg:grid lg:col-span-2 grid-cols-2 gap-2 p-2">
-            {HERO_PHOTOS.map((p) => (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={p}
-                src={productImageUrl(p)}
-                alt="Сантехника из каталога dush.kz"
-                loading="lazy"
-                className="w-full h-40 xl:h-48 object-cover rounded-2xl bg-white"
-              />
-            ))}
+          <div className="hidden lg:block lg:col-span-2 p-2 h-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={productImageUrl(HERO_PHOTO)}
+              alt="Ванна ABBER Frankfurt из каталога dush.kz"
+              loading="lazy"
+              className="w-full h-full min-h-[320px] object-cover rounded-2xl bg-white"
+            />
           </div>
         </div>
       </section>
