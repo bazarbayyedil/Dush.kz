@@ -125,16 +125,23 @@ export function CatalogView({ fixedCategory, headless = false }: { fixedCategory
 
   // Индекс приезжает лениво: до загрузки показываем скелетоны.
   const catalogItems = useCatalog() ?? EMPTY;
-  const brands = useMemo(() => allBrands(catalogItems), [catalogItems]);
-  const cats = useMemo(() => allCategories(catalogItems), [catalogItems]);
-  const priceRange = useMemo(() => priceRangeOf(catalogItems), [catalogItems]);
-  const colors = useMemo(() => allColors(catalogItems).filter((c) => c.count >= 5).slice(0, 16), [catalogItems]);
-  const materials = useMemo(() => allMaterials(catalogItems).filter((m) => m.count >= 5).slice(0, 14), [catalogItems]);
-  const lengths = useMemo(() => allLengths(catalogItems), [catalogItems]);
-  const widthsCm = useMemo(() => allWidthsCm(catalogItems), [catalogItems]);
-  const lengthCats = useMemo(() => lengthCategories(catalogItems), [catalogItems]);
-  const mountCats = useMemo(() => mountCategories(catalogItems), [catalogItems]);
-  const widthRange = useMemo(() => widthRangeOf(catalogItems), [catalogItems]);
+  const showAll = sp.get("all") === "1";
+  // Фасеты считаем от той же базы, что и сетка: по умолчанию — «в наличии»,
+  // иначе счётчик у чекбокса обещает больше, чем покажет клик.
+  const facetBase = useMemo(
+    () => (showAll ? catalogItems : catalogItems.filter((p) => p.in_stock)),
+    [catalogItems, showAll],
+  );
+  const brands = useMemo(() => allBrands(facetBase), [facetBase]);
+  const cats = useMemo(() => allCategories(facetBase), [facetBase]);
+  const priceRange = useMemo(() => priceRangeOf(facetBase), [facetBase]);
+  const colors = useMemo(() => allColors(facetBase).filter((c) => c.count >= 5).slice(0, 16), [facetBase]);
+  const materials = useMemo(() => allMaterials(facetBase).filter((m) => m.count >= 5).slice(0, 14), [facetBase]);
+  const lengths = useMemo(() => allLengths(facetBase), [facetBase]);
+  const widthsCm = useMemo(() => allWidthsCm(facetBase), [facetBase]);
+  const lengthCats = useMemo(() => lengthCategories(facetBase), [facetBase]);
+  const mountCats = useMemo(() => mountCategories(facetBase), [facetBase]);
+  const widthRange = useMemo(() => widthRangeOf(facetBase), [facetBase]);
 
   const filters: FilterState = useMemo(() => {
     return {

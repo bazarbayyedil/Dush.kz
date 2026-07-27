@@ -19,7 +19,8 @@ export function getCategoryMap(): Record<string, { title: string; count: number 
   const map: Record<string, { title: string; count: number }> = {};
   for (const p of catalogItems) {
     if (!map[p.category]) map[p.category] = { title: p.category_title, count: 0 };
-    map[p.category].count += 1;
+    // Счётчик = «в наличии»: столько покажет каталог с дефолтным фильтром.
+    if (p.in_stock) map[p.category].count += 1;
   }
   _catMap = map;
   return map;

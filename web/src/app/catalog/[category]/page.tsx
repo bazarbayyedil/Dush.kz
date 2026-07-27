@@ -19,8 +19,9 @@ export const dynamicParams = false;
 type Props = { params: Promise<{ category: string }> };
 
 function statsOf(slug: string) {
-  const items = catalogItems.filter((p) => p.category === slug && p.in_stock && p.price);
-  const prices = items.map((p) => p.price!);
+  // Счёт как в сетке каталога: дефолтный фильтр — «в наличии», цена не обязательна.
+  const items = catalogItems.filter((p) => p.category === slug && p.in_stock);
+  const prices = items.map((p) => p.price).filter((n): n is number => !!n);
   const brands = [...new Set(items.map((p) => p.brand))].filter((b) => b !== "Без бренда");
   return {
     count: items.length,

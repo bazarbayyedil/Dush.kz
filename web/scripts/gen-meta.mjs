@@ -14,7 +14,9 @@ const categories = {};
 const previews = {};
 for (const p of index) {
   const cur = (categories[p.category] ??= { title: p.category_title, count: 0 });
-  cur.count += 1;
+  // Каталог по умолчанию показывает «в наличии» — счётчики меню обязаны
+  // совпадать с тем, что человек увидит после клика.
+  if (p.in_stock) cur.count += 1;
   // до двух товаров с нормальным фото на категорию — мегаменю собирает из них тройку
   if (p.image && p.price && (p.img_kb ?? 0) >= 15) {
     const list = (previews[p.category] ??= []);
