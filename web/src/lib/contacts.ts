@@ -16,5 +16,9 @@ export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURICo
   "Здравствуйте! Пишу с сайта dush.kz",
 )}`;
 
+// Отдельная линия для дизайнеров и архитекторов (партнёрка).
+export const DESIGNER_WHATSAPP_NUMBER = "77758800398";
+export const DESIGNER_PHONE_DISPLAY = "+7 775 880 03 98";
+
 export const INSTAGRAM_HANDLE = "dush.kz";
 export const INSTAGRAM_URL = `https://instagram.com/${INSTAGRAM_HANDLE}`;

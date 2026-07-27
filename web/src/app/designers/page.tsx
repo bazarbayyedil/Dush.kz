@@ -11,7 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { SITE_URL } from "@/lib/site";
-import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/lib/contacts";
+import { DESIGNER_PHONE_DISPLAY, DESIGNER_WHATSAPP_NUMBER } from "@/lib/contacts";
 import { productImageUrl } from "@/lib/media";
 
 const HERO_PHOTOS = [
@@ -21,7 +21,7 @@ const HERO_PHOTOS = [
   "/products/vanna-otdel-nostoasaa-icon-170-75-1marka/1.jpg",
 ];
 
-const WA_DESIGNER = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+const WA_DESIGNER = `https://wa.me/${DESIGNER_WHATSAPP_NUMBER}?text=${encodeURIComponent(
   "Здравствуйте! Я дизайнер, хочу сотрудничать с dush.kz",
 )}`;
 
@@ -104,11 +104,11 @@ export default function DesignersPage() {
                 Обсудить сотрудничество
               </a>
               <a
-                href={`tel:+${WHATSAPP_NUMBER}`}
+                href={`tel:+${DESIGNER_WHATSAPP_NUMBER}`}
                 className="inline-flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:border-brand transition-colors"
               >
                 <Phone size={18} />
-                {PHONE_DISPLAY}
+                {DESIGNER_PHONE_DISPLAY}
               </a>
             </div>
           </div>
