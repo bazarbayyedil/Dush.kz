@@ -4,7 +4,7 @@ import { useT } from "@/lib/i18n";
 import { productImageUrl } from "@/lib/media";
 import { WHATSAPP_NUMBER } from "@/lib/contacts";
 
-const PHOTO = "/products/vanna-akrilovaa-otdel-nostoasaa-harmony-t-1700-black/1.jpg";
+const PHOTO = "/products/akrilovaa-vanna-abber-ab9241/5.jpg";
 
 const WA = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
   "Здравствуйте! Хочу подбор сантехники под мой дизайн-проект",
@@ -46,9 +46,9 @@ export function DesignPickPromo() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={productImageUrl(PHOTO)}
-              alt="Чёрная отдельностоящая ванна из каталога dush.kz"
+              alt="Ванна ABBER AB9241 из каталога dush.kz"
               loading="lazy"
-              className="w-full h-full object-contain p-6"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
