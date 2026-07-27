@@ -21540,5 +21540,75 @@
    "Артикул": "G42"
   },
   "description": "Шланг в силиконовой обмотке GAPPO G42. Оригинальная продукция Gappo, официальная гарантия. Артикул G42."
+ },
+ {
+  "slug": "smesitel-frap-dlya-vanny-f22701-v-dlinnyj-gusak-hrom",
+  "sku": "F22701-B",
+  "title": "Смеситель Frap для ванны F22701-В длинный гусак хром",
+  "brand": "Frap",
+  "category": "dlya-vanny",
+  "category_title": "Для ванны",
+  "price": 18400,
+  "old_price": 19820,
+  "in_stock": true,
+  "on_sale": true,
+  "images": [
+   "/products/smesitel-frap-dlya-vanny-f22701-v-dlinnyj-gusak-hrom/1.jpg",
+   "/products/smesitel-frap-dlya-vanny-f22701-v-dlinnyj-gusak-hrom/2.jpg",
+   "/products/smesitel-frap-dlya-vanny-f22701-v-dlinnyj-gusak-hrom/3.jpg",
+   "/products/smesitel-frap-dlya-vanny-f22701-v-dlinnyj-gusak-hrom/4.jpg"
+  ],
+  "img_kb": 52,
+  "attrs": {
+   "Производитель": "Frap",
+   "Артикул": "F22701-B",
+   "Цвет": "Хром"
+  },
+  "description": "Смеситель Frap для ванны F22701-В длинный гусак хром. Оригинальная продукция Frap, официальная гарантия. Артикул F22701-B."
+ },
+ {
+  "slug": "smesitel-frap-dlya-rakoviny-f10701-v-hrom",
+  "sku": "F10701-B",
+  "title": "Смеситель Frap для раковины F10701-В Хром",
+  "brand": "Frap",
+  "category": "dlya-umyvalnikov",
+  "category_title": "Для умывальника",
+  "price": 12200,
+  "old_price": 13160,
+  "in_stock": true,
+  "on_sale": true,
+  "images": [
+   "/products/smesitel-frap-dlya-rakoviny-f10701-v-hrom/1.jpg"
+  ],
+  "img_kb": 48,
+  "attrs": {
+   "Производитель": "Frap",
+   "Артикул": "F10701-B",
+   "Цвет": "Хром"
+  },
+  "description": "Смеситель Frap для раковины F10701-В Хром. Оригинальная продукция Frap, официальная гарантия. Артикул F10701-B."
+ },
+ {
+  "slug": "rakovina-nakladnaya-terminus-noto-505h375h135",
+  "sku": "4670078552112",
+  "title": "Раковина накладная Терминус Ното 505х375х135",
+  "brand": "Терминус",
+  "category": "rakovina-nakladnaya",
+  "category_title": "Раковина накладная",
+  "price": 40000,
+  "old_price": null,
+  "in_stock": true,
+  "on_sale": false,
+  "images": [
+   "/products/rakovina-nakladnaya-terminus-noto-505h375h135/1.jpg",
+   "/products/rakovina-nakladnaya-terminus-noto-505h375h135/2.jpg",
+   "/products/rakovina-nakladnaya-terminus-noto-505h375h135/3.jpg"
+  ],
+  "img_kb": 128,
+  "attrs": {
+   "Производитель": "Терминус",
+   "Размер": "505×375×135 мм"
+  },
+  "description": "Раковина накладная Терминус Ното 505х375х135. Официальная гарантия производителя."
  }
 ]
