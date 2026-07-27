@@ -11,7 +11,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { SITE_URL } from "@/lib/site";
-import { DESIGNER_PHONE_DISPLAY, DESIGNER_WHATSAPP_NUMBER } from "@/lib/contacts";
+import { DESIGNER_WHATSAPP_NUMBER } from "@/lib/contacts";
 import { productImageUrl } from "@/lib/media";
 
 const HERO_PHOTO =
@@ -104,7 +104,7 @@ export default function DesignersPage() {
                 className="inline-flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:border-brand transition-colors"
               >
                 <Phone size={18} />
-                {DESIGNER_PHONE_DISPLAY}
+                Позвонить
               </a>
             </div>
           </div>
