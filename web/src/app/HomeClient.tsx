@@ -8,7 +8,6 @@ import { CategoryChips } from "@/components/CategoryChips";
 import { CategoryTiles } from "@/components/CategoryTiles";
 import { ProductCarousel } from "@/components/ProductCarousel";
 import { BrandStrip } from "@/components/BrandStrip";
-import { DesignerPromo } from "@/components/DesignerPromo";
 
 export type HomeData = {
   heroPool: CatalogItem[];
@@ -61,8 +60,6 @@ export function HomeClient({ data }: { data: HomeData }) {
       </section>
 
       <CategoryTiles />
-
-      <DesignerPromo />
 
       <BrandStrip />
 
