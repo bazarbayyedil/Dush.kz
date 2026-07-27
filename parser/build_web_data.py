@@ -342,3 +342,5 @@ for c, n in sorted(cats.items(), key=lambda x: -x[1]):
 # после пересборки — иначе каждый прогон парсера стирал бы их.
 import subprocess
 subprocess.run(['python3', str(ROOT / 'parser/apply_additions.py')], check=False)
+# Комплекты из combos.json — тем же правилом, иначе пересборка их стирает.
+subprocess.run(['python3', str(ROOT / 'parser/apply_combos.py')], check=False)
