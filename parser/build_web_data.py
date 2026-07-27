@@ -42,6 +42,10 @@ def apply_price_rule(brand, price, old_price):
 _photos_file = ROOT / "parser/photos-clean.json"
 PHOTOS_CLEAN = json.loads(_photos_file.read_text()) if _photos_file.exists() else {}
 
+# Снятые с витрины позиции: пересборка их не возвращает.
+_excluded_file = ROOT / "parser/excluded.json"
+EXCLUDED_SLUGS = set(json.loads(_excluded_file.read_text())) if _excluded_file.exists() else set()
+
 
 def slugify(name: str) -> str:
     s = re.sub(r"[^\w\-]+", "-", name.strip(), flags=re.UNICODE).strip("-")
@@ -206,6 +210,11 @@ for p in all_products:
     d = DIMS_CLEAN.get(p["slug"])
     if d:
         p["dims"] = {"L": d["L"], "W": d["W"]}
+
+if EXCLUDED_SLUGS:
+    before = len(all_products)
+    all_products = [p for p in all_products if p["slug"] not in EXCLUDED_SLUGS]
+    print(f"исключено снятых позиций: {before - len(all_products)}")
 
 out = DATA_DIR / "products.json"
 out.write_text(json.dumps(all_products, ensure_ascii=False, indent=2))
