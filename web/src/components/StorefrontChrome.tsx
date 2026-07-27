@@ -2,6 +2,7 @@
 import { usePathname } from "next/navigation";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { DesignerBanner } from "./DesignerBanner";
 import { CartDrawer } from "./CartDrawer";
 import { OrderModal } from "./OrderModal";
 import { WhatsAppFab } from "./WhatsAppFab";
@@ -13,6 +14,7 @@ export function StorefrontChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <DesignerBanner />
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />

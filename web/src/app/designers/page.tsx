@@ -12,6 +12,14 @@ import {
 } from "lucide-react";
 import { SITE_URL } from "@/lib/site";
 import { PHONE_DISPLAY, WHATSAPP_NUMBER } from "@/lib/contacts";
+import { productImageUrl } from "@/lib/media";
+
+const HERO_PHOTOS = [
+  "/products/dusevaa-sistema-abber-daheim-af-8217-b-skrytogo-montaza-s-izlivom-cernaa-matovaa/2.jpg",
+  "/products/smesitel-dla-rakoviny-110-s-donnym-klapanom-cernyj-hansgrohe-metropol-32507670/3.jpg",
+  "/products/tumba-pod-rakovinu-grunge-loft-70n-2d-dub-votan-1-marka/1.jpg",
+  "/products/vanna-akrilovaa-otdel-nostoasaa-harmony-t-1700-black/1.jpg",
+];
 
 const WA_DESIGNER = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
   "Здравствуйте! Я дизайнер, хочу сотрудничать с dush.kz",
@@ -73,34 +81,48 @@ export default function DesignersPage() {
         <span className="text-foreground">Дизайнерам</span>
       </nav>
 
-      <section className="rounded-3xl bg-card border border-border px-6 py-10 md:px-12 md:py-14 mb-10">
-        <div className="max-w-2xl">
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight">
-            Дизайнерам и архитекторам
-          </h1>
-          <p className="mt-4 text-[15px] md:text-base text-muted-foreground leading-relaxed">
-            Комплектуем санузлы и кухни под дизайн-проект: 5&nbsp;000+ позиций в наличии,
-            Grohe, Frap, Gappo, 1&nbsp;Марка и ещё 40 брендов. Вы занимаетесь проектом —
-            мы берём на себя подбор, резерв, доставку и документы. И платим вознаграждение
-            с каждого заказа.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              href={WA_DESIGNER}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl bg-brand text-white px-5 py-3 text-sm font-medium hover:opacity-90 transition-opacity"
-            >
-              <MessageCircle size={18} />
-              Обсудить сотрудничество
-            </a>
-            <a
-              href={`tel:+${WHATSAPP_NUMBER}`}
-              className="inline-flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:border-brand transition-colors"
-            >
-              <Phone size={18} />
-              {PHONE_DISPLAY}
-            </a>
+      <section className="rounded-3xl bg-card border border-border overflow-hidden mb-10">
+        <div className="grid lg:grid-cols-5 items-center">
+          <div className="lg:col-span-3 px-6 py-10 md:px-12 md:py-14">
+            <h1 className="text-3xl md:text-4xl font-bold leading-tight">
+              Дизайнерам и архитекторам
+            </h1>
+            <p className="mt-4 text-[15px] md:text-base text-muted-foreground leading-relaxed">
+              Комплектуем санузлы и кухни под дизайн-проект: 5&nbsp;000+ позиций в наличии,
+              Grohe, Frap, Gappo, 1&nbsp;Марка и ещё 40 брендов. Вы занимаетесь проектом —
+              мы берём на себя подбор, резерв, доставку и документы. И платим вознаграждение
+              с каждого заказа.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                href={WA_DESIGNER}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-xl bg-brand text-white px-5 py-3 text-sm font-medium hover:opacity-90 transition-opacity"
+              >
+                <MessageCircle size={18} />
+                Обсудить сотрудничество
+              </a>
+              <a
+                href={`tel:+${WHATSAPP_NUMBER}`}
+                className="inline-flex items-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-medium hover:border-brand transition-colors"
+              >
+                <Phone size={18} />
+                {PHONE_DISPLAY}
+              </a>
+            </div>
+          </div>
+          <div className="hidden lg:grid lg:col-span-2 grid-cols-2 gap-2 p-2">
+            {HERO_PHOTOS.map((p) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={p}
+                src={productImageUrl(p)}
+                alt="Сантехника из каталога dush.kz"
+                loading="lazy"
+                className="w-full h-40 xl:h-48 object-cover rounded-2xl bg-white"
+              />
+            ))}
           </div>
         </div>
       </section>
