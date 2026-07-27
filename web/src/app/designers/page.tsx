@@ -15,7 +15,7 @@ import { DESIGNER_WHATSAPP_NUMBER } from "@/lib/contacts";
 import { productImageUrl } from "@/lib/media";
 
 const HERO_PHOTO =
-  "/products/akrilovaa-vanna-abber-ab9241/5.jpg";
+  "/products/vanna-iz-iskusstvennogo-kamna-abber-frankfurt-am-9941-g-seraa/3.jpg";
 
 const WA_DESIGNER = `https://wa.me/${DESIGNER_WHATSAPP_NUMBER}?text=${encodeURIComponent(
   "Здравствуйте! Я дизайнер, хочу сотрудничать с dush.kz",
@@ -112,7 +112,7 @@ export default function DesignersPage() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={productImageUrl(HERO_PHOTO)}
-              alt="Ванна ABBER AB9241 из каталога dush.kz"
+              alt="Ванна ABBER Frankfurt из каталога dush.kz"
               loading="lazy"
               className="w-full h-full min-h-[320px] object-cover rounded-2xl bg-white"
             />
