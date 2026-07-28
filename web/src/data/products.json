@@ -116706,40 +116706,6 @@
     }
   },
   {
-    "slug": "unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-480h370h370-mm-m213",
-    "sku": "M213",
-    "title": "Унитаз подвесной SANITECO Tornado UF безободковый 480х370х370 мм (M213)",
-    "brand": "SANITECO",
-    "category": "podvesnye-unitazy",
-    "category_title": "Подвесные унитазы",
-    "price": 60000,
-    "old_price": null,
-    "in_stock": true,
-    "on_sale": false,
-    "images": [
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-480h370h370-mm-m213/1.jpeg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-480h370h370-mm-m213/2.jpg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-480h370h370-mm-m213/3.jpg"
-    ],
-    "img_kb": 74,
-    "attrs": {
-      "Производитель": "SANITECO",
-      "Производство": "Россия",
-      "Материал": "Санфарфор",
-      "Высота": "370 мм",
-      "Длина": "480 мм",
-      "Ширина": "370 мм",
-      "Режим смыва": "Круговой",
-      "Дополнительные характеристики": "Безободковый унитаз",
-      "Материал сиденья": "Дюропласт, микролифт"
-    },
-    "description": "Производитель — SANITECO (Россия). Материал — санфарфор. Габариты: 370 мм × 480 мм × 370 мм.",
-    "dims": {
-      "L": 480,
-      "W": 370
-    }
-  },
-  {
     "slug": "podvesnoj-unitaz-5179-so-smyvom-tornado",
     "sku": "5179",
     "title": "Подвесной унитаз 5179 со смывом торнадо",
@@ -116861,40 +116827,6 @@
     "dims": {
       "L": 520,
       "W": 360
-    }
-  },
-  {
-    "slug": "unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-530h360h360-mm-m213-big",
-    "sku": "M205",
-    "title": "Унитаз подвесной SANITECO Tornado UF безободковый 510х370х340 мм (M205)",
-    "brand": "SANITECO",
-    "category": "podvesnye-unitazy",
-    "category_title": "Подвесные унитазы",
-    "price": 51000,
-    "old_price": 64000,
-    "in_stock": true,
-    "on_sale": true,
-    "images": [
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-530h360h360-mm-m213-big/2.jpeg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-530h360h360-mm-m213-big/1.jpeg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-530h360h360-mm-m213-big/4.jpeg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-530h360h360-mm-m213-big/5.jpeg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-uf-bezobodkovyj-530h360h360-mm-m213-big/3.jpeg"
-    ],
-    "img_kb": 128,
-    "attrs": {
-      "Производитель": "SANITECO",
-      "Производство": "Россия",
-      "Цвет": "Белый",
-      "Высота": "400 мм",
-      "Ширина": "380 мм",
-      "Длина": "540 мм",
-      "Материал сиденья": "Дюропласт, микролифт"
-    },
-    "description": "Производитель — SANITECO (Россия). Цвет — белый. Габариты: 380 мм × 540 мм × 400 мм.",
-    "dims": {
-      "L": 540,
-      "W": 380
     }
   },
   {
@@ -117030,38 +116962,6 @@
       "Дополнительные характеристики": "Унитаз с функцией биде"
     },
     "description": "Производитель — SANITECO. Материал — санфарфор, цвет — белый."
-  },
-  {
-    "slug": "unitaz-podvesnoj-saniteco-tornado-ss-88d-belyj-530x360x360",
-    "sku": "Tornado SS-88D",
-    "title": "Унитаз подвесной SANITECO Tornado SS-88D белый 480X360X360",
-    "brand": "SANITECO",
-    "category": "podvesnye-unitazy",
-    "category_title": "Подвесные унитазы",
-    "price": 45000,
-    "old_price": 63000,
-    "in_stock": true,
-    "on_sale": true,
-    "images": [
-      "/products/unitaz-podvesnoj-saniteco-tornado-ss-88d-belyj-530x360x360/1.jpeg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-ss-88d-belyj-530x360x360/2.jpg",
-      "/products/unitaz-podvesnoj-saniteco-tornado-ss-88d-belyj-530x360x360/3.jpg"
-    ],
-    "img_kb": 74,
-    "attrs": {
-      "Производитель": "SANITECO",
-      "Цвет": "Белый",
-      "Длина": "530 мм",
-      "Ширина": "360 мм",
-      "Высота": "360 мм",
-      "Материал сиденья": "Дюропласт, микролифт",
-      "Дополнительные характеристики": "Безободковый"
-    },
-    "description": "Производитель — SANITECO. Цвет — белый. Габариты: 360 мм × 530 мм × 360 мм.",
-    "dims": {
-      "L": 530,
-      "W": 360
-    }
   },
   {
     "slug": "unitaz-podvesnoj-saniteco-jt-m235-515-400-345-mm",
