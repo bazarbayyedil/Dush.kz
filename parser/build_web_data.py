@@ -353,3 +353,5 @@ import subprocess
 subprocess.run(['python3', str(ROOT / 'parser/apply_additions.py')], check=False)
 # Комплекты из combos.json — тем же правилом, иначе пересборка их стирает.
 subprocess.run(['python3', str(ROOT / 'parser/apply_combos.py')], check=False)
+# Наличие по складским остаткам поверх данных поставщиков.
+subprocess.run(['python3', str(ROOT / 'parser/apply_stock.py')], check=False)
